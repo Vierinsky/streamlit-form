@@ -5,6 +5,9 @@ import json
 
 # Url = app-form-benyxxbxau4q6xvprzhjpq.streamlit.app
 
+# Configuración de autenticación con Google Sheets usando google-auth
+SCOPE = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file"]
+
 # leer las credenciales desde secrets (Streamlit Cloud)
 service_account_info = st.secrets["gcp_service_account"]
 credentials = Credentials.from_service_account_info(service_account_info)
