@@ -22,7 +22,9 @@ except Exception as e:
 # Intentar abrir la hoja de Google Sheets
 SHEET_NAME = "prueba_streamlit"
 try:
-    sheet = client.open(SHEET_NAME).sheet1
+    # sheet = client.open(SHEET_NAME).sheet1
+    spreadsheet = client.open(SHEET_NAME)
+    sheet = spreadsheet.get_worksheet(0) # Abre la primera hoja por índice en vez de por nombre
     st.write(f"✅ Hoja de Google Sheets '{SHEET_NAME}' abierta exitosamente")
 except Exception as e:
     st.error(f"❌ Error al abrir la hoja de Google Sheets: {e}")
