@@ -1,0 +1,13 @@
+# Ignorar la carpeta del entorno virtual
+venv/
+
+# Ignorar archivo de credenciales
+streamlit-formulario-costos-6b84cc3f243f.json
+
+# Ignorar configuraciones locales de VS Code
+.vscode/
+
+# Ignorar archivos de compilación de Python
+__pycache__/
+*.pyc
+*.pyo
