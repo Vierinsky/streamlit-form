@@ -6,7 +6,7 @@ import json
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive.file"
+    "https://www.googleapis.com/auth/drive"
 ]
 
 # Autenticación y conexión con Google Sheets
