@@ -40,7 +40,7 @@ descripcion = st.text_input(
 
 # Monto del Gasto
 monto = st.number_input(
-    "Monto del Gasto", 
+    "Monto del Gasto/Compra", 
     min_value=0.0, 
     format="%.2f", 
     step=1.0)
@@ -63,7 +63,7 @@ proveedores = st.selectbox(
     index=None, 
     placeholder="Seleccione proveedor") 
 
-# N° folio boleta/factura
+# N° Folio boleta/factura
 numero_folio = st.number_input(
     "Número de Folio",
     min_value=None,
@@ -74,7 +74,7 @@ numero_folio = st.number_input(
 
 # Fecha del Gasto
     # Fecha en la que se efectuó el gasto/compra/costo
-st.date_input(
+fecha_gasto = st.date_input(
     "Fecha del Gasto",
     value="today",
     format="DD/MM/YYYY"
@@ -82,13 +82,23 @@ st.date_input(
 
 # Fecha de Emisión
     # Fecha de emisión de la boleta o factura
+fecha_emision = st.date_input(
+    "Fecha de Emisión Boleta/Factura",
+    value="today",
+    format="DD/MM/YYYY"
+)
 
 # Fecha de Vencimiento
+fecha_vencimiento = st.date_input(
+    "Fecha de Vencimiento Boleta/Factura",
+    value="today",
+    format="DD/MM/YYYY"
+)
 
 if st.button("Guardar Registro"):
     try:
         # Intentar guardar los datos en la hoja
-        sheet.append_row([descripcion, monto, item])
+        sheet.append_row([descripcion, monto, item, proveedores, numero_folio, fecha_gasto, fecha_emision, fecha_vencimiento])
         st.success("¡Registro guardado con éxito!")
     except Exception as e:
         st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
