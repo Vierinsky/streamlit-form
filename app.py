@@ -37,11 +37,11 @@ st.title("Formulario de Registro de Costos")
 descripcion = st.text_input("Descripción del Gasto", placeholder='Descripción breve del gasto. Ej: "Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L".')
 
 # Monto del Gasto
-monto = st.number_input("Monto del Gasto", min_value=0.0, format="%.2f")
+monto = st.number_input("Monto del Gasto", min_value=0.0, format="%.2f", step=None)
 
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems
-item = st.selectbox("Ítem", ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], index=None, placeholder="Seleccione ítem")
+item = st.selectbox("Ítem", ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], index=None, placeholder="Seleccione ítem o centro de costos del gasto")
 
 # Proveedor de la compra/costo/gasto
     # Agregar opción para customizar lista de proveedores
