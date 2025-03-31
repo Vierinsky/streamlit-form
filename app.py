@@ -66,6 +66,7 @@ proveedores = st.selectbox(
 # N° folio boleta/factura
 numero_folio = st.number_input(
     "Número de Folio",
+    min_value=None,
     step=1,
     format="%d",
     placeholder="N° de boleta o factura"
