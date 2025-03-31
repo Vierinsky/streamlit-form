@@ -41,11 +41,11 @@ monto = st.number_input("Monto del Gasto", min_value=0.0, format="%.2f")
 
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems
-item = st.selectbox("Ítem", ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], label_visibility="hidden")
+item = st.selectbox("Ítem", ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], index=None, placeholder="Seleccione ítem")
 
 # Proveedor de la compra/costo/gasto
     # Agregar opción para customizar lista de proveedores
-proveedores = st.selectbox("Proveedor", [], placeholder="Seleccione proveedor del costo") 
+proveedores = st.selectbox("Proveedor", [], index=None, placeholder="Seleccione proveedor") 
 
 # N° folio boleta/factura
 
