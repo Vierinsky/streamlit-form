@@ -11,3 +11,9 @@ streamlit-formulario-costos-e13fb9491422.json
 __pycache__/
 *.pyc
 *.pyo
+
+# Ignorar mi lista de pendientes
+to-do.md
+
+# Notas
+como_seguir_en_producción.txt

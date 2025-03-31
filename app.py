@@ -2,6 +2,7 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 import json
+import os
 
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
@@ -12,7 +13,7 @@ SCOPE = [
 # Autenticación y conexión con Google Sheets
 try:
     # Leer las credenciales desde secrets (Streamlit Cloud)
-    service_account_info = st.secrets["gcp_service_account"]
+    service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
     credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
     client = gspread.authorize(credentials)
     st.write("✅ Conexión autenticada exitosamente con Google Sheets")
@@ -31,9 +32,24 @@ except Exception as e:
 
 # Estructura del Formulario
 st.title("Formulario de Registro de Costos")
+
+# Descripción gasto
 descripcion = st.text_input("Descripción del Gasto")
+
+# Monto del gasto
 monto = st.number_input("Monto del Gasto", min_value=0.0, format="%.2f")
-item = st.selectbox("Ítem", ['Aseo y Ornato', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías', 'Campo General'])
+
+# Item/Cultivo/Centro de costos del gasto
+    # Agregar opción para customizar lista de ítems
+item = st.selectbox("Ítem", ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], placeholder="Seleccione el ítem al que corresponda el costo.")
+
+# Proveedor de la compra/costo/gasto
+    # Agregar opción para customizar lista de proveedores
+proveedores = st.selectbox("Proveedor", [], placeholder="Seleccione proveedor del costo") 
+
+# N° folio boleta/factura
+
+#  
 
 if st.button("Guardar Registro"):
     try:
