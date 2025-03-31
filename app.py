@@ -72,7 +72,7 @@ proveedor_seleccionado = st.selectbox(
 
 # Input de nuevo proveedor
 nuevo_proveedor = st.text_input(
-    "¿No está en la lista? Escriba nuevo proveedor",
+    "¿Proveedor no está en la lista? Escriba nuevo proveedor",
     placeholder="Nombre del nuevo proveedor")
 
 # Decidir qué valor usar
