@@ -45,7 +45,7 @@ item = st.selectbox("Ítem", ['Aseo y Ornato', 'Campo General', 'Choclo', 'Framb
 
 # Proveedor de la compra/costo/gasto
     # Agregar opción para customizar lista de proveedores
-proveedores_list = ["Agricola Alta Gracia Ltda", "Agricola innova", "Agencia Aduana J Sanhueza", "Agrotrust", "Andrea Reyes", "Austral Innova", "Cals", "Carlos Levin", "Chilemat Pagado a Innova", "Coagra", "Colun (Jaime Vergara)", "Copeval", "Covepa", "CyC Empresas SpA", "Dick Houter", "Dripco", "Entre Riegos del Sur", "Estuario", "Ferosor", "Green Works E 123.650", "Hernan Muñoz", "Lilian Franco", "Luis Vera", "Marcelo Gatica", "Martinez y Valdivieso","Matias Castillo", "Pablo Reyes", "Rodolfo Castillo", "Roxana del Carmen T", "Telemetry", "Tomás Schmidt", "serv Mant Vergara"]
+proveedores_list = ["Agricola Alta Gracia Ltda", "Agricola innova", "Agencia Aduana J Sanhueza", "Agrotrust", "Andrea Reyes", "Austral Innova", "Cals", "Carlos Levin", "Chilemat Pagado a Innova", "Coagra", "Colun (Jaime Vergara)", "Copeval", "Covepa", "CyC Empresas SpA", "Dick Houter", "Dripco", "Entre Riegos del Sur", "Estuario", "Ferosor", "Green Works E 123.650", "Hernan Muñoz", "Lilian Franco", "Luis Vera", "Marcelo Gatica", "Martinez y Valdivieso","Matias Castillo", "Pablo Reyes", "Rodolfo Castillo", "Roxana del Carmen T", "Serv Mant Vergara", "Telemetry", "Tomás Schmidt"]
 proveedores = st.selectbox("Proveedor", proveedores_list, index=None, placeholder="Seleccione proveedor") 
 
 # N° folio boleta/factura
