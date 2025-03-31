@@ -34,19 +34,34 @@ except Exception as e:
 st.title("Formulario de Registro de Costos")
 
 # Descripción Gasto
-descripcion = st.text_input("Descripción del Gasto", placeholder='Descripción breve del gasto. Ej: "Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L".')
+descripcion = st.text_input(
+    "Descripción del Gasto", 
+    placeholder='Descripción breve del gasto. Ej: "Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L".')
 
 # Monto del Gasto
-monto = st.number_input("Monto del Gasto", min_value=0.0, format="%.2f", step=1.0)
+monto = st.number_input(
+    "Monto del Gasto", 
+    min_value=0.0, 
+    format="%.2f", 
+    step=1.0)
 
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems
-item = st.selectbox("Ítem", ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], index=None, placeholder="Seleccione ítem o centro de costos del gasto")
+item = st.selectbox(
+    "Ítem", 
+    ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], 
+    index=None, 
+    placeholder="Seleccione ítem o centro de costos del gasto")
 
 # Proveedor de la compra/costo/gasto
-    # Agregar opción para customizar lista de proveedores
+    # TODO: Agregar opción para customizar lista de proveedores
 proveedores_list = ["Agricola Alta Gracia Ltda", "Agricola innova", "Agencia Aduana J Sanhueza", "Agrotrust", "Andrea Reyes", "Austral Innova", "Cals", "Carlos Levin", "Chilemat Pagado a Innova", "Coagra", "Colun (Jaime Vergara)", "Copeval", "Covepa", "CyC Empresas SpA", "Dick Houter", "Dripco", "Entre Riegos del Sur", "Estuario", "Ferosor", "Green Works E 123.650", "Hernan Muñoz", "Lilian Franco", "Luis Vera", "Marcelo Gatica", "Martinez y Valdivieso","Matias Castillo", "Pablo Reyes", "Rodolfo Castillo", "Roxana del Carmen T", "Serv Mant Vergara", "Telemetry", "Tomás Schmidt"]
-proveedores = st.selectbox("Proveedor", proveedores_list, index=None, placeholder="Seleccione proveedor") 
+
+proveedores = st.selectbox(
+    "Proveedor", 
+    proveedores_list, 
+    index=None, 
+    placeholder="Seleccione proveedor") 
 
 # N° folio boleta/factura
 numero_folio = st.number_input(
@@ -59,6 +74,11 @@ numero_folio = st.number_input(
 
 # Fecha del Gasto
     # Fecha en la que se efectuó el gasto/compra/costo
+st.date_input(
+    "Fecha del Gasto",
+    value="today",
+    format="DD/MM/YYYY"
+)
 
 # Fecha de Emisión
     # Fecha de emisión de la boleta o factura
