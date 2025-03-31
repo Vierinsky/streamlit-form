@@ -16,7 +16,7 @@ try:
     service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
     credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
     client = gspread.authorize(credentials)
-    st.write("✅ Conexión autenticada exitosamente con Google Sheets")
+    st.write("✅ Conexión autenticada exitosamente con Google Sheets") # TODO: QUE EL DISPLAY DE ALERTAS DURE UN POCO EN PANTALLA
 except Exception as e:
     st.error(f"❌ Error en la autenticación con Google Sheets: {e}")
 
@@ -33,15 +33,15 @@ except Exception as e:
 # Estructura del Formulario
 st.title("Formulario de Registro de Costos")
 
-# Descripción gasto
-descripcion = st.text_input("Descripción del Gasto")
+# Descripción Gasto
+descripcion = st.text_input("Descripción del Gasto", placeholder='Descripción breve del gasto. Ej: "Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L".')
 
-# Monto del gasto
+# Monto del Gasto
 monto = st.number_input("Monto del Gasto", min_value=0.0, format="%.2f")
 
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems
-item = st.selectbox("Ítem", ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], label_visibility="collapsed")
+item = st.selectbox("Ítem", ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], label_visibility="hidden")
 
 # Proveedor de la compra/costo/gasto
     # Agregar opción para customizar lista de proveedores
@@ -49,7 +49,13 @@ proveedores = st.selectbox("Proveedor", [], placeholder="Seleccione proveedor de
 
 # N° folio boleta/factura
 
-#  
+# Fecha del Gasto
+    # Fecha en la que se efectuó el gasto/compra/costo
+
+# Fecha de Emisión
+    # Fecha de emisión de la boleta o factura
+
+# Fecha de Vencimiento
 
 if st.button("Guardar Registro"):
     try:
