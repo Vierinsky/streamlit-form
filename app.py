@@ -54,14 +54,29 @@ item = st.selectbox(
     placeholder="Seleccione ítem o centro de costos del gasto")
 
 # Proveedor de la compra/costo/gasto
-    # TODO: Agregar opción para customizar lista de proveedores
-proveedores_list = ["Agricola Alta Gracia Ltda", "Agricola innova", "Agencia Aduana J Sanhueza", "Agrotrust", "Andrea Reyes", "Austral Innova", "Cals", "Carlos Levin", "Chilemat Pagado a Innova", "Coagra", "Colun (Jaime Vergara)", "Copeval", "Covepa", "CyC Empresas SpA", "Dick Houter", "Dripco", "Entre Riegos del Sur", "Estuario", "Ferosor", "Green Works E 123.650", "Hernan Muñoz", "Lilian Franco", "Luis Vera", "Marcelo Gatica", "Martinez y Valdivieso","Matias Castillo", "Pablo Reyes", "Rodolfo Castillo", "Roxana del Carmen T", "Serv Mant Vergara", "Telemetry", "Tomás Schmidt"]
+    # TODO: Agregar opción para customizar lista de proveedores (HECHO)
 
-proveedores = st.selectbox(
+# Obtener lista dinámica de proveedores desde la hoja 'proveedores'
+try:
+    proveedores_sheet = spreadsheet.worksheet("proveedores")
+    proveedores_list = [row[0] for row in proveedores_sheet.get_all_values() if row]
+except Exception as e:
+    st.error(f"❌ Error al cargar la lista de proveedores: {e}")
+    proveedores_list = []
+
+proveedor_seleccionado = st.selectbox(
     "Proveedor", 
     proveedores_list, 
     index=None, 
     placeholder="Seleccione proveedor") 
+
+# Input de nuevo proveedor
+nuevo_proveedor = st.text_input(
+    "¿No está en la lista? Escriba nuevo proveedor",
+    placeholder="Nombre del nuevo proveedor")
+
+# Decidir qué valor usar
+proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
 
 # N° Folio boleta/factura
 numero_folio = st.number_input(
