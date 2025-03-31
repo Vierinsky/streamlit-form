@@ -37,7 +37,7 @@ st.title("Formulario de Registro de Costos")
 descripcion = st.text_input("Descripción del Gasto", placeholder='Descripción breve del gasto. Ej: "Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L".')
 
 # Monto del Gasto
-monto = st.number_input("Monto del Gasto", min_value=0.0, format="%.2f", step=1)
+monto = st.number_input("Monto del Gasto", min_value=0.0, format="%.2f", step=int)
 
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems
