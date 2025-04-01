@@ -94,6 +94,9 @@ if nuevo_proveedor and nuevo_proveedor.strip() not in proveedores_list:
 
 # TODO: Generar indices ("Id") en cada hoja del google sheet
 
+# Priorizar proveedor seleccionado
+proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_proveedor.strip()
+
 # N° Folio boleta/factura
 numero_folio = st.number_input(
     "Número de Folio de Boleta/Factura",
@@ -164,5 +167,10 @@ if st.button("Guardar Registro"):
                 comentario
             ])
             st.success("¡Registro guardado con éxito!")
+
+            # Solo si se usó un nuevo proveedor y no está en la lista
+            if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
+                proveedores_sheet.append_row(["", nuevo_proveedor.strip()])
+
         except Exception as e:
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
