@@ -78,12 +78,19 @@ proveedor_seleccionado = st.selectbox(
     "Proveedor", 
     proveedores_list, 
     index=None, 
-    placeholder="Seleccione proveedor") 
+    placeholder="Seleccione proveedor"
+) 
+
+# Limpiar campo de texto si se seleccionó uno de la lista
+if proveedor_seleccionado and st.session_state.get("nuevo_proveedor"):
+    st.session_state["nuevo_proveedor"] = ""
 
 # Input de nuevo proveedor
 nuevo_proveedor = st.text_input(
-    "¿Proveedor no está en la lista? Escriba nuevo proveedor. De lo contrario dejar sección en blanco",
-    placeholder="Nombre del nuevo proveedor")
+    "¿Proveedor no está en la lista? Escriba nuevo proveedor. De lo contrario dejar en blanco",
+    placeholder="Nombre del nuevo proveedor",
+    key="nuevo_proveedor"
+)
 
 # Decidir qué valor usar
 proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
