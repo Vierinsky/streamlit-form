@@ -1,8 +1,10 @@
-import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 import json
 import os
+import streamlit as st
+import time
+
 
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
@@ -16,7 +18,9 @@ try:
     service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
     credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
     client = gspread.authorize(credentials)
-    st.write("✅ Conexión autenticada exitosamente con Google Sheets") # TODO: QUE EL DISPLAY DE ALERTAS DURE UN POCO EN PANTALLA
+    with st.empty():
+        st.write("✅ Conexión autenticada exitosamente con Google Sheets")
+        time.sleep(5)  # El mensaje se mostrará por 5 segundos
 except Exception as e:
     st.error(f"❌ Error en la autenticación con Google Sheets: {e}")
 
@@ -26,7 +30,10 @@ try:
     # sheet = client.open(SHEET_NAME).sheet1
     spreadsheet = client.open(SHEET_NAME)
     sheet = spreadsheet.get_worksheet(0) # Abre la primera hoja por índice en vez de por nombre
-    st.write(f"✅ Hoja de Google Sheets '{SHEET_NAME}' abierta exitosamente")
+    with st.empty():
+        st.write(f"✅ Hoja de Google Sheets '{SHEET_NAME}' abierta exitosamente")
+        time.sleep(5)  # El mensaje se mostrará por 5 segundos
+
 except Exception as e:
     st.error(f"❌ Error al abrir la hoja de Google Sheets: {e}")
 
@@ -39,7 +46,7 @@ descripcion = st.text_input(
     placeholder='Descripción breve del gasto. Ej: "Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L".')
 
 # Monto del Gasto - solo enteros con separador de miles
-monto_raw = st.number_input(
+monto = st.number_input(
     "Monto del Gasto/Compra", 
     min_value=0, 
     step=1,
@@ -47,7 +54,7 @@ monto_raw = st.number_input(
 )
 
 # Formateo visual con separador de miles (solo display opcional)
-monto_formateado = f"{monto_raw:,}".replace(",", ".")  # convierte 10000 → "10.000"
+monto_formateado = f"{monto:,}".replace(",", ".")  # convierte 10000 → "10.000"
 
 st.write(f"Monto ingresado: ${monto_formateado}")
 
@@ -65,7 +72,8 @@ item = st.selectbox(
 # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
 try:
     proveedores_sheet = spreadsheet.worksheet("proveedores")
-    proveedores_list = [row[0] for row in proveedores_sheet.get_all_values() if row]
+    data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    proveedores_list = [row["proveedores"] for row in data if row["proveedores"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de proveedores: {e}")
     proveedores_list = []
@@ -78,15 +86,21 @@ proveedor_seleccionado = st.selectbox(
 
 # Input de nuevo proveedor
 nuevo_proveedor = st.text_input(
-    "¿Proveedor no está en la lista? Escriba nuevo proveedor",
+    "¿Proveedor no está en la lista? Escriba nuevo proveedor. De lo contrario dejar sección en blanco",
     placeholder="Nombre del nuevo proveedor")
 
 # Decidir qué valor usar
 proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
 
+# Agrega nuevo proveedor a la lista
+if nuevo_proveedor and nuevo_proveedor.strip() not in proveedores_list:
+    proveedores_sheet.append_row(["", nuevo_proveedor.strip()])       # ⚠️ El primer valor "" es para dejar la columna index vacía, en caso de querer llenarla luego manualmente o con otra función.
+
+# TODO: Generar indices ("Id") en cada hoja del google sheet
+
 # N° Folio boleta/factura
 numero_folio = st.number_input(
-    "Número de Folio",
+    "Número de Folio de Boleta/Factura",
     min_value=None,
     step=1,
     format="%d",
@@ -96,7 +110,7 @@ numero_folio = st.number_input(
 # Fecha del Gasto
     # Fecha en la que se efectuó el gasto/compra/costo
 fecha_gasto = st.date_input(
-    "Fecha del Gasto",
+    "Fecha del Gasto o Compra",
     value="today",
     format="DD/MM/YYYY"
 )
@@ -119,7 +133,7 @@ fecha_vencimiento = st.date_input(
 if st.button("Guardar Registro"):
     try:
         # Intentar guardar los datos en la hoja
-        sheet.append_row([descripcion, monto, item, proveedores, numero_folio, fecha_gasto, fecha_emision, fecha_vencimiento])
+        sheet.append_row([descripcion, monto, item, proveedor_final, numero_folio, fecha_gasto, fecha_emision, fecha_vencimiento])
         st.success("¡Registro guardado con éxito!")
     except Exception as e:
         st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
