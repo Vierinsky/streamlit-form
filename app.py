@@ -49,7 +49,7 @@ monto_raw = st.number_input(
 # Formateo visual con separador de miles (solo display opcional)
 monto_formateado = f"{monto_raw:,}".replace(",", ".")  # convierte 10000 → "10.000"
 
-st.write(f"Monto ingresado: {monto_formateado}")
+st.write(f"Monto ingresado: ${monto_formateado}")
 
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems
