@@ -160,7 +160,8 @@ if st.button("Guardar Registro"):
                 # Se convierte elementos tipo date a str para que gspread pueda manejarlos
                 fecha_gasto.strftime("%d/%m/%Y"),
                 fecha_emision.strftime("%d/%m/%Y"),
-                fecha_vencimiento.strftime("%d/%m/%Y")
+                fecha_vencimiento.strftime("%d/%m/%Y"),
+                comentario
             ])
             st.success("¡Registro guardado con éxito!")
         except Exception as e:
