@@ -38,12 +38,18 @@ descripcion = st.text_input(
     "Descripción del Gasto", 
     placeholder='Descripción breve del gasto. Ej: "Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L".')
 
-# Monto del Gasto
-monto = st.number_input(
+# Monto del Gasto - solo enteros con separador de miles
+monto_raw = st.number_input(
     "Monto del Gasto/Compra", 
-    min_value=0.0, 
-    # format="%.2f", 
-    step=1.0)
+    min_value=0, 
+    step=1,
+    format="%d"
+)
+
+# Formateo visual con separador de miles (solo display opcional)
+monto_formateado = f"{monto_raw:,}".replace(",", ".")  # convierte 10000 → "10.000"
+
+st.write(f"Monto ingresado: {monto_formateado}")
 
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems
