@@ -18,9 +18,7 @@ try:
     service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
     credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
     client = gspread.authorize(credentials)
-    with st.empty():
-        st.write("✅ Conexión autenticada exitosamente con Google Sheets")
-        time.sleep(5)  # El mensaje se mostrará por 5 segundos
+    st.write("✅ Conexión autenticada exitosamente con Google Sheets")
 except Exception as e:
     st.error(f"❌ Error en la autenticación con Google Sheets: {e}")
 
@@ -30,9 +28,8 @@ try:
     # sheet = client.open(SHEET_NAME).sheet1
     spreadsheet = client.open(SHEET_NAME)
     sheet = spreadsheet.get_worksheet(0) # Abre la primera hoja por índice en vez de por nombre
-    with st.empty():
-        st.write(f"✅ Hoja de Google Sheets '{SHEET_NAME}' abierta exitosamente")
-        time.sleep(5)  # El mensaje se mostrará por 5 segundos
+    st.write(f"✅ Hoja de Google Sheets '{SHEET_NAME}' abierta exitosamente")
+
 
 except Exception as e:
     st.error(f"❌ Error al abrir la hoja de Google Sheets: {e}")
