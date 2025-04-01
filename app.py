@@ -154,6 +154,8 @@ if st.button("Guardar Registro"):
         errores.append("Debe seleccionar un ítem.")
     if not proveedor_final:
         errores.append("Debe seleccionar o ingresar un proveedor.")
+    if numero_folio < 0:
+        errores.append("N° de folio debe ser un número positivo")
 
     if errores:
         for err in errores:
