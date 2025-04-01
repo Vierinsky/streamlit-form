@@ -3,7 +3,6 @@ from google.oauth2.service_account import Credentials
 import json
 import os
 import streamlit as st
-import time
 
 
 # Configuración de autenticación con Google Sheets usando google-auth
@@ -34,7 +33,7 @@ try:
 except Exception as e:
     st.error(f"❌ Error al abrir la hoja de Google Sheets: {e}")
 
-# Estructura del Formulario
+# Título del Formulario
 st.title("Formulario de Registro de Costos")
 
 # Descripción Gasto
@@ -128,9 +127,34 @@ fecha_vencimiento = st.date_input(
 )
 
 if st.button("Guardar Registro"):
-    try:
-        # Intentar guardar los datos en la hoja
-        sheet.append_row([descripcion, monto, item, proveedor_final, numero_folio, fecha_gasto, fecha_emision, fecha_vencimiento])
-        st.success("¡Registro guardado con éxito!")
-    except Exception as e:
-        st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
+    # Primero validamos que los campos Descripción Gasto, Monto del Gasto, Ítem y Proveedor no estén vacíos
+    errores = []
+
+    if not descripcion.strip():
+        errores.append("La descripción del gasto es obligatoria.")
+    if monto == 0:
+        errores.append("El monto debe ser mayor que cero.")
+    if not item:
+        errores.append("Debe seleccionar un ítem.")
+    if not proveedor_final:
+        errores.append("Debe seleccionar o ingresar un proveedor.")
+
+    if errores:
+        for err in errores:
+            st.warning(err)
+    else:
+        # Si todo está en orden se procede a agregar los datos a la planilla
+        try:
+            sheet.append_row([
+                descripcion,
+                monto,
+                item,
+                proveedor_final,
+                numero_folio,
+                fecha_gasto,
+                fecha_emision,
+                fecha_vencimiento
+            ])
+            st.success("¡Registro guardado con éxito!")
+        except Exception as e:
+            st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
