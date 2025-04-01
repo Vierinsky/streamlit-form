@@ -42,7 +42,7 @@ descripcion = st.text_input(
 monto = st.number_input(
     "Monto del Gasto/Compra", 
     min_value=0.0, 
-    format="%.2f", 
+    # format="%.2f", 
     step=1.0)
 
 # Item/Cultivo/Centro de costos del gasto
