@@ -11,27 +11,26 @@ SCOPE = [
     "https://www.googleapis.com/auth/drive"
 ]
 
+# Intentar abrir la hoja de Google Sheets
+SHEET_NAME = "prueba_streamlit"
+
 # Autenticación y conexión con Google Sheets
 try:
-    # Leer las credenciales desde secrets (Streamlit Cloud)
     service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
     credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
     client = gspread.authorize(credentials)
-    st.write("✅ Conexión autenticada exitosamente con Google Sheets")
-except Exception as e:
-    st.error(f"❌ Error en la autenticación con Google Sheets: {e}")
 
-# Intentar abrir la hoja de Google Sheets
-SHEET_NAME = "prueba_streamlit"
-try:
-    # sheet = client.open(SHEET_NAME).sheet1
     spreadsheet = client.open(SHEET_NAME)
-    sheet = spreadsheet.get_worksheet(0) # Abre la primera hoja por índice en vez de por nombre
-    st.write(f"✅ Hoja de Google Sheets '{SHEET_NAME}' abierta exitosamente")
+    sheet = spreadsheet.get_worksheet(0)
 
+    # ✅ Mostrar estado en expander discreto
+    with st.expander("🔧 Estado de conexión (click para ver)", expanded=False):
+        st.success("✅ Conexión autenticada exitosamente con Google Sheets")
+        st.success(f"✅ Hoja de Google Sheets '{SHEET_NAME}' abierta exitosamente")
 
 except Exception as e:
-    st.error(f"❌ Error al abrir la hoja de Google Sheets: {e}")
+    st.error(f"❌ Error de conexión con Google Sheets: {e}")
+
 
 # Título del Formulario
 st.title("Formulario de Registro de Costos")
