@@ -126,6 +126,12 @@ fecha_vencimiento = st.date_input(
     format="DD/MM/YYYY"
 )
 
+# Comentario opcional del usuario
+comentario = st.text_area(
+    "Comentario (opcional)", 
+    placeholder="Agregue una nota o comentario sobre este gasto"
+)
+
 if st.button("Guardar Registro"):
     # Primero validamos que los campos Descripción Gasto, Monto del Gasto, Ítem y Proveedor no estén vacíos
     errores = []
