@@ -1,3 +1,4 @@
+from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
 import json
@@ -12,16 +13,16 @@ SCOPE = [
 ]
 
 # Intentar abrir la hoja de Google Sheets
-SHEET_NAME = "prueba_streamlit"
+SHEET_NAME = "prueba_streamlit"             # ⚠️Modificar en producción⚠️
 
 # Autenticación y conexión con Google Sheets
 try:
-    service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
+    service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])             # ⚠️Modificar en producción⚠️
     credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
     client = gspread.authorize(credentials)
 
     spreadsheet = client.open(SHEET_NAME)
-    sheet = spreadsheet.get_worksheet(0)
+    sheet = spreadsheet.worksheet("costos")
 
     # ✅ Mostrar estado en expander discreto
     with st.expander("🔧 Estado de conexión (click para ver)", expanded=False):
@@ -40,16 +41,19 @@ descripcion = st.text_input(
     "Descripción del Gasto", 
     placeholder='Descripción breve del gasto. Ej: "Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L".')
 
-# Monto del Gasto - solo enteros con separador de miles
-monto = st.number_input(
-    "Monto del Gasto/Compra", 
+# Valor bruto del Gasto - solo valores tipo int
+valor_bruto = st.number_input(
+    "Valor Bruto del Gasto/Compra (IVA incluido)", 
     min_value=0, 
     step=1,
     format="%d"
 )
 
+iva = valor_bruto * 0.19
+valor_neto = valor_bruto - iva
+
 # Formateo visual con separador de miles (solo display opcional)
-monto_formateado = f"{monto:,}".replace(",", ".")  # convierte 10000 → "10.000"
+monto_formateado = f"{valor_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
 
 st.write(f"Monto ingresado: ${monto_formateado}")
 
@@ -94,9 +98,11 @@ nuevo_proveedor = st.text_input(
 # Decidir qué valor usar
 proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
 
-# Agrega nuevo proveedor a la lista
-if nuevo_proveedor and nuevo_proveedor.strip() not in proveedores_list:
-    proveedores_sheet.append_row(["", nuevo_proveedor.strip()])       # ⚠️ El primer valor "" es para dejar la columna index vacía, en caso de querer llenarla luego manualmente o con otra función.
+# Agrega nuevo proveedor a la lista y le genera un id
+if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
+    num_filas_proveedores = len(proveedores_sheet.get_all_values())
+    nuevo_id_proveedor = num_filas_proveedores  # Asumiendo que fila 1 es encabezado
+    proveedores_sheet.append_row([nuevo_id_proveedor, nuevo_proveedor.strip()])
 
 # TODO: Generar indices ("Id") en cada hoja del google sheet
 
@@ -141,14 +147,15 @@ comentario = st.text_area(
     placeholder="Agregue una nota o comentario sobre este gasto"
 )
 
+# Botón de guardar registro
 if st.button("Guardar Registro"):
-    # Primero validamos que los campos Descripción Gasto, Monto del Gasto, Ítem y Proveedor no estén vacíos
+    # Primero validamos que los campos Descripción Gasto, Valor Bruto del Gasto, Ítem y Proveedor no estén vacíos
     errores = []
 
     if not descripcion.strip():
         errores.append("La descripción del gasto es obligatoria.")
-    if monto == 0:
-        errores.append("El monto debe ser mayor que cero.")
+    if valor_bruto == 0:
+        errores.append("El valor bruto debe ser mayor que cero.")
     if not item:
         errores.append("Debe seleccionar un ítem.")
     if not proveedor_final:
@@ -162,18 +169,38 @@ if st.button("Guardar Registro"):
     else:
         # Si todo está en orden se procede a agregar los datos a la planilla
         try:
-            sheet.append_row([
-                descripcion,
-                monto,
-                item,
-                proveedor_final,
-                numero_folio,
-                # Se convierte elementos tipo date a str para que gspread pueda manejarlos
-                fecha_gasto.strftime("%d/%m/%Y"),
-                fecha_emision.strftime("%d/%m/%Y"),
-                fecha_vencimiento.strftime("%d/%m/%Y"),
-                comentario
-            ])
+            # Obtener los encabezados (primera fila de la hoja)
+            headers = sheet.row_values(1)
+
+            # Registra la hora actual (hora de envio del formulario)
+            fecha_hora_actual = datetime.now().strftime("%d/%m/%Y %H:%M:%S")    # datetime se transforma a string
+
+            # Obtener el nuevo índice (número de fila - 1 para no contar el encabezado)
+            num_filas_existentes = len(sheet.get_all_values())
+            nuevo_index = num_filas_existentes  # Si hay encabezado, el índice empieza desde 1
+
+            # Armar diccionario con los datos usando los nombres de las columnas
+            registro = {
+                "id" : nuevo_index,
+                "fecha_envio": fecha_hora_actual,
+                "descripcion": descripcion,
+                "valor_bruto": valor_bruto,
+                "valor_neto": valor_neto,
+                "iva": iva,
+                "item": item,
+                "proveedor": proveedor_final,
+                "numero_folio": numero_folio,
+                "fecha_gasto": fecha_gasto.strftime("%d/%m/%Y"),                # datetime se transforma a string
+                "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                "fecha_vencimiento": fecha_vencimiento.strftime("%d/%m/%Y"),    # datetime se transforma a string
+                "comentarios": comentario
+            }
+
+            # Crear la fila final según el orden real de los encabezados
+            fila_final = [registro.get(col, "") for col in headers]
+
+            # Insertar la fila
+            sheet.append_row(fila_final)
             st.success("¡Registro guardado con éxito!")
 
             # Solo si se usó un nuevo proveedor y no está en la lista
