@@ -3,6 +3,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import json
 import os
+import pytz
 import streamlit as st
 
 
@@ -172,8 +173,11 @@ if st.button("Guardar Registro"):
             # Obtener los encabezados (primera fila de la hoja)
             headers = sheet.row_values(1)
 
-            # Registra la hora actual (hora de envio del formulario)
-            fecha_hora_actual = datetime.now().strftime("%d/%m/%Y %H:%M:%S")    # datetime se transforma a string
+            # Definir zona horaria de Santiago
+            zona_horaria_chile = pytz.timezone('Chile/Continental')
+
+            # Obtener la hora actual en la zona horaria de Santiago
+            fecha_hora_actual = datetime.now(zona_horaria_chile).strftime("%d/%m/%Y %H:%M:%S")    # datetime se transforma a string
 
             # Obtener el nuevo índice (número de fila - 1 para no contar el encabezado)
             num_filas_existentes = len(sheet.get_all_values())
