@@ -10,7 +10,7 @@ import streamlit as st
 st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered")
 
 # Menú de navegación lateral
-menu = st.sidebar.selectbox("Selecciona una sección", ["Formulario de Costos", "Formulario de Ingresos"])
+menu = st.sidebar.radio("Selecciona una sección", ["Costos", "Ingresos"])
 
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
