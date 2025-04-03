@@ -34,10 +34,10 @@ try:
     client = gspread.authorize(credentials)
     spreadsheet = client.open(SHEET_NAME)
 
-    # ✅ Mostrar estado en expander discreto
-    with st.expander("🔧 Estado de conexión (click para ver)", expanded=False):
-        st.success("✅ Conexión autenticada exitosamente con Google Sheets")
-        st.success(f"✅ Hoja de Google Sheets '{SHEET_NAME}' abierta exitosamente")
+    # # ✅ Mostrar estado en expander discreto
+    # with st.expander("🔧 Estado de conexión (click para ver)", expanded=False):
+    #     st.success("✅ Conexión autenticada exitosamente con Google Sheets")
+    #     st.success(f"✅ Hoja de Google Sheets '{SHEET_NAME}' abierta exitosamente")
 
     # Guardar en sesión para que esté accesible en otras páginas
     st.session_state["spreadsheet"] = spreadsheet
