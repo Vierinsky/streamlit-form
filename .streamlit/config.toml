@@ -17,3 +17,6 @@ toolbarMode = "minimal"
 
 [pages]
 app = "Inicio"
+
+[ui]
+pageTitle = "Registro de Costos e Ingresos"
