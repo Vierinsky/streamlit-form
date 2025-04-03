@@ -12,11 +12,11 @@ st.subheader("Selecciona una opción para comenzar:")
 
 # Botón para ir a Formulario de Costos
 if st.button("Ir a Formulario de Costos"):
-    st.switch_page("pages/1_Formulario_Costos.py")
+    st.switch_page("pages/1 Formulario de Costos.py")
 
 # Botón para ir a Formulario de Ingresos
 if st.button("Ir a Formulario de Ingresos"):
-    st.switch_page("pages/2_Formulario_Ingresos.py")
+    st.switch_page("pages/2 Formulario de Ingresos.py")
 
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
