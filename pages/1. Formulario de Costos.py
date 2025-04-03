@@ -121,6 +121,10 @@ comentario = st.text_area(
 
 # Botón de guardar registro
 
+# Inicializar estado si no existe
+if "registro_guardado" not in st.session_state:
+    st.session_state["registro_guardado"] = False
+
 if st.button("Guardar Registro"):
     # Primero validamos que los campos Descripción Gasto, Valor Bruto del Gasto, Ítem y Proveedor no estén vacíos
     errores = []
@@ -172,10 +176,11 @@ else:
 
         # Crear la fila final según el orden real de los encabezados
         fila_final = [registro.get(col, "") for col in headers]
-
         # Insertar la fila
         sheet.append_row(fila_final)
-        st.success("¡Registro guardado con éxito!")
+        st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
+
+        # st.success("¡Registro guardado con éxito!")
 
         # Solo si se usó un nuevo proveedor y no está en la lista
         if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
@@ -183,3 +188,9 @@ else:
 
     except Exception as e:
         st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
+        st.session_state["registro_guardado"] = False  # Resetear si falló
+
+# Mostrar éxito si fue guardado
+if st.session_state.get("registro_guardado"):
+    st.success("¡Registro guardado con éxito!")
+    st.session_state["registro_guardado"] = False  # Limpiar para no mostrarlo siempre
