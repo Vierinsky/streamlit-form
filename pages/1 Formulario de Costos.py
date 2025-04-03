@@ -144,53 +144,53 @@ if st.button("Guardar Registro"):
         for err in errores:
             st.warning(err)
 
-else:
-    # Si todo está en orden se procede a agregar los datos a la planilla
-    try:
-        # Obtener los encabezados (primera fila de la hoja)
-        headers = sheet.row_values(1)
-        # Definir zona horaria de Santiago
-        zona_horaria_chile = pytz.timezone('Chile/Continental')
-        # Obtener la hora actual en la zona horaria de Santiago
-        fecha_hora_actual = datetime.now(zona_horaria_chile).strftime("%d/%m/%Y %H:%M:%S")    # datetime se transforma a string
-        # Obtener el nuevo índice (número de fila - 1 para no contar el encabezado)
-        num_filas_existentes = len(sheet.get_all_values())
-        nuevo_index = num_filas_existentes  # Si hay encabezado, el índice empieza desde 1
+    else:
+        # Si todo está en orden se procede a agregar los datos a la planilla
+        try:
+            # Obtener los encabezados (primera fila de la hoja)
+            headers = sheet.row_values(1)
+            # Definir zona horaria de Santiago
+            zona_horaria_chile = pytz.timezone('Chile/Continental')
+            # Obtener la hora actual en la zona horaria de Santiago
+            fecha_hora_actual = datetime.now(zona_horaria_chile).strftime("%d/%m/%Y %H:%M:%S")    # datetime se transforma a string
+            # Obtener el nuevo índice (número de fila - 1 para no contar el encabezado)
+            num_filas_existentes = len(sheet.get_all_values())
+            nuevo_index = num_filas_existentes  # Si hay encabezado, el índice empieza desde 1
 
-        # Armar diccionario con los datos usando los nombres de las columnas
-        registro = {
-            "id" : nuevo_index,
-            "fecha_envio": fecha_hora_actual,
-            "descripcion": descripcion,
-            "valor_bruto": valor_bruto,
-            "valor_neto": valor_neto,
-            "iva": iva,
-            "item": item,
-            "proveedor": proveedor_final,
-            "numero_folio": numero_folio,
-            "fecha_gasto": fecha_gasto.strftime("%d/%m/%Y"),                # datetime se transforma a string
-            "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
-            "fecha_vencimiento": fecha_vencimiento.strftime("%d/%m/%Y"),    # datetime se transforma a string
-            "comentarios": comentario
-        }
+            # Armar diccionario con los datos usando los nombres de las columnas
+            registro = {
+                "id" : nuevo_index,
+                "fecha_envio": fecha_hora_actual,
+                "descripcion": descripcion,
+                "valor_bruto": valor_bruto,
+                "valor_neto": valor_neto,
+                "iva": iva,
+                "item": item,
+                "proveedor": proveedor_final,
+                "numero_folio": numero_folio,
+                "fecha_gasto": fecha_gasto.strftime("%d/%m/%Y"),                # datetime se transforma a string
+                "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                "fecha_vencimiento": fecha_vencimiento.strftime("%d/%m/%Y"),    # datetime se transforma a string
+                "comentarios": comentario
+            }
 
-        # Crear la fila final según el orden real de los encabezados
-        fila_final = [registro.get(col, "") for col in headers]
-        # Insertar la fila
-        sheet.append_row(fila_final)
-        st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
+            # Crear la fila final según el orden real de los encabezados
+            fila_final = [registro.get(col, "") for col in headers]
+            # Insertar la fila
+            sheet.append_row(fila_final)
+            st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
 
-        # st.success("¡Registro guardado con éxito!")
+            # st.success("¡Registro guardado con éxito!")
 
-        # Solo si se usó un nuevo proveedor y no está en la lista
-        if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
-            proveedores_sheet.append_row(["", nuevo_proveedor.strip()])
+            # Solo si se usó un nuevo proveedor y no está en la lista
+            if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
+                proveedores_sheet.append_row(["", nuevo_proveedor.strip()])
 
-    except Exception as e:
-        st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
-        st.session_state["registro_guardado"] = False  # Resetear si falló
+        except Exception as e:
+            st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
+            st.session_state["registro_guardado"] = False  # Resetear si falló
 
-# Mostrar éxito si fue guardado
-if st.session_state.get("registro_guardado"):
-    st.success("¡Registro guardado con éxito!")
-    st.session_state["registro_guardado"] = False  # Limpiar para no mostrarlo siempre
+    # Mostrar éxito si fue guardado
+    if st.session_state.get("registro_guardado"):
+        st.success("¡Registro guardado con éxito!")
+        st.session_state["registro_guardado"] = False  # Limpiar para no mostrarlo siempre
