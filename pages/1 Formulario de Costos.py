@@ -16,7 +16,7 @@ sheet = spreadsheet.worksheet("costos")
 # Descripción Gasto
 descripcion = st.text_input(
     "Descripción del Gasto", 
-    placeholder='Descripción breve del gasto. Ej: "Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L".')
+    placeholder='"Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L"')
 
 # Valor bruto del Gasto - solo valores tipo int
 valor_bruto = st.number_input(
@@ -39,7 +39,7 @@ item = st.selectbox(
     "Ítem", 
     ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], 
     index=None, 
-    placeholder="Seleccione ítem o centro de costos del gasto")
+    placeholder="Seleccione ítem o centro de costos")
 
 # Proveedores
 try:
@@ -116,7 +116,7 @@ fecha_vencimiento = st.date_input(
 # Comentario opcional del usuario
 comentario = st.text_area(
     "Comentario (opcional)", 
-    placeholder="Agregue una nota o comentario sobre este gasto"
+    placeholder="Agregue una nota o comentario"
 )
 
 # Botón de guardar registro

@@ -14,3 +14,6 @@ font = "sans serif"
 
 [client]
 toolbarMode = "minimal"
+
+[pages]
+defaultPage = "Formulario de Costos"
