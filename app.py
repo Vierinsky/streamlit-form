@@ -9,8 +9,17 @@ import streamlit as st
 # Agrega al inicio del archivo:
 st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered")
 
-# Menú de navegación lateral
-menu = st.sidebar.selectbox("Selecciona una sección", ["Formulario de Costos", "Formulario de Ingresos"])
+# Configurar navegación por botones en la barra lateral
+with st.sidebar:
+    st.markdown("### Menú")
+    if st.button("Formulario de Costos"):
+        st.session_state.seccion = "costos"
+    if st.button("Formulario de Ingresos"):
+        st.session_state.seccion = "ingresos"
+
+# Establecer valor por defecto si no hay selección
+if "seccion" not in st.session_state:
+    st.session_state.seccion = "costos"
 
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
@@ -39,7 +48,7 @@ except Exception as e:
     st.error(f"❌ Error de conexión con Google Sheets: {e}")
 
 # Verifica qué sección está seleccionada
-if menu == "Formulario de Costos":
+if st.session_state.seccion == "costos":
     
     # Título del Formulario
     st.title("Formulario de Registro de Costos")
@@ -220,7 +229,8 @@ if menu == "Formulario de Costos":
 
             except Exception as e:
                 st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
-    elif menu == "Formulario de Ingresos":
+                
+    elif st.session_state.seccion == "ingresos":
         st.title("Formulario de Registro de Ingresos")
 
         # Ejemplo de estructura básica para ingresos
