@@ -255,7 +255,7 @@ if st.session_state.seccion == "costos":
                     "id": nuevo_index,
                     "fecha_envio": fecha_hora_actual,
                     "descripcion": descripcion_ingreso,
-                    "monto": monto_ingreso,
+                    "monto": monto_ingreso,                                 # Considerar IVA, valor neto y/o bruto.
                     "fecha_ingreso": fecha_ingreso.strftime("%d/%m/%Y"),
                     "comentarios": comentario_ingreso
                 }
