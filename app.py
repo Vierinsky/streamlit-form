@@ -8,6 +8,8 @@ import streamlit as st
 
 st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered")
 
+st.title("Bienvenido al Sistema de Registro")
+
 # # Configurar navegación por botones en la barra lateral
 # with st.sidebar:
 #     st.markdown("## Menú de Navegación")
