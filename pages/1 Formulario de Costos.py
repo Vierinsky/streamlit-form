@@ -16,7 +16,7 @@ sheet = spreadsheet.worksheet("costos")
 # Descripción Gasto
 descripcion = st.text_input(
     "Descripción del Gasto", 
-    placeholder='"Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L"')
+    placeholder='"Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L", "Asesoria"')
 
 # Valor bruto del Gasto - solo valores tipo int
 valor_bruto = st.number_input(
