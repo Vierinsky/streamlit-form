@@ -6,11 +6,16 @@ port = 8501
 enableCORS = false
 
 [theme]
-primaryColor = "#4CAF50"
-backgroundColor = "#F5F5F5"
-secondaryBackgroundColor = "#E0E0E0"
-textColor = "#000000"
-font = "sans serif"
+primaryColor = "#2E7D32"             # Verde bosque
+backgroundColor = "#F1F8E9"          # Verde muy claro
+secondaryBackgroundColor = "#DCEDC8" # Verde claro para paneles
+textColor = "#1B5E20"                # Verde oscuro para contraste
+
+# primaryColor = "#4CAF50"
+# backgroundColor = "#F5F5F5"
+# secondaryBackgroundColor = "#E0E0E0"
+# textColor = "#000000"
+# font = "sans serif"
 
 [client]
 toolbarMode = "minimal"
