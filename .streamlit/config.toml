@@ -16,4 +16,5 @@ font = "sans serif"
 toolbarMode = "minimal"
 
 [pages]
-defaultPage = "Formulario de Costos"
+app = "Inicio"
+defaultPage = "1 Formulario de Costos"
