@@ -42,5 +42,12 @@ try:
     # Guardar en sesión para que esté accesible en otras páginas
     st.session_state["spreadsheet"] = spreadsheet
 
+    # Mostrar estado en la barra lateral
+    with st.sidebar:
+        with st.expander("🔧 Estado de conexión", expanded=False):
+            st.success("✅ Conexión con Google Sheets exitosa")
+            st.success(f"✅ Hoja activa: '{SHEET_NAME}'")
+
 except Exception as e:
-    st.error(f"❌ Error de conexión con Google Sheets: {e}")
+    st.sidebar.error("❌ Falló la conexión con Google Sheets")
+    st.stop()
