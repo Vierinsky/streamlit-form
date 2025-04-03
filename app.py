@@ -242,26 +242,26 @@ if st.session_state.seccion == "costos":
 
         if st.button("Guardar Ingreso"):
             try:
-                # ingresos_sheet = spreadsheet.worksheet("ingresos")  # asegúrate de tener esta hoja en tu Google Sheet
-                # headers = ingresos_sheet.row_values(1)
+                ingresos_sheet = spreadsheet.worksheet("ingresos")  # asegúrate de tener esta hoja en tu Google Sheet
+                headers = ingresos_sheet.row_values(1)
 
-                # zona_horaria_chile = pytz.timezone('Chile/Continental')
-                # fecha_hora_actual = datetime.now(zona_horaria_chile).strftime("%d/%m/%Y %H:%M:%S")
+                zona_horaria_chile = pytz.timezone('Chile/Continental')
+                fecha_hora_actual = datetime.now(zona_horaria_chile).strftime("%d/%m/%Y %H:%M:%S")
 
-                # num_filas = len(ingresos_sheet.get_all_values())
-                # nuevo_index = num_filas
+                num_filas = len(ingresos_sheet.get_all_values())
+                nuevo_index = num_filas
 
-                # registro_ingreso = {
-                #     "id": nuevo_index,
-                #     "fecha_envio": fecha_hora_actual,
-                #     "descripcion": descripcion_ingreso,
-                #     "monto": monto_ingreso,
-                #     "fecha_ingreso": fecha_ingreso.strftime("%d/%m/%Y"),
-                #     "comentarios": comentario_ingreso
-                # }
+                registro_ingreso = {
+                    "id": nuevo_index,
+                    "fecha_envio": fecha_hora_actual,
+                    "descripcion": descripcion_ingreso,
+                    "monto": monto_ingreso,
+                    "fecha_ingreso": fecha_ingreso.strftime("%d/%m/%Y"),
+                    "comentarios": comentario_ingreso
+                }
 
-                # fila_final = [registro_ingreso.get(col, "") for col in headers]
-                # ingresos_sheet.append_row(fila_final)
+                fila_final = [registro_ingreso.get(col, "") for col in headers]
+                ingresos_sheet.append_row(fila_final)
                 st.success("¡Ingreso guardado con éxito!")
 
             except Exception as e:
