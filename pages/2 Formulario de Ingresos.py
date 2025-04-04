@@ -27,6 +27,9 @@ valor_bruto = st.number_input("Valor Bruto del Ingreso", min_value=0, step=1, fo
 valor_neto  = valor_bruto * 0.19
 iva = valor_bruto - valor_neto
 
+# Formateo visual con separador de miles (solo display opcional)
+monto_formateado = f"{valor_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
+st.write(f"Monto ingresado: ${monto_formateado}")
 
 # item
 st.divider()
