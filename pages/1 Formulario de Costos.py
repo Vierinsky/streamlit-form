@@ -36,6 +36,8 @@ valor_neto = valor_bruto - iva
 monto_formateado = f"{valor_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
 st.write(f"Monto ingresado: ${monto_formateado}")
 
+st.divider()
+
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems (?)
 item = st.selectbox(
@@ -43,6 +45,14 @@ item = st.selectbox(
     ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], 
     index=None, 
     placeholder="Seleccione ítem o centro de costos")
+
+# Tipo servicio (Petróleo, Energía, Agua, Otro)
+servicio = st.selectbox(
+    "Tipo Servicio",
+    ["Petróleo", "Energía", "Agua", "Otro"],
+    index=None,
+    placeholder="Seleccione tipo de servicio"
+)
 
 st.divider()
 
