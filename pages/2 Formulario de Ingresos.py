@@ -22,7 +22,7 @@ monto = st.number_input("Monto del Ingreso", min_value=0, step=1, format="%d")
 fecha_ingreso = st.date_input("Fecha del Ingreso")
 comentario = st.text_area("Comentario (opcional)", placeholder="Notas adicionales")
 
-if st.button("Guardar Ingreso"):
+if st.button("Guardar Registro"):
     if not descripcion.strip():
         st.warning("La descripción es obligatoria.")
     elif monto <= 0:
