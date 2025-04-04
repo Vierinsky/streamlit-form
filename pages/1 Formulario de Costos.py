@@ -216,11 +216,13 @@ if st.button("Guardar Registro"):
 
             # ✅ Marcar éxito y refrescar
             st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
-            st.rerun()
 
             # Solo si se usó un nuevo proveedor y no está en la lista
             if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
                 proveedores_sheet.append_row(["", nuevo_proveedor.strip()])
+
+            # 🔄 Refrescar la app
+            st.rerun()
 
         except Exception as e:
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
