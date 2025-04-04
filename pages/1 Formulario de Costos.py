@@ -12,6 +12,13 @@ if not spreadsheet:
 # Obtener la hoja de costos
 sheet = spreadsheet.worksheet("costos")
 
+
+# ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
+if st.session_state.get("registro_guardado"):
+    st.toast("✅ Registro guardado con éxito", icon="✅")
+    st.session_state["registro_guardado"] = False
+
+
 # Inputs
 
 st.divider()
@@ -208,9 +215,10 @@ if st.button("Guardar Registro"):
             fila_final = [registro.get(col, "") for col in headers]
             # Insertar la fila
             sheet.append_row(fila_final)
-            st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
 
-            # st.success("¡Registro guardado con éxito!")
+            # ✅ Marcar éxito y refrescar
+            st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
+            st.experimental_rerun()
 
             # Solo si se usó un nuevo proveedor y no está en la lista
             if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
