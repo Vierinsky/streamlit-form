@@ -13,6 +13,9 @@ if not spreadsheet:
 sheet = spreadsheet.worksheet("costos")
 
 # Inputs
+
+st.divider()
+
 # Descripción Gasto
 descripcion = st.text_input(
     "Descripción del Gasto", 
@@ -40,6 +43,8 @@ item = st.selectbox(
     ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], 
     index=None, 
     placeholder="Seleccione ítem o centro de costos")
+
+st.divider()
 
 # Proveedores
 try:
@@ -81,6 +86,8 @@ if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.st
 # Priorizar proveedor seleccionado
 proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_proveedor.strip()
 
+st.divider()
+
 # N° Folio boleta/factura
 numero_folio = st.number_input(
     "Número de Folio de Boleta/Factura",
@@ -113,6 +120,8 @@ fecha_vencimiento = st.date_input(
     format="DD/MM/YYYY"
 )
 
+st.divider()
+
 # Comentario opcional del usuario
 comentario = st.text_area(
     "Comentario (opcional)", 
@@ -138,7 +147,7 @@ if st.button("Guardar Registro"):
     if not proveedor_final:
         errores.append("Debe seleccionar o ingresar un proveedor.")
     if numero_folio < 0:
-        errores.append("N° de folio debe ser un número positivo")
+        errores.append("N° de folio debe ser un número positivo.")
 
     if errores:
         for err in errores:
