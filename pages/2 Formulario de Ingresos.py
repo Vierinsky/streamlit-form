@@ -16,6 +16,10 @@ except Exception as e:
     st.error(f"❌ No se pudo abrir la hoja 'ingresos': {e}")
     st.stop()
 
+# ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
+if st.session_state.get("registro_guardado"):
+    st.toast("Registro guardado con éxito", icon="✅")
+    st.session_state["registro_guardado"] = False
 
 
 # Inputs
@@ -87,24 +91,34 @@ if st.button("Guardar Registro"):
         st.warning("El valor bruto debe ser mayor a 0.")
     # Agregar más a medida que aumenten las columnas/campos.
     else:
-        headers = ingresos_sheet.row_values(1)
-        zona_horaria = pytz.timezone('Chile/Continental')
-        fecha_envio = datetime.now(zona_horaria).strftime("%d/%m/%Y %H:%M:%S")
-        nuevo_id = len(ingresos_sheet.get_all_values())
+        try:
+            headers = ingresos_sheet.row_values(1)
+            zona_horaria = pytz.timezone('Chile/Continental')
+            fecha_envio = datetime.now(zona_horaria).strftime("%d/%m/%Y %H:%M:%S")
+            nuevo_id = len(ingresos_sheet.get_all_values())
 
-        registro = {
-            "id": nuevo_id,
-            "fecha_envio": fecha_envio,
-            "descripcion": descripcion,
-            "valor_bruto": valor_bruto,
-            "valor_neto" : valor_neto,
-            "iva" : iva,
-            "item" : item,
-            "cliente" : cliente_seleccionado,
-            "fecha_ingreso": fecha_ingreso.strftime("%d/%m/%Y"),
-            "comentarios": comentario
-        }
+            registro = {
+                "id": nuevo_id,
+                "fecha_envio": fecha_envio,
+                "descripcion": descripcion,
+                "valor_bruto": valor_bruto,
+                "valor_neto" : valor_neto,
+                "iva" : iva,
+                "item" : item,
+                "cliente" : cliente_seleccionado,
+                "fecha_ingreso": fecha_ingreso.strftime("%d/%m/%Y"),
+                "comentarios": comentario
+            }
 
-        fila_final = [registro.get(col, "") for col in headers]
-        ingresos_sheet.append_row(fila_final)
-        st.success("✅ Ingreso guardado con éxito")
+            fila_final = [registro.get(col, "") for col in headers]
+            ingresos_sheet.append_row(fila_final)
+            
+            # ✅ Marcar éxito y refrescar
+            st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
+            
+            # 🔄 Refrescar la app
+            st.rerun()
+
+        except Exception as e:
+            st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
+            st.session_state["registro_guardado"] = False  # Resetear si falló
