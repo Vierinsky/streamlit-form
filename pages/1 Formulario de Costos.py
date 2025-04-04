@@ -49,9 +49,18 @@ st.subheader("Tipo de Costo")
 
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems (?)
+try:
+    # Obtener lista dinámica de items desde la hoja 'items'
+    items_sheet = spreadsheet.worksheet("items")
+    data = items_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    item_list = [row["item"] for row in data if row["item"].strip()]
+except Exception as e:
+    st.error(f"❌ Error al cargar la lista de items: {e}")
+    item_list = []
+
 item = st.selectbox(
     "Ítem", 
-    ['Aseo y Ornato', 'Campo General', 'Choclo', 'Frambuesas', 'Papas', 'Pasto', 'Peonías'], 
+    item_list,
     index=None, 
     placeholder="Seleccione ítem o centro de costos")
 
@@ -72,7 +81,7 @@ try:
     # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
     proveedores_sheet = spreadsheet.worksheet("proveedores")
     data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    proveedores_list = [row["proveedores"] for row in data if row["proveedores"].strip()]
+    proveedores_list = [row["proveedor"] for row in data if row["proveedor"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de proveedores: {e}")
     proveedores_list = []
@@ -194,7 +203,7 @@ if st.button("Guardar Registro"):
             # Armar diccionario con los datos usando los nombres de las columnas
             registro = {
                 "id" : nuevo_index,
-                "fecha_envio": fecha_hora_actual,
+                "fecha_envio_form": fecha_hora_actual,
                 "descripcion": descripcion,
                 "valor_bruto": valor_bruto,
                 "valor_neto": valor_neto,
