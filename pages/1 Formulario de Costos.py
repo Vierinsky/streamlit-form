@@ -15,7 +15,7 @@ sheet = spreadsheet.worksheet("costos")
 
 # ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
 if st.session_state.get("registro_guardado"):
-    st.toast("✅ Registro guardado con éxito", icon="✅")
+    st.toast("Registro guardado con éxito", icon="✅")
     st.session_state["registro_guardado"] = False
 
 
