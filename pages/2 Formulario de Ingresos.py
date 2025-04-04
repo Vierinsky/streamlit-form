@@ -16,6 +16,8 @@ except Exception as e:
     st.error(f"❌ No se pudo abrir la hoja 'ingresos': {e}")
     st.stop()
 
+
+
 # Inputs
 descripcion = st.text_input("Descripción del Ingreso")
 monto = st.number_input("Monto del Ingreso", min_value=0, step=1, format="%d")

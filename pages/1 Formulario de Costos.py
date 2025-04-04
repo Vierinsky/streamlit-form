@@ -218,7 +218,7 @@ if st.button("Guardar Registro"):
 
             # ✅ Marcar éxito y refrescar
             st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
-            st.experimental_rerun()
+            st.rerun()
 
             # Solo si se usó un nuevo proveedor y no está en la lista
             if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
