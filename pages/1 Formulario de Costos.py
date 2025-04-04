@@ -154,6 +154,8 @@ if st.button("Guardar Registro"):
         errores.append("El valor bruto debe ser mayor que cero.")
     if not item:
         errores.append("Debe seleccionar un ítem.")
+    if not servicio:
+        errores.append("Debe seleccionar un servicio.")
     if not proveedor_final:
         errores.append("Debe seleccionar o ingresar un proveedor.")
     if numero_folio < 0:
@@ -185,6 +187,7 @@ if st.button("Guardar Registro"):
                 "valor_neto": valor_neto,
                 "iva": iva,
                 "item": item,
+                "servicio": servicio,
                 "proveedor": proveedor_final,
                 "numero_folio": numero_folio,
                 "fecha_gasto": fecha_gasto.strftime("%d/%m/%Y"),                # datetime se transforma a string
