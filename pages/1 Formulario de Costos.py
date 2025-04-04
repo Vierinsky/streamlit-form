@@ -16,7 +16,7 @@ sheet = spreadsheet.worksheet("costos")
 
 st.divider()
 
-st.subheader("Infromación general")
+st.subheader("Infromación General")
 
 # Descripción Gasto
 descripcion = st.text_input(
@@ -104,7 +104,7 @@ proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_pr
 
 st.divider()
 
-st.subheader("Boleta o factura")
+st.subheader("Información Boleta/factura")
 
 # N° Folio boleta/factura
 numero_folio = st.number_input(
