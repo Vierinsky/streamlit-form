@@ -228,7 +228,7 @@ if st.button("Guardar Registro"):
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
             st.session_state["registro_guardado"] = False  # Resetear si falló
 
-    # Mostrar éxito si fue guardado
-    if st.session_state.get("registro_guardado"):
-        st.success("¡Registro guardado con éxito!")
-        st.session_state["registro_guardado"] = False  # Limpiar para no mostrarlo siempre
+    # # Mostrar éxito si fue guardado
+    # if st.session_state.get("registro_guardado"):
+    #     st.success("¡Registro guardado con éxito!")
+    #     st.session_state["registro_guardado"] = False  # Limpiar para no mostrarlo siempre
