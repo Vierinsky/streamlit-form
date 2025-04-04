@@ -16,6 +16,8 @@ sheet = spreadsheet.worksheet("costos")
 
 st.divider()
 
+st.subheader("Infromación general")
+
 # Descripción Gasto
 descripcion = st.text_input(
     "Descripción del Gasto", 
@@ -38,6 +40,8 @@ st.write(f"Monto ingresado: ${monto_formateado}")
 
 st.divider()
 
+st.subheader("Tipo de Costo")
+
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems (?)
 item = st.selectbox(
@@ -55,6 +59,8 @@ servicio = st.selectbox(
 )
 
 st.divider()
+
+st.subheader("Proveedores")
 
 # Proveedores
 try:
@@ -97,6 +103,8 @@ if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.st
 proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_proveedor.strip()
 
 st.divider()
+
+st.subheader("Boleta o factura")
 
 # N° Folio boleta/factura
 numero_folio = st.number_input(
