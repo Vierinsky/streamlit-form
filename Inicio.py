@@ -6,27 +6,20 @@ import streamlit as st
 
 st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered")
 
-# tab1, tab2 = st.tabs(["📊 Vista General", "🧾 Formularios"])
-
-# with tab1:
-#     # Aquí los gráficos, KPIs, tablas
-
-# with tab2:
-#     st.page_link("pages/1 Formulario de Costos.py", label="Formulario de Costos")
-#     st.page_link("pages/2 Formulario de Ingresos.py", label="Formulario de Ingresos")
-
-
 st.title("Bienvenido al Sistema de Registro")
-
 st.subheader("Selecciona una opción para comenzar:")
 
 # Botón para ir a Formulario de Costos
+if st.button("Ir a Reporte"):
+    st.switch_page("pages/1 Reporte.py")
+
+# Botón para ir a Formulario de Costos
 if st.button("Ir a Formulario de Costos"):
-    st.switch_page("pages/1 Formulario de Costos.py")
+    st.switch_page("pages/2 Formulario de Costos.py")
 
 # Botón para ir a Formulario de Ingresos
 if st.button("Ir a Formulario de Ingresos"):
-    st.switch_page("pages/2 Formulario de Ingresos.py")
+    st.switch_page("pages/3 Formulario de Ingresos.py")
 
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
