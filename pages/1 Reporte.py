@@ -43,11 +43,11 @@ st.divider()
 # Gráfico por ítem
 st.subheader("Distribución de Costos por Ítem")
 costos_por_item = df_costos.groupby("item")["valor_bruto"].sum().sort_values(ascending=False)
-st.bar_chart(costos_por_item)
+st.bar_chart(costos_por_item, color="red")
 
 st.subheader("Distribución de Ingresos por Ítem")
 ingresos_por_item = df_ingresos.groupby("item")["valor_bruto"].sum().sort_values(ascending=False)
-st.bar_chart(ingresos_por_item)
+st.bar_chart(ingresos_por_item, color="green")
 
 st.divider()
 st.subheader("Últimos Registros")
