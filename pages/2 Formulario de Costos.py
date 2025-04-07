@@ -21,7 +21,7 @@ if st.session_state.get("registro_guardado"):
 
 st.divider()
 
-st.subheader("Infromación General")
+st.subheader("Información General")
 
 # Descripción Gasto
 descripcion = st.text_input(
