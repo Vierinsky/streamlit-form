@@ -51,8 +51,8 @@ st.bar_chart(ingresos_por_item)
 
 st.divider()
 st.subheader("Últimos Registros")
-st.write("🔻 Últimos 5 costos registrados")
+st.write("🟥 Últimos 5 costos registrados")
 st.dataframe(df_costos.sort_values("id", ascending=False).head(5), use_container_width=True)
 
-st.write("🔺 Últimos 5 ingresos registrados")
+st.write("🟩 Últimos 5 ingresos registrados")
 st.dataframe(df_ingresos.sort_values("id", ascending=False).head(5), use_container_width=True)

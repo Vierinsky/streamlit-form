@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 import pytz
 
-st.title("Formulario de Registro de Costos")
+st.title("📋 Formulario de Registro de Costos")
 
 spreadsheet = st.session_state.get("spreadsheet")
 if not spreadsheet:
