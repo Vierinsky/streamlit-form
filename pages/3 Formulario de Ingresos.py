@@ -43,7 +43,11 @@ try:
     # Obtener lista dinámica de items desde la hoja 'items'
     items_sheet = spreadsheet.worksheet("items")
     data = items_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    item_list = [row["item"] for row in data if row["item"].strip()]
+    item_list = [
+        row["item"]
+        for row in data
+        if row["item"].strip() and row["item"] not in ["Aseo y Ornato"]
+    ]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de items: {e}")
     item_list = []
