@@ -6,14 +6,14 @@ import streamlit as st
 
 st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered")
 
-tab1, tab2 = st.tabs(["📊 Vista General", "🧾 Formularios"])
+# tab1, tab2 = st.tabs(["📊 Vista General", "🧾 Formularios"])
 
-with tab1:
-    # Aquí los gráficos, KPIs, tablas
+# with tab1:
+#     # Aquí los gráficos, KPIs, tablas
 
-with tab2:
-    st.page_link("pages/1 Formulario de Costos.py", label="Formulario de Costos")
-    st.page_link("pages/2 Formulario de Ingresos.py", label="Formulario de Ingresos")
+# with tab2:
+#     st.page_link("pages/1 Formulario de Costos.py", label="Formulario de Costos")
+#     st.page_link("pages/2 Formulario de Ingresos.py", label="Formulario de Ingresos")
 
 
 st.title("Bienvenido al Sistema de Registro")
