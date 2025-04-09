@@ -46,7 +46,7 @@ st.write(f"Monto ingresado: ${monto_formateado}")
 st.divider()
 
 st.subheader("Centro de Costos")
-st.markdown("Seleccione centro de costos")
+st.markdown("### Seleccione centro de costos")
 
 # Item/Cultivo/Centro de costos del gasto
     # Agregar opción para customizar lista de ítems (?)
