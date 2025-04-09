@@ -48,22 +48,22 @@ st.divider()
 st.subheader("Centro de Costos")
 st.markdown("**Seleccione centro de costos**")
 
-# Item/Cultivo/Centro de costos del gasto
-    # Agregar opción para customizar lista de ítems (?)
-try:
-    # Obtener lista dinámica de items desde la hoja 'items'
-    items_sheet = spreadsheet.worksheet("items")
-    data = items_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    item_list = [row["item"] for row in data if row["item"].strip()]
-except Exception as e:
-    st.error(f"❌ Error al cargar la lista de items: {e}")
-    item_list = []
+# CENTRO DE COSTOS
 
-item = st.selectbox(
-    "Ítem", 
-    item_list,
+try:
+    # Obtener lista dinámica de centro de costos desde la hoja 'ceco'
+    ceco_sheet = spreadsheet.worksheet("ceco")
+    data = ceco_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    ceco_list = [row["ceco"] for row in data if row["ceco"].strip()]
+except Exception as e:
+    st.error(f"❌ Error al cargar la lista de centro de costos: {e}")
+    ceco_list = []
+
+ceco = st.selectbox(
+    "ceco", 
+    ceco_list,
     index=None, 
-    placeholder="Seleccione ítem o centro de costos")
+    placeholder="Seleccione un Centro de Costos")
 
 # Tipo servicio (Petróleo, Energía, Agua, Otro)
 servicio = st.selectbox(
@@ -175,7 +175,7 @@ if st.button("Guardar Registro"):
         errores.append("La descripción del gasto es obligatoria.")
     if valor_bruto <= 0:
         errores.append("El valor bruto debe ser mayor que cero.")
-    if not item:
+    if not ceco:
         errores.append("Debe seleccionar un ítem.")
     if not servicio:
         errores.append("Debe seleccionar un servicio.")
@@ -209,7 +209,7 @@ if st.button("Guardar Registro"):
                 "valor_bruto": valor_bruto,
                 "valor_neto": valor_neto,
                 "iva": iva,
-                "item": item,
+                "item": ceco,
                 "servicio": servicio,
                 "proveedor": proveedor_final,
                 "numero_folio": numero_folio,
