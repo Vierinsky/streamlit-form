@@ -46,7 +46,6 @@ st.write(f"Monto ingresado: ${monto_formateado}")
 st.divider()
 
 st.subheader("Centro de Costos")
-st.markdown("**Seleccione centro de costos**")
 
 # CENTRO DE COSTOS
 
@@ -60,10 +59,10 @@ except Exception as e:
     ceco_list = []
 
 ceco = st.selectbox(
-    "ceco", 
+    "Seleccione centro de costos", 
     ceco_list,
     index=None, 
-    placeholder="Seleccione un Centro de Costos")
+    placeholder="Centro de Costos")
 
 # Tipo servicio (Petróleo, Energía, Agua, Otro)
 servicio = st.selectbox(
