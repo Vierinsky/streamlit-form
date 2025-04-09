@@ -48,9 +48,9 @@ st.divider()
 st.subheader("Centro de Costos")
 
 # CENTRO DE COSTOS
-
-try:
+# LISTA DE CENTRO DE COSTOS
     # Obtener lista dinámica de centro de costos desde la hoja 'ceco'
+try:
     ceco_sheet = spreadsheet.worksheet("ceco")
     data = ceco_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
     ceco_list = [row["ceco"] for row in data if row["ceco"].strip()]
@@ -59,18 +59,212 @@ except Exception as e:
     ceco_list = []
 
 ceco = st.selectbox(
-    "Seleccione centro de costos", 
+    "Seleccione Centro de Costos", 
     ceco_list,
     index=None, 
     placeholder="Centro de Costos")
 
-# Tipo servicio (Petróleo, Energía, Agua, Otro)
-servicio = st.selectbox(
-    "Tipo Servicio",
-    ["Petróleo", "Energía", "Agua", "Otro"],
-    index=None,
-    placeholder="Seleccione tipo de servicio"
-)
+# LISTA DE CULTIVOS
+    # Obtener lista dinámica de cultivos desde la hoja 'cultivos'
+try:
+    cultivo_sheet = spreadsheet.worksheet("cultivos")
+    data = cultivo_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    cultivo_list = [row["cultivo"] for row in data if row["cultivo"].strip()]
+except Exception as e:
+    st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
+    cultivo_list = []
+
+# Condicional CECO
+if ceco == "RRHH":                                                                                             # COLUMNA
+    # st.subheader()
+    cultivo = st.selectbox(                                                                                    # COLUMNA
+        "Seleccione Cultivo",
+        cultivo_list,
+        index=None,
+        placeholder="Cultivos"
+    )
+    # LISTA DE SUB-CATEGORIAS RRHH
+        # Obtener lista dinámica desde la hoja 'rrhh'
+    try:
+        sub_rrhh_sheet = spreadsheet.worksheet("sub_rrhh")
+        data = sub_rrhh_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+        sub_rrhh_list = [row["sub_rrhh"] for row in data if row["sub_rrhh"].strip()]
+    except Exception as e:
+        st.error(f"❌ Error al cargar la lista de subcategorias de RRHH: {e}")
+        sub_rrhh_list = []
+
+    sub_rrhh = st.selectbox(                                                                                  # COLUMNA
+        "Seleccione sub-categoria RRHH",
+        ["Sueldo administrativo", 
+        "Sueldo operativo", 
+        "Prevención", 
+        "Leyes sociales", 
+        "Capacitación", 
+        "Bonos", 
+        "Viaticos", 
+        "Aguinaldos"],
+        index=None,
+        placeholder="Sub-categorias RRHH"
+    )
+
+    # DESPUÉS DE RRHH ¿APLICA CONTINUAR CON SECCIÓN PROVEEDOR?
+
+elif ceco == "Agroquimico":                                                                                   # COLUMNA
+
+    cultivo = st.selectbox(                                                                                    # COLUMNA
+        "Seleccione Cultivo",
+        cultivo_list,
+        index=None,
+        placeholder="Cultivos"
+    )
+
+    sub_agroquimico = st.selectbox(
+        "Seleccione sub-categoria Agroquímicos",
+        ["Fertilizante", "Fungicida", "Insectida", "Herbicida"],
+        index=None,
+        placeholder="Sub-categorias Agroquímicos"
+    )
+
+elif ceco == "Maquinaria":
+
+    sub_maquinaria = st.selectbox(
+        "Seleccione sub-categoria Maquinaria",
+        ["Mantenimiento", "Reparación", "Mejora", "Servicio a Terceros"],
+        index=None,
+        placeholder="Sub-categorias Maquinaria"
+    )
+
+    # LISTA DE MAQUINAS
+        # Obtener lista dinámica desde la hoja 'maquinas'
+    try:
+        maquinas_sheet = spreadsheet.worksheet("maquinas")
+        data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+        maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
+    except Exception as e:
+        st.error(f"❌ Error al cargar la lista de maquinas: {e}")
+        maquinas_list = []
+
+    maquina = st.selectbox(
+        "Seleccione Maquinaria",
+        maquinas_list,
+        index=None,
+        placeholder="Maquinaria"
+    )
+
+elif ceco == "Administracion":
+    # LISTA DE ADMINISTRACIÓN
+        # Obtener lista dinámica desde la hoja 'sub_admin'
+    try:
+        sub_admin_sheet = spreadsheet.worksheet("sub_admin")
+        data = sub_admin_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+        sub_admin_list = [row["sub_admin"] for row in data if row["sub_admin"].strip()]
+    except Exception as e:
+        st.error(f"❌ Error al cargar la lista de sub-categorias de Administración: {e}")
+        sub_admin_list = []
+    
+    sub_admin = st.selectbox(
+        "Seleccione sub-categoria Administración",
+        ["Asesorias", "Subscripciones", "Viajes", "Form 29"],
+        index=None,
+        placeholder="Sub-categorias Administración"
+    )
+
+elif ceco == "Seguros":
+
+    sub_seguros = st.selectbox(
+        "Seleccione sub-categoria Seguros",
+        ["Transporte", "Equipos", "Infraestructura", "Cultivos"],
+        index=None,
+        placeholder="Sub-categorias Seguros"
+    )
+
+    if sub_seguros == "Transporte":
+        
+        transporte = st.selectbox(
+            "Seleccione Tipo de Transporte",
+            ["Importación", "Exportación", "Carga Nacional"],
+            index=None,
+            placeholder="Tipo de Transporte"
+        )
+    elif sub_seguros == "Equipos":
+        # LISTA DE MAQUINAS
+        # Obtener lista dinámica desde la hoja 'maquinas'
+        try:
+            maquinas_sheet = spreadsheet.worksheet("maquinas")
+            data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+            maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
+        except Exception as e:
+            st.error(f"❌ Error al cargar la lista de maquinas: {e}")
+            maquinas_list = []
+
+        maquina = st.selectbox(
+            "Seleccione Equipo",
+            maquinas_list,
+            index=None,
+            placeholder="Equipo"
+        )
+    elif sub_seguros == "Cultivos":
+        cultivo = st.selectbox(
+            "Seleccione Cultivo",
+            cultivo_list,
+            index=None,
+            placeholder="Cultivos"
+        )
+
+elif ceco == "Inversiones":
+    # # LISTA DE SUB-CATEGORIA INVERSIONES
+    #     # Obtener lista dinámica desde la hoja 'sub_inverison'
+    # try:
+    #     sub_inv_sheet = spreadsheet.worksheet("sub_inverison")
+    #     data = sub_inv_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    #     sub_inv_list = [row["sub_inverison"] for row in data if row["sub_inverison"].strip()]
+    # except Exception as e:
+    #     st.error(f"❌ Error al cargar la lista de sub-categorias de Seguros: {e}")
+    #     sub_inv_list = []
+
+    sub_inv = st.selectbox(
+        "Seleccione Inversión",
+        ["Maquinaria", 
+         "Infraestructura", 
+         "Equipos", 
+         "Preparación Previa"],
+        index=None,
+        placeholder= "Sub-categorias Inverisión"
+    )
+    
+    if sub_inv == "Preparación Previa":
+
+    # (AGREGAR SELECIÓN CULTIVO)
+
+
+elif ceco == "Servicio Externos MMOO":
+
+    # (COMPLETAR)
+
+elif ceco == "Servicios Basicos":
+
+    # (COMPLETAR)
+
+elif ceco == "Combustibles":
+
+    # (COMPLETAR)
+
+elif ceco == "Gastos Varios / Otros":
+
+    # (COMPLETAR)
+
+else:
+
+    # (COMPLETAR)
+
+
+# # Tipo servicio (Petróleo, Energía, Agua, Otro)
+# servicio = st.selectbox(
+#     "Tipo Servicio",
+#     ["Petróleo", "Energía", "Agua", "Otro"],
+#     index=None,
+#     placeholder="Seleccione tipo de servicio"
+# )
 
 st.divider()
 
