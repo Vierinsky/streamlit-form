@@ -234,12 +234,43 @@ elif ceco == "Inversiones":
     
     if sub_inv == "Preparación Previa":
 
-    # (AGREGAR SELECIÓN CULTIVO)
+        prep_prev = st.selectbox(
+            "Seleccione sub-categoria",
+            ["Preparación de Suelo", 
+             "Agroquímico"],
+             index=None,
+             placeholder="Sub-categorias Preparación Previa"
+        )
+    
+    else:
 
+        cultivo = st.selectbox(
+            "Seleccione Cultivo",
+            cultivo_list,
+            index=None,
+            placeholder="Cultivos"
+        )
 
 elif ceco == "Servicio Externos MMOO":
 
-    # (COMPLETAR)
+    cultivo = st.selectbox(
+        "Seleccione Cultivo",
+        cultivo_list,
+        index=None,
+        placeholder="Cultivos"
+    )
+
+    servicios_externos = st.selectbox(
+        "Seleccione Servicio Externo",
+        ["Cosecha",
+         "Selección",
+         "Plantación",
+         "Limpieza",
+         "Aseo y ornato",
+         "Otros"],
+         index=None,
+         placeholder="Servicios externos"
+    )
 
 elif ceco == "Servicios Basicos":
 
