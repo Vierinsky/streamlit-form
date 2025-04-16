@@ -9,8 +9,8 @@ if not spreadsheet:
     st.error("❌ No se pudo acceder al documento. Verifica la conexión en la página principal.")
     st.stop
 
-# Obtener la hoja de costos
-sheet = spreadsheet.worksheet("costos")
+# # Obtener la hoja de costos
+# sheet = spreadsheet.worksheet("costos")
 
 # ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
 if st.session_state.get("registro_guardado"):
@@ -83,15 +83,15 @@ if ceco == "RRHH":                                                              
         index=None,
         placeholder="Cultivos"
     )
-    # LISTA DE SUB-CATEGORIAS RRHH
-        # Obtener lista dinámica desde la hoja 'rrhh'
-    try:
-        sub_rrhh_sheet = spreadsheet.worksheet("sub_rrhh")
-        data = sub_rrhh_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-        sub_rrhh_list = [row["sub_rrhh"] for row in data if row["sub_rrhh"].strip()]
-    except Exception as e:
-        st.error(f"❌ Error al cargar la lista de subcategorias de RRHH: {e}")
-        sub_rrhh_list = []
+    # # LISTA DE SUB-CATEGORIAS RRHH
+    #     # Obtener lista dinámica desde la hoja 'rrhh'
+    # try:
+    #     sub_rrhh_sheet = spreadsheet.worksheet("sub_rrhh")
+    #     data = sub_rrhh_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    #     sub_rrhh_list = [row["sub_rrhh"] for row in data if row["sub_rrhh"].strip()]
+    # except Exception as e:
+    #     st.error(f"❌ Error al cargar la lista de subcategorias de RRHH: {e}")
+    #     sub_rrhh_list = []
 
     sub_rrhh = st.selectbox(                                                                                  # COLUMNA
         "Seleccione sub-categoria RRHH",
@@ -105,8 +105,7 @@ if ceco == "RRHH":                                                              
         "Aguinaldos"],
         index=None,
         placeholder="Sub-categorias RRHH"
-    )
-
+    )    
     # DESPUÉS DE RRHH ¿APLICA CONTINUAR CON SECCIÓN PROVEEDOR?
 
 elif ceco == "Agroquimico":                                                                                   # COLUMNA
@@ -186,6 +185,10 @@ elif ceco == "Seguros":
             index=None,
             placeholder="Tipo de Transporte"
         )
+
+        cultivo = None
+        maquina = None
+
     elif sub_seguros == "Equipos":
         # LISTA DE MAQUINAS
         # Obtener lista dinámica desde la hoja 'maquinas'
@@ -203,6 +206,15 @@ elif ceco == "Seguros":
             index=None,
             placeholder="Equipo"
         )
+
+        transporte = None
+
+    elif sub_seguros == "Infraestructura":
+
+        maquina = None
+        cultivo = None
+        transporte = None
+
     elif sub_seguros == "Cultivos":
         cultivo = st.selectbox(
             "Seleccione Cultivo",
@@ -210,6 +222,9 @@ elif ceco == "Seguros":
             index=None,
             placeholder="Cultivos"
         )
+
+        maquina = None
+        transporte = None
 
 elif ceco == "Inversiones":
     # # LISTA DE SUB-CATEGORIA INVERSIONES
@@ -235,12 +250,14 @@ elif ceco == "Inversiones":
     if sub_inv == "Preparación Previa":
 
         prep_prev = st.selectbox(
-            "Seleccione sub-categoria",
+            "Seleccione Preparación Previa",
             ["Preparación de Suelo", 
              "Agroquímico"],
              index=None,
              placeholder="Sub-categorias Preparación Previa"
         )
+        
+        cultivo = None # Preguntar si "Preparación Previa" debe ir enlazada a un cultivo
     
     else:
 
@@ -250,6 +267,8 @@ elif ceco == "Inversiones":
             index=None,
             placeholder="Cultivos"
         )
+
+        prep_prev = None
 
 elif ceco == "Servicio Externos MMOO":
 
@@ -272,21 +291,25 @@ elif ceco == "Servicio Externos MMOO":
          placeholder="Servicios externos"
     )
 
-elif ceco == "Servicios Basicos":
+elif ceco == "Servicios Básicos":
 
-    # (COMPLETAR)
+    servicios_basicos = st.selectbox(
+        "Seleccione Servicio Básico",
+        ["Agua", "Luz", "Gas", "Luz2 (Riego)"],
+        index=None,
+        placeholder="Servicios Básicos"
+    )
 
 elif ceco == "Combustibles":
+    
+    combustibles = st.selectbox(
+        "Seleccione Combustible",
+        ["Petróleo", "Bencina", "Energia"],
+        index=None,
+        placeholder="Combustibles"
+    )
 
-    # (COMPLETAR)
-
-elif ceco == "Gastos Varios / Otros":
-
-    # (COMPLETAR)
-
-else:
-
-    # (COMPLETAR)
+# Aqui iría "Gastos Varios / Otros"
 
 
 # # Tipo servicio (Petróleo, Energía, Agua, Otro)
@@ -297,85 +320,117 @@ else:
 #     placeholder="Seleccione tipo de servicio"
 # )
 
+if ceco == "RRHH":  # Si se selecciona RRHH no se necesita especificar proveedor 
+
+    proveedor_final = None
+
+else:
+
+    st.divider()
+
+    st.subheader("Proveedores")
+
+    # Proveedores
+    try:
+        # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
+        proveedores_sheet = spreadsheet.worksheet("proveedores")
+        data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+        proveedores_list = [row["proveedor"] for row in data if row["proveedor"].strip()]
+    except Exception as e:
+        st.error(f"❌ Error al cargar la lista de proveedores: {e}")
+        proveedores_list = []
+
+    proveedor_seleccionado = st.selectbox(
+        "Proveedor", 
+        proveedores_list, 
+        index=None, 
+        placeholder="Seleccione proveedor"
+    )
+
+    # Limpiar campo de texto si se seleccionó un proveedor de la lista
+    if proveedor_seleccionado and st.session_state.get("nuevo_proveedor"):
+        st.session_state["nuevo_proveedor"] = ""
+
+    # Input de nuevo proveedor
+    nuevo_proveedor = st.text_input(
+        "¿Proveedor no está en la lista? Escriba nuevo proveedor. De lo contrario dejar en blanco",
+        placeholder="Nombre del nuevo proveedor",
+        key="nuevo_proveedor"
+    )
+
+    # Decidir qué valor usar
+    proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
+
+    # Agrega nuevo proveedor a la lista y le genera un id
+    if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
+        num_filas_proveedores = len(proveedores_sheet.get_all_values())
+        nuevo_id_proveedor = num_filas_proveedores  # Asumiendo que fila 1 es encabezado
+        proveedores_sheet.append_row([nuevo_id_proveedor, nuevo_proveedor.strip()])
+
+    # Priorizar proveedor seleccionado
+    proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_proveedor.strip()
+
 st.divider()
 
-st.subheader("Proveedores")
+st.subheader("Información Factura")
 
-# Proveedores
-try:
-    # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
-    proveedores_sheet = spreadsheet.worksheet("proveedores")
-    data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    proveedores_list = [row["proveedor"] for row in data if row["proveedor"].strip()]
-except Exception as e:
-    st.error(f"❌ Error al cargar la lista de proveedores: {e}")
-    proveedores_list = []
-
-proveedor_seleccionado = st.selectbox(
-    "Proveedor", 
-    proveedores_list, 
-    index=None, 
-    placeholder="Seleccione proveedor"
+# N° Folio factura
+numero_folio = st.text_input(
+    "Número de Factura (opcional)",
+    placeholder='Dejar en blanco si no aplica'
 )
 
-# Limpiar campo de texto si se seleccionó un proveedor de la lista
-if proveedor_seleccionado and st.session_state.get("nuevo_proveedor"):
-    st.session_state["nuevo_proveedor"] = ""
-
-# Input de nuevo proveedor
-nuevo_proveedor = st.text_input(
-    "¿Proveedor no está en la lista? Escriba nuevo proveedor. De lo contrario dejar en blanco",
-    placeholder="Nombre del nuevo proveedor",
-    key="nuevo_proveedor"
-)
-
-# Decidir qué valor usar
-proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
-
-# Agrega nuevo proveedor a la lista y le genera un id
-if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
-    num_filas_proveedores = len(proveedores_sheet.get_all_values())
-    nuevo_id_proveedor = num_filas_proveedores  # Asumiendo que fila 1 es encabezado
-    proveedores_sheet.append_row([nuevo_id_proveedor, nuevo_proveedor.strip()])
-
-# Priorizar proveedor seleccionado
-proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_proveedor.strip()
-
-st.divider()
-
-st.subheader("Información Boleta/factura")
-
-# N° Folio boleta/factura
-numero_folio = st.number_input(
-    "Número de Folio de Boleta/Factura",
-    min_value=None,
-    step=1,
-    format="%d",
-    placeholder="N° de boleta o factura"
-)
-
-# Fecha del Gasto
-    # Fecha en la que se efectuó el gasto/compra/costo
-fecha_gasto = st.date_input(
-    "Fecha del Gasto o Compra",
-    value="today",
-    format="DD/MM/YYYY"
-)
+# Procesar el valor: si está vacío, lo tratamos como "null"
+numero_folio = numero_folio.strip() if numero_folio.strip() else "null"
 
 # Fecha de Emisión
-    # Fecha de emisión de la boleta o factura
+    # Fecha de emisión de la factura
 fecha_emision = st.date_input(
-    "Fecha de Emisión Boleta/Factura",
+    "Fecha de Emisión Factura",
     value="today",
     format="DD/MM/YYYY"
 )
 
-# Fecha de Vencimiento
-fecha_vencimiento = st.date_input(
-    "Fecha de Vencimiento Boleta/Factura",
-    value="today",
-    format="DD/MM/YYYY"
-)
+# Para definir fecha de vencimiento del pago (30, 60, 120 días)
+
+def fecha_vencimiento_input(dias):
+    
+    """
+    Muestra un input condicional para seleccionar una fecha de vencimiento, o marcarla como 
+    'No aplica' o 'Por definir', según el número de días especificado.
+
+    Args:
+        dias (int): Número de días del vencimiento (ej. 30, 60, 120). Se usa para identificar el campo y personalizar el texto.
+
+    Returns:
+        str or None: 
+            - Si se selecciona "Ingresar fecha", retorna la fecha seleccionada como string con formato "DD/MM/YYYY".
+            - Si se selecciona "Por definir", retorna la cadena "Por definir".
+            - Si se selecciona "No aplica", retorna `None` (para que se interprete como valor nulo en el backend).
+    """
+        
+    opcion = st.selectbox(
+        f"Vencimiento a {dias} días",
+        ["Ingresar fecha", "No aplica", "Por definir"],
+        key=f"opcion_{dias}"
+    )
+
+    if opcion == "Ingresar fecha":
+        fecha = st.date_input(
+            f"Fecha para {dias} días",
+            key=f"fecha_{dias}",
+            format="DD/MM/YYYY"
+        )
+        return fecha.strftime("%d/%m/%Y") # Devuelve fecha en formato str
+    elif opcion == "Por definir":
+        return "Por definir"
+    else:
+        return None # No Aplica -> se guarda como valor null
+
+# Invocar para los tres plazos
+vencimiento_30 = fecha_vencimiento_input(30)
+vencimiento_60 = fecha_vencimiento_input(60)
+vencimiento_120 = fecha_vencimiento_input(120)
 
 st.divider()
 
@@ -392,8 +447,11 @@ if "registro_guardado" not in st.session_state:
     st.session_state["registro_guardado"] = False
 
 if st.button("Guardar Registro"):
+
     # Primero validamos que los campos Descripción Gasto, Valor Bruto del Gasto, Ítem y Proveedor no estén vacíos
     errores = []
+
+    # CORREGIR ####################################################################################################################################################
 
     if not descripcion.strip():
         errores.append("La descripción del gasto es obligatoria.")
@@ -401,8 +459,8 @@ if st.button("Guardar Registro"):
         errores.append("El valor bruto debe ser mayor que cero.")
     if not ceco:
         errores.append("Debe seleccionar un ítem.")
-    if not servicio:
-        errores.append("Debe seleccionar un servicio.")
+    # if not servicio:
+    #     errores.append("Debe seleccionar un servicio.")
     if not proveedor_final:
         errores.append("Debe seleccionar o ingresar un proveedor.")
     if numero_folio < 0:
@@ -412,36 +470,271 @@ if st.button("Guardar Registro"):
         for err in errores:
             st.warning(err)
 
+    # CORREGIR ####################################################################################################################################################
+
     else:
         # Si todo está en orden se procede a agregar los datos a la planilla
-        try:
-            # Obtener los encabezados (primera fila de la hoja)
-            headers = sheet.row_values(1)
-            # Definir zona horaria de Santiago
-            zona_horaria_chile = pytz.timezone('Chile/Continental')
-            # Obtener la hora actual en la zona horaria de Santiago
-            fecha_hora_actual = datetime.now(zona_horaria_chile).strftime("%d/%m/%Y %H:%M:%S")    # datetime se transforma a string
-            # Obtener el nuevo índice (número de fila - 1 para no contar el encabezado)
-            num_filas_existentes = len(sheet.get_all_values())
-            nuevo_index = num_filas_existentes  # Si hay encabezado, el índice empieza desde 1
 
-            # Armar diccionario con los datos usando los nombres de las columnas
-            registro = {
-                "id" : nuevo_index,
-                "fecha_envio_form": fecha_hora_actual,
-                "descripcion": descripcion,
-                "valor_bruto": valor_bruto,
-                "valor_neto": valor_neto,
-                "iva": iva,
-                "item": ceco,
-                "servicio": servicio,
-                "proveedor": proveedor_final,
-                "numero_folio": numero_folio,
-                "fecha_gasto": fecha_gasto.strftime("%d/%m/%Y"),                # datetime se transforma a string
-                "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
-                "fecha_vencimiento": fecha_vencimiento.strftime("%d/%m/%Y"),    # datetime se transforma a string
-                "comentarios": comentario
-            }
+        def preparar_registro(spreadsheet, sheet_name):
+            """
+            Prepara una hoja específica de Google Sheets para registrar un nuevo dato.
+
+            Args:
+                spreadsheet: Objeto Spreadsheet conectado.
+                sheet_name (str): Nombre de la hoja.
+
+            Returns:
+                sheet: Objeto Worksheet correspondiente.
+                headers (list): Lista de nombres de columna.
+                nuevo_index (int): Número de fila a insertar (sin contar encabezado).
+                fecha_hora_actual (str): Timestamp en formato %d/%m/%Y %H:%M:%S.
+            """
+            sheet = spreadsheet.worksheet(sheet_name)
+            headers = sheet.row_values(1)
+
+            zona_horaria_chile = pytz.timezone('Chile/Continental')
+            fecha_hora_actual = datetime.now(zona_horaria_chile).strftime("%d/%m/%Y %H:%M:%S")
+            nuevo_index = len(sheet.get_all_values())
+
+            return sheet, headers, nuevo_index, fecha_hora_actual
+
+        try:
+            # "RRHH"
+            if ceco == "RRHH":
+
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "rrhh")
+
+                # Armar diccionario con los datos usando los nombres de las columnas
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    "subcategoria": sub_rrhh,
+                    # "proveedor": proveedor_final,     # NO APLICA EN RRHH
+                    "cultivo" : cultivo,
+                    "numero_folio": numero_folio,       # ¿APLICA?
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
+
+            # "Agroquimico"
+            elif ceco == "Agroquimico":
+
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "agroquimico")
+
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    "subcategoria": sub_agroquimico,
+                    "proveedor": proveedor_final,
+                    "cultivo" : cultivo,
+                    "numero_folio": numero_folio,
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
+
+            # "Maquinaria"
+            elif ceco == "Maquinaria":
+
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "maquinario")
+
+                # Armar diccionario con los datos usando los nombres de las columnas
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    "subcategoria": sub_maquinaria,
+                    "maquina": maquina,
+                    "proveedor": proveedor_final,
+                    # "cultivo" : cultivo,                    # No Aplica
+                    "numero_folio": numero_folio,
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
+
+            # "Administracion"
+            elif ceco == "Administracion":
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "administracion")
+
+                # Armar diccionario con los datos usando los nombres de las columnas
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    "subcategoria": sub_admin,
+                    "proveedor": proveedor_final,
+                    # "cultivo" : cultivo,                    # No Aplica
+                    "numero_folio": numero_folio,
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
+
+            # "Seguros"
+            elif ceco == "Seguros":
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+
+                # Armar diccionario con los datos usando los nombres de las columnas
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    "subcategoria": sub_seguros,
+                    "proveedor": proveedor_final,
+                    "transporte": transporte,
+                    "maquina" : maquina,
+                    "cultivo" : cultivo,
+                    "numero_folio": numero_folio,
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
+
+            # "Inversiones"
+            elif ceco == "Inversiones":
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+
+                # Armar diccionario con los datos usando los nombres de las columnas
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    "subcategoria": sub_inv,
+                    "peparacion_previa" : prep_prev,
+                    "cultivo" : cultivo,
+                    "numero_folio": numero_folio,
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
+            # "Servicio Externos MMOO"
+
+            elif ceco == "Servicio Externos MMOO":
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+
+                # Armar diccionario con los datos usando los nombres de las columnas
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    "subcategoria": servicios_externos,
+                    "cultivo" : cultivo,
+                    "numero_folio": numero_folio,
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
+
+            # "Servicios Básicos"
+            if ceco == "Servicios Básicos":
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+
+                # Armar diccionario con los datos usando los nombres de las columnas
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    "subcategoria": servicios_basicos,
+                    "numero_folio": numero_folio,
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
+            # "Combustibles"
+            if ceco == "Combustibles":
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+
+                # Armar diccionario con los datos usando los nombres de las columnas
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    "subcategoria": combustibles,
+                    "numero_folio": numero_folio,
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
+       
+            # "Gastos Varios / Otros"
+            if ceco == "Combustibles":
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+
+                # Armar diccionario con los datos usando los nombres de las columnas
+                registro = {
+                    "id" : nuevo_index,
+                    "fecha_envio_form": fecha_hora_actual,
+                    "descripcion": descripcion,
+                    "valor_bruto": valor_bruto,
+                    "valor_neto": valor_neto,
+                    "iva": iva,
+                    "centro_costo": ceco,
+                    # "subcategoria": combustibles,     # No Aplica
+                    "numero_folio": numero_folio,
+                    "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
+                    "fecha_vencimiento_30": vencimiento_30,
+                    "fecha_vencimiento_60": vencimiento_60,
+                    "fecha_vencimiento_120": vencimiento_120,
+                    "comentario": comentario
+                }
 
             # Crear la fila final según el orden real de los encabezados
             fila_final = [registro.get(col, "") for col in headers]
@@ -461,8 +754,3 @@ if st.button("Guardar Registro"):
         except Exception as e:
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
             st.session_state["registro_guardado"] = False  # Resetear si falló
-
-    # # Mostrar éxito si fue guardado
-    # if st.session_state.get("registro_guardado"):
-    #     st.success("¡Registro guardado con éxito!")
-    #     st.session_state["registro_guardado"] = False  # Limpiar para no mostrarlo siempre
