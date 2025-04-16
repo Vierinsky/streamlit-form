@@ -74,15 +74,58 @@ except Exception as e:
     st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
     cultivo_list = []
 
-# Condicional CECO
-if ceco == "RRHH":                                                                                             # COLUMNA
-    # st.subheader()
-    cultivo = st.selectbox(                                                                                    # COLUMNA
+# Definir función que despliega selectbox de cultivos
+def seleccionar_cultivo(cultivo_list):
+    """
+    Muestra un menú desplegable obligatorio para que el usuario seleccione un cultivo.
+
+    Args:
+        cultivo_list (list): Lista de nombres de cultivos disponibles.
+
+    Returns:
+        str: Cultivo seleccionado por el usuario.
+    """
+    return st.selectbox(
         "Seleccione Cultivo",
         cultivo_list,
         index=None,
         placeholder="Cultivos"
     )
+
+# LISTA DE MAQUINAS
+    # Obtener lista dinámica desde la hoja 'maquinas'
+try:
+    maquinas_sheet = spreadsheet.worksheet("maquinas")
+    data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
+except Exception as e:
+    st.error(f"❌ Error al cargar la lista de maquinas: {e}")
+    maquinas_list = []
+
+def seleccionar_maquina(maquinas_list):
+    """
+    Muestra un selector desplegable para elegir una máquina desde una lista.
+
+    Args:
+        maquinas_list: Lista de máquinas disponibles.
+
+    Returns:
+        La máquina seleccionada o None si no se selecciona ninguna.
+    """
+    return st.selectbox(
+        "Seleccione Maquinaria",
+        maquinas_list,
+        index=None,
+        placeholder="Maquinaria"
+    )
+
+
+
+# Condicional CECO
+if ceco == "RRHH":                                                                                             # COLUMNA
+    # st.subheader()
+    cultivo = seleccionar_cultivo(cultivo_list)
+
     # # LISTA DE SUB-CATEGORIAS RRHH
     #     # Obtener lista dinámica desde la hoja 'rrhh'
     # try:
@@ -110,12 +153,7 @@ if ceco == "RRHH":                                                              
 
 elif ceco == "Agroquimico":                                                                                   # COLUMNA
 
-    cultivo = st.selectbox(                                                                                    # COLUMNA
-        "Seleccione Cultivo",
-        cultivo_list,
-        index=None,
-        placeholder="Cultivos"
-    )
+    cultivo = seleccionar_cultivo(cultivo_list)
 
     sub_agroquimico = st.selectbox(
         "Seleccione sub-categoria Agroquímicos",
@@ -133,22 +171,7 @@ elif ceco == "Maquinaria":
         placeholder="Sub-categorias Maquinaria"
     )
 
-    # LISTA DE MAQUINAS
-        # Obtener lista dinámica desde la hoja 'maquinas'
-    try:
-        maquinas_sheet = spreadsheet.worksheet("maquinas")
-        data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-        maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
-    except Exception as e:
-        st.error(f"❌ Error al cargar la lista de maquinas: {e}")
-        maquinas_list = []
-
-    maquina = st.selectbox(
-        "Seleccione Maquinaria",
-        maquinas_list,
-        index=None,
-        placeholder="Maquinaria"
-    )
+    maquina = seleccionar_maquina(maquinas_list)
 
 elif ceco == "Administracion":
     # LISTA DE ADMINISTRACIÓN
@@ -190,22 +213,8 @@ elif ceco == "Seguros":
         maquina = None
 
     elif sub_seguros == "Equipos":
-        # LISTA DE MAQUINAS
-        # Obtener lista dinámica desde la hoja 'maquinas'
-        try:
-            maquinas_sheet = spreadsheet.worksheet("maquinas")
-            data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-            maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
-        except Exception as e:
-            st.error(f"❌ Error al cargar la lista de maquinas: {e}")
-            maquinas_list = []
 
-        maquina = st.selectbox(
-            "Seleccione Equipo",
-            maquinas_list,
-            index=None,
-            placeholder="Equipo"
-        )
+        maquina = seleccionar_maquina(maquinas_list)
 
         transporte = None
 
@@ -216,12 +225,7 @@ elif ceco == "Seguros":
         transporte = None
 
     elif sub_seguros == "Cultivos":
-        cultivo = st.selectbox(
-            "Seleccione Cultivo",
-            cultivo_list,
-            index=None,
-            placeholder="Cultivos"
-        )
+        cultivo = seleccionar_cultivo(cultivo_list)
 
         maquina = None
         transporte = None
@@ -261,23 +265,13 @@ elif ceco == "Inversiones":
     
     else:
 
-        cultivo = st.selectbox(
-            "Seleccione Cultivo",
-            cultivo_list,
-            index=None,
-            placeholder="Cultivos"
-        )
+        cultivo = seleccionar_cultivo(cultivo_list)
 
         prep_prev = None
 
 elif ceco == "Servicio Externos MMOO":
 
-    cultivo = st.selectbox(
-        "Seleccione Cultivo",
-        cultivo_list,
-        index=None,
-        placeholder="Cultivos"
-    )
+    cultivo = seleccionar_cultivo(cultivo_list)
 
     servicios_externos = st.selectbox(
         "Seleccione Servicio Externo",
@@ -463,8 +457,8 @@ if st.button("Guardar Registro"):
     #     errores.append("Debe seleccionar un servicio.")
     if not proveedor_final:
         errores.append("Debe seleccionar o ingresar un proveedor.")
-    if numero_folio < 0:
-        errores.append("N° de folio debe ser un número positivo.")
+    if numero_folio not in ("", "null") and not numero_folio.isdigit():
+        errores.append("El número de folio debe ser un valor numérico.")
 
     if errores:
         for err in errores:
@@ -638,7 +632,7 @@ if st.button("Guardar Registro"):
                     "iva": iva,
                     "centro_costo": ceco,
                     "subcategoria": sub_inv,
-                    "peparacion_previa" : prep_prev,
+                    "preparacion_previa" : prep_prev,
                     "cultivo" : cultivo,
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
@@ -672,7 +666,7 @@ if st.button("Guardar Registro"):
                 }
 
             # "Servicios Básicos"
-            if ceco == "Servicios Básicos":
+            elif ceco == "Servicios Básicos":
                 sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
 
                 # Armar diccionario con los datos usando los nombres de las columnas
@@ -693,7 +687,7 @@ if st.button("Guardar Registro"):
                     "comentario": comentario
                 }
             # "Combustibles"
-            if ceco == "Combustibles":
+            elif ceco == "Combustibles":
                 sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
 
                 # Armar diccionario con los datos usando los nombres de las columnas
@@ -715,7 +709,7 @@ if st.button("Guardar Registro"):
                 }
        
             # "Gastos Varios / Otros"
-            if ceco == "Combustibles":
+            elif ceco == "Gastos Varios / Otros":
                 sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
 
                 # Armar diccionario con los datos usando los nombres de las columnas
