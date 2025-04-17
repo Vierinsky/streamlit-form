@@ -148,7 +148,6 @@ def seleccionar_maquina(maquinas_list):
 # Condicional CECO
 if ceco == "RRHH":                                                                                             # COLUMNA
     # st.subheader()
-    cultivo = seleccionar_cultivo(cultivo_list)
 
     sub_rrhh = st.selectbox(                                                                                  # COLUMNA
         "Seleccione sub-categoria RRHH",
@@ -162,7 +161,10 @@ if ceco == "RRHH":                                                              
         "Aguinaldos"],
         index=None,
         placeholder="Sub-categorias RRHH"
-    )    
+    )
+
+    cultivo = seleccionar_cultivo(cultivo_list)
+
     # DESPUÉS DE RRHH ¿APLICA CONTINUAR CON SECCIÓN PROVEEDOR?
 
 elif ceco == "Agroquimico":                                                                                   # COLUMNA
@@ -245,15 +247,6 @@ elif ceco == "Seguros":
         transporte = None
 
 elif ceco == "Inversiones":
-    # # LISTA DE SUB-CATEGORIA INVERSIONES
-    #     # Obtener lista dinámica desde la hoja 'sub_inverison'
-    # try:
-    #     sub_inv_sheet = spreadsheet.worksheet("sub_inverison")
-    #     data = sub_inv_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    #     sub_inv_list = [row["sub_inverison"] for row in data if row["sub_inverison"].strip()]
-    # except Exception as e:
-    #     st.error(f"❌ Error al cargar la lista de sub-categorias de Seguros: {e}")
-    #     sub_inv_list = []
 
     sub_inv = st.selectbox(
         "Seleccione Inversión",
@@ -402,43 +395,39 @@ fecha_emision = st.date_input(
 # Para definir fecha de vencimiento del pago (30, 60, 120 días)
 
 def fecha_vencimiento_input(dias):
+    """
+    Muestra un radio con tres opciones para el vencimiento a X días:
+      - "Establecer fecha": despliega un date_input y devuelve la fecha como string "DD/MM/YYYY"
+      - "No aplica": devuelve None
+      - "Por definir": devuelve "Por definir"
     
-    """
-    Muestra un input condicional para seleccionar una fecha de vencimiento, o marcarla como 
-    'No aplica' o 'Por definir', según el número de días especificado.
-
     Args:
-        dias (int): Número de días del vencimiento (ej. 30, 60, 120). Se usa para identificar el campo y personalizar el texto.
-
+        dias (int): Plazo en días para el vencimiento (30, 60, 120, ...).
+    
     Returns:
-        str or None: 
-            - Si se selecciona "Ingresar fecha", retorna la fecha seleccionada como string con formato "DD/MM/YYYY".
-            - Si se selecciona "Por definir", retorna la cadena "Por definir".
-            - Si se selecciona "No aplica", retorna `None` (para que se interprete como valor nulo en el backend).
+        str | None: Fecha en formato "%d/%m/%Y", "Por definir", o None.
     """
-        
-    opcion = st.selectbox(
-        f"Vencimiento a {dias} días",
-        ["Ingresar fecha", "No aplica", "Por definir"],
-        key=f"opcion_{dias}"
-    )
-
-    if opcion == "Ingresar fecha":
+    opciones = ["Establecer fecha", "No aplica", "Por definir"]
+    eleccion = st.radio(f"Vencimiento a {dias} días", opciones, key=f"radio_venc_{dias}")
+    
+    if eleccion == "Establecer fecha":
         fecha = st.date_input(
-            f"Fecha para {dias} días",
-            key=f"fecha_{dias}",
+            f"Elige la fecha para {dias} días", 
+            key=f"fecha_venc_{dias}",
             format="DD/MM/YYYY"
         )
-        return fecha.strftime("%d/%m/%Y") # Devuelve fecha en formato str
-    elif opcion == "Por definir":
+        return fecha.strftime("%d/%m/%Y")
+    elif eleccion == "Por definir":
         return "Por definir"
-    else:
-        return None # No Aplica -> se guarda como valor null
+    else:  # "No aplica"
+        return None
 
-# Invocar para los tres plazos
-vencimiento_30 = fecha_vencimiento_input(30)
-vencimiento_60 = fecha_vencimiento_input(60)
+# Ejemplo de uso:
+vencimiento_30  = fecha_vencimiento_input(30)
+vencimiento_60  = fecha_vencimiento_input(60)
 vencimiento_120 = fecha_vencimiento_input(120)
+
+st.write("Vencimientos:", vencimiento_30, vencimiento_60, vencimiento_120)
 
 st.divider()
 
