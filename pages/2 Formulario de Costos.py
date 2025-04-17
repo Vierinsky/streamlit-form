@@ -2,6 +2,30 @@ import streamlit as st
 from datetime import datetime
 import pytz
 
+# Diccionario de hojas de la planilla
+    # Cambiar key en caso de modificaciones
+
+HOJAS_GOOGLE_SHEETS = { 
+    # Hojas principales por CECO
+    "RRHH": "rrhh",
+    "Agroquimico": "agroquimico",
+    "Maquinaria": "maquinaria",
+    "Administracion": "administracion",
+    "Seguros": "seguros",
+    "Inversiones": "inversiones",
+    "Servicio Externos MMOO": "servicio_externos_mmoo",
+    "Servicios Básicos": "servicios_basicos",
+    "Combustibles": "combustibles",
+    "Gastos Varios / Otros": "gastos_varios",
+
+    # Hojas auxiliares
+    "proveedores": "proveedores",
+    "clientes": "clientes",         # Esto es para el Formulario de Ingresos
+    "ceco": "ceco",
+    "cultivos": "cultivos",
+    "maquinas": "maquinas"
+}
+
 st.title("📋 Formulario de Registro de Costos")
 
 spreadsheet = st.session_state.get("spreadsheet")
@@ -51,7 +75,7 @@ st.subheader("Centro de Costos")
 # LISTA DE CENTRO DE COSTOS
     # Obtener lista dinámica de centro de costos desde la hoja 'ceco'
 try:
-    ceco_sheet = spreadsheet.worksheet("ceco")
+    ceco_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["ceco"])
     data = ceco_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
     ceco_list = [row["ceco"] for row in data if row["ceco"].strip()]
 except Exception as e:
@@ -67,7 +91,7 @@ ceco = st.selectbox(
 # LISTA DE CULTIVOS
     # Obtener lista dinámica de cultivos desde la hoja 'cultivos'
 try:
-    cultivo_sheet = spreadsheet.worksheet("cultivos")
+    cultivo_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["cultivos"])
     data = cultivo_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
     cultivo_list = [row["cultivo"] for row in data if row["cultivo"].strip()]
 except Exception as e:
@@ -95,7 +119,7 @@ def seleccionar_cultivo(cultivo_list):
 # LISTA DE MAQUINAS
     # Obtener lista dinámica desde la hoja 'maquinas'
 try:
-    maquinas_sheet = spreadsheet.worksheet("maquinas")
+    maquinas_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["maquinas"])
     data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
     maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
 except Exception as e:
@@ -125,16 +149,6 @@ def seleccionar_maquina(maquinas_list):
 if ceco == "RRHH":                                                                                             # COLUMNA
     # st.subheader()
     cultivo = seleccionar_cultivo(cultivo_list)
-
-    # # LISTA DE SUB-CATEGORIAS RRHH
-    #     # Obtener lista dinámica desde la hoja 'rrhh'
-    # try:
-    #     sub_rrhh_sheet = spreadsheet.worksheet("sub_rrhh")
-    #     data = sub_rrhh_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    #     sub_rrhh_list = [row["sub_rrhh"] for row in data if row["sub_rrhh"].strip()]
-    # except Exception as e:
-    #     st.error(f"❌ Error al cargar la lista de subcategorias de RRHH: {e}")
-    #     sub_rrhh_list = []
 
     sub_rrhh = st.selectbox(                                                                                  # COLUMNA
         "Seleccione sub-categoria RRHH",
@@ -327,7 +341,7 @@ else:
     # Proveedores
     try:
         # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
-        proveedores_sheet = spreadsheet.worksheet("proveedores")
+        proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
         data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
         proveedores_list = [row["proveedor"] for row in data if row["proveedor"].strip()]
     except Exception as e:
@@ -441,30 +455,62 @@ if "registro_guardado" not in st.session_state:
     st.session_state["registro_guardado"] = False
 
 if st.button("Guardar Registro"):
-
-    # Primero validamos que los campos Descripción Gasto, Valor Bruto del Gasto, Ítem y Proveedor no estén vacíos
+    # ——— INICIO SECCIÓN DE VALIDACIÓN ———
     errores = []
 
-    # CORREGIR ####################################################################################################################################################
-
+    # 1) Campos generales obligatorios
     if not descripcion.strip():
         errores.append("La descripción del gasto es obligatoria.")
     if valor_bruto <= 0:
         errores.append("El valor bruto debe ser mayor que cero.")
     if not ceco:
-        errores.append("Debe seleccionar un ítem.")
-    # if not servicio:
-    #     errores.append("Debe seleccionar un servicio.")
-    if not proveedor_final:
-        errores.append("Debe seleccionar o ingresar un proveedor.")
-    if numero_folio not in ("", "null") and not numero_folio.isdigit():
-        errores.append("El número de folio debe ser un valor numérico.")
+        errores.append("Debe seleccionar un Centro de Costos.")
 
+    # 2) Validar subcampos según CECO
+    if ceco == "RRHH":
+        if not sub_rrhh:
+            errores.append("Debe seleccionar una sub-categoría de RRHH.")
+        if not cultivo:
+            errores.append("Debe seleccionar un cultivo para RRHH.")
+    elif ceco == "Agroquimico":
+        if not sub_agroquimico:
+            errores.append("Debe seleccionar una sub-categoría de Agroquímicos.")
+        if not cultivo:
+            errores.append("Debe seleccionar un cultivo para Agroquímicos.")
+    elif ceco == "Maquinaria":
+        if not sub_maquinaria:
+            errores.append("Debe seleccionar una sub-categoría de Maquinaria.")
+        if not maquina:
+            errores.append("Debe seleccionar una Maquinaria.")
+    elif ceco == "Administracion":
+        if not sub_admin:
+            errores.append("Debe seleccionar una sub-categoría de Administración.")
+    elif ceco == "Seguros":
+        if not sub_seguros:
+            errores.append("Debe seleccionar una sub-categoría de Seguros.")
+        # si Transporte/Equipos/Cultivos… validarlos aquí como lo hicimos arriba
+    elif ceco == "Inversiones":
+        if not sub_inv:
+            errores.append("Debe seleccionar una sub-categoría de Inversiones.")
+        # y así para las demás ramas…
+    # no validamos nada especial para "Servicios Básicos", "Combustibles" o "Gastos Varios / Otros"
+
+    # 3) Proveedor (solo si aplica)
+    if ceco != "RRHH":
+        if not proveedor_final:
+            errores.append("Debe seleccionar o ingresar un proveedor.")
+
+    # 4) Número de factura (puede estar en blanco o “null”)
+    if numero_folio not in ("", "null"):
+        if not numero_folio.isdigit():
+            errores.append("El número de factura debe ser numérico o dejarse en blanco.")
+
+    # Mostrar advertencias
     if errores:
         for err in errores:
             st.warning(err)
+    # ——— FIN SECCIÓN DE VALIDACIÓN ———
 
-    # CORREGIR ####################################################################################################################################################
 
     else:
         # Si todo está en orden se procede a agregar los datos a la planilla
@@ -496,7 +542,7 @@ if st.button("Guardar Registro"):
             # "RRHH"
             if ceco == "RRHH":
 
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "rrhh")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["RRHH"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -521,7 +567,7 @@ if st.button("Guardar Registro"):
             # "Agroquimico"
             elif ceco == "Agroquimico":
 
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "agroquimico")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Agroquimico"])
 
                 registro = {
                     "id" : nuevo_index,
@@ -545,7 +591,7 @@ if st.button("Guardar Registro"):
             # "Maquinaria"
             elif ceco == "Maquinaria":
 
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "maquinario")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Maquinaria"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -570,7 +616,7 @@ if st.button("Guardar Registro"):
 
             # "Administracion"
             elif ceco == "Administracion":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "administracion")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Administracion"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -594,7 +640,7 @@ if st.button("Guardar Registro"):
 
             # "Seguros"
             elif ceco == "Seguros":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Seguros"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -620,7 +666,7 @@ if st.button("Guardar Registro"):
 
             # "Inversiones"
             elif ceco == "Inversiones":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Inversiones"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -644,7 +690,7 @@ if st.button("Guardar Registro"):
             # "Servicio Externos MMOO"
 
             elif ceco == "Servicio Externos MMOO":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Servicio Externos MMOO"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -667,7 +713,7 @@ if st.button("Guardar Registro"):
 
             # "Servicios Básicos"
             elif ceco == "Servicios Básicos":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS['Servicios Básicos'])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -688,7 +734,7 @@ if st.button("Guardar Registro"):
                 }
             # "Combustibles"
             elif ceco == "Combustibles":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Combustibles"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -710,7 +756,7 @@ if st.button("Guardar Registro"):
        
             # "Gastos Varios / Otros"
             elif ceco == "Gastos Varios / Otros":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, "seguros")
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Gastos Varios / Otros"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
