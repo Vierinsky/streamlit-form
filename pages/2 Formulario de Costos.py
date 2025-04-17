@@ -488,12 +488,23 @@ if st.button("Guardar Registro"):
     elif ceco == "Seguros":
         if not sub_seguros:
             errores.append("Debe seleccionar una sub-categoría de Seguros.")
-        # si Transporte/Equipos/Cultivos… validarlos aquí como lo hicimos arriba
+        if sub_seguros == "Transporte" and not transporte:
+            errores.append("Debe indicar el tipo de transporte.")
+        if sub_seguros == "Equipos"    and not maquina:
+            errores.append("Debe seleccionar un equipo.")
+        if sub_seguros == "Cultivos"   and not cultivo:
+            errores.append("Debe seleccionar un cultivo.")
+        # Infraestructura no requiere campos extras
     elif ceco == "Inversiones":
         if not sub_inv:
             errores.append("Debe seleccionar una sub-categoría de Inversiones.")
-        # y así para las demás ramas…
-    # no validamos nada especial para "Servicios Básicos", "Combustibles" o "Gastos Varios / Otros"
+        else:
+            if sub_inv == "Preparación Previa":
+                if not prep_prev:
+                    errores.append("Debe seleccionar una categoría de Preparación Previa.")
+            else:
+                if not cultivo:
+                    errores.append("Debe seleccionar un cultivo para Inversiones.")
 
     # 3) Proveedor (solo si aplica)
     if ceco != "RRHH":
