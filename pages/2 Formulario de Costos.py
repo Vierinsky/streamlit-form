@@ -73,7 +73,7 @@ st.subheader("Centro de Costos")
 # CENTRO DE COSTOS
 
 @st.cache_data(ttl=300)
-def cargar_hoja(spreadsheet, sheet_name: str) -> list[dict]:
+def cargar_hoja(_spreadsheet, sheet_name: str) -> list[dict]:
     """
     Lee todos los registros de una hoja de Google Sheets y cachea el resultado.
 
@@ -91,7 +91,8 @@ def cargar_hoja(spreadsheet, sheet_name: str) -> list[dict]:
     # Obtener lista dinámica de centro de costos desde la hoja 'ceco'
 try:
     data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["ceco"])
-    ceco_list = [row["ceco"] for row in data]
+    ceco_list = [r["ceco"] for r in data if r["ceco"].strip()]
+
     # ceco_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["ceco"])
     # data = ceco_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
     # ceco_list = [row["ceco"] for row in data if row["ceco"].strip()]
@@ -109,7 +110,7 @@ ceco = st.selectbox(
     # Obtener lista dinámica de cultivos desde la hoja 'cultivos'
 try:
     data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["cultivos"])
-    cultivo_list = [row["cultivo"] for row in data]
+    cultivo_list = [r["cultivo"] for r in data if r["cultivo"].strip()]
     # cultivo_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["cultivos"])
     # data = cultivo_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
     # cultivo_list = [row["cultivo"] for row in data if row["cultivo"].strip()]
@@ -139,7 +140,7 @@ def seleccionar_cultivo(cultivo_list):
     # Obtener lista dinámica desde la hoja 'maquinas'
 try:
     data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["maquinas"])
-    maquinas_list = [row["maquina"] for row in data]
+    maquinas_list = [r["maquina"] for r in data if r["maquina"].strip()]
 
     # maquinas_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["maquinas"])
     # data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
@@ -357,7 +358,7 @@ else:
     try:
         # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
         data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["proveedores"])
-        proveedores_list = [row["proveedor"] for row in data]
+        proveedores_list = [r["proveedor"] for r in data if r["proveedor"].strip()]
 
         
         # proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
