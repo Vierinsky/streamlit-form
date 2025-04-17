@@ -4,7 +4,6 @@ import pytz
 
 # Diccionario de hojas de la planilla
     # Cambiar key en caso de modificaciones
-
 HOJAS_GOOGLE_SHEETS = { 
     # Hojas principales por CECO
     "RRHH": "rrhh",
@@ -72,12 +71,30 @@ st.divider()
 st.subheader("Centro de Costos")
 
 # CENTRO DE COSTOS
+
+@st.cache_data(ttl=300)
+def cargar_hoja(spreadsheet, sheet_name: str) -> list[dict]:
+    """
+    Lee todos los registros de una hoja de Google Sheets y cachea el resultado.
+
+    Args:
+        spreadsheet: objeto gspread.Spreadsheet ya autenticado.
+        sheet_name (str): nombre de la pestaña a leer.
+
+    Returns:
+        Lista de diccionarios (una fila por dict con llaves = encabezados).
+    """
+    ws = spreadsheet.worksheet(sheet_name)
+    return ws.get_all_records()
+
 # LISTA DE CENTRO DE COSTOS
     # Obtener lista dinámica de centro de costos desde la hoja 'ceco'
 try:
-    ceco_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["ceco"])
-    data = ceco_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    ceco_list = [row["ceco"] for row in data if row["ceco"].strip()]
+    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["ceco"])
+    ceco_list = [row["ceco"] for row in data]
+    # ceco_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["ceco"])
+    # data = ceco_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    # ceco_list = [row["ceco"] for row in data if row["ceco"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de centro de costos: {e}")
     ceco_list = []
@@ -91,9 +108,11 @@ ceco = st.selectbox(
 # LISTA DE CULTIVOS
     # Obtener lista dinámica de cultivos desde la hoja 'cultivos'
 try:
-    cultivo_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["cultivos"])
-    data = cultivo_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    cultivo_list = [row["cultivo"] for row in data if row["cultivo"].strip()]
+    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["cultivos"])
+    cultivo_list = [row["cultivo"] for row in data]
+    # cultivo_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["cultivos"])
+    # data = cultivo_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    # cultivo_list = [row["cultivo"] for row in data if row["cultivo"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
     cultivo_list = []
@@ -119,9 +138,12 @@ def seleccionar_cultivo(cultivo_list):
 # LISTA DE MAQUINAS
     # Obtener lista dinámica desde la hoja 'maquinas'
 try:
-    maquinas_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["maquinas"])
-    data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
+    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["maquinas"])
+    maquinas_list = [row["maquina"] for row in data]
+
+    # maquinas_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["maquinas"])
+    # data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+    # maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de maquinas: {e}")
     maquinas_list = []
@@ -334,9 +356,13 @@ else:
     # Proveedores
     try:
         # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
-        proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
-        data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-        proveedores_list = [row["proveedor"] for row in data if row["proveedor"].strip()]
+        data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["proveedores"])
+        proveedores_list = [row["proveedor"] for row in data]
+
+        
+        # proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
+        # data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+        # proveedores_list = [row["proveedor"] for row in data if row["proveedor"].strip()]
     except Exception as e:
         st.error(f"❌ Error al cargar la lista de proveedores: {e}")
         proveedores_list = []
