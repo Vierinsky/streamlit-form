@@ -19,7 +19,7 @@ HOJAS_GOOGLE_SHEETS = {
 
     # Hojas auxiliares
     "proveedores": "proveedores",
-    "clientes": "clientes",         # Esto es para el Formulario de Ingresos
+    # "clientes": "clientes",         # Esto es para el Formulario de Ingresos
     "ceco": "ceco",
     "cultivos": "cultivos",
     "maquinas": "maquinas"
@@ -359,7 +359,7 @@ else:
         # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
         data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["proveedores"])
         proveedores_list = [r["proveedor"] for r in data if r["proveedor"].strip()]
-
+        proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
         
         # proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
         # data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
@@ -375,28 +375,33 @@ else:
         placeholder="Seleccione proveedor"
     )
 
-    # Limpiar campo de texto si se seleccionó un proveedor de la lista
-    if proveedor_seleccionado and st.session_state.get("nuevo_proveedor"):
-        st.session_state["nuevo_proveedor"] = ""
+    # ya no necesitamos nuevo_proveedor ni proveedor_final distinto:
+    proveedor_final = proveedor_seleccionado
 
-    # Input de nuevo proveedor
-    nuevo_proveedor = st.text_input(
-        "¿Proveedor no está en la lista? Escriba nuevo proveedor. De lo contrario dejar en blanco",
-        placeholder="Nombre del nuevo proveedor",
-        key="nuevo_proveedor"
-    )
+    # NUEVO PROVEEDOR:
 
-    # Decidir qué valor usar
-    proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
+    # # Limpiar campo de texto si se seleccionó un proveedor de la lista
+    # if proveedor_seleccionado and st.session_state.get("nuevo_proveedor"):
+    #     st.session_state["nuevo_proveedor"] = ""
 
-    # Agrega nuevo proveedor a la lista y le genera un id
-    if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
-        num_filas_proveedores = len(proveedores_sheet.get_all_values())
-        nuevo_id_proveedor = num_filas_proveedores  # Asumiendo que fila 1 es encabezado
-        proveedores_sheet.append_row([nuevo_id_proveedor, nuevo_proveedor.strip()])
+    # # Input de nuevo proveedor
+    # nuevo_proveedor = st.text_input(
+    #     "¿Proveedor no está en la lista? Escriba nuevo proveedor. De lo contrario dejar en blanco",
+    #     placeholder="Nombre del nuevo proveedor",
+    #     key="nuevo_proveedor"
+    # )
 
-    # Priorizar proveedor seleccionado
-    proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_proveedor.strip()
+    # # Decidir qué valor usar
+    # proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
+
+    # # Agrega nuevo proveedor a la lista y le genera un id
+    # if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
+    #     num_filas_proveedores = len(proveedores_sheet.get_all_values())
+    #     nuevo_id_proveedor = num_filas_proveedores  # Asumiendo que fila 1 es encabezado
+    #     proveedores_sheet.append_row([nuevo_id_proveedor, nuevo_proveedor.strip()])
+
+    # # Priorizar proveedor seleccionado
+    # proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_proveedor.strip()
 
 st.divider()
 
@@ -449,12 +454,17 @@ def fecha_vencimiento_input(dias):
     else:  # "No aplica"
         return None
 
-# Ejemplo de uso:
 vencimiento_30  = fecha_vencimiento_input(30)
+
+st.write("Vencimiento 30 días", vencimiento_30)
+
 vencimiento_60  = fecha_vencimiento_input(60)
+
+st.write("Vencimiento 30 días", vencimiento_30)
+
 vencimiento_120 = fecha_vencimiento_input(120)
 
-st.write("Vencimientos:", vencimiento_30, vencimiento_60, vencimiento_120)
+st.write("Vencimientos:", vencimiento_120)
 
 st.divider()
 
@@ -811,9 +821,9 @@ if st.button("Guardar Registro"):
             # ✅ Marcar éxito y refrescar
             st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
 
-            # Solo si se usó un nuevo proveedor y no está en la lista
-            if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
-                proveedores_sheet.append_row(["", nuevo_proveedor.strip()])
+            # # Solo si se usó un nuevo proveedor y no está en la lista
+            # if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
+            #     proveedores_sheet.append_row(["", nuevo_proveedor.strip()])
 
             # 🔄 Refrescar la app
             st.rerun()
