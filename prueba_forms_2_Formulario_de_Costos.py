@@ -22,55 +22,8 @@ HOJAS_GOOGLE_SHEETS = {
     # "clientes": "clientes",         # Esto es para el Formulario de Ingresos
     "ceco": "ceco",
     "cultivos": "cultivos",
-    "maquinas": "maquinas"
+    "maquinas": "maquinas",
 }
-
-st.title("📋 Formulario de Registro de Costos")
-
-spreadsheet = st.session_state.get("spreadsheet")
-if not spreadsheet:
-    st.error("❌ No se pudo acceder al documento. Verifica la conexión en la página principal.")
-    st.stop
-
-# # Obtener la hoja de costos
-# sheet = spreadsheet.worksheet("costos")
-
-# ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
-if st.session_state.get("registro_guardado"):
-    st.toast("Registro guardado con éxito", icon="✅")
-    st.session_state["registro_guardado"] = False
-
-# Inputs
-
-st.divider()
-
-st.subheader("Información General")
-
-# Descripción Gasto
-descripcion = st.text_input(
-    "Descripción del Gasto", 
-    placeholder='"Pago Iva y 20% restante", "Compra Touchdown IQ 500 20 L", "Asesoria"')
-
-# Valor bruto del Gasto - solo valores tipo int
-valor_bruto = st.number_input(
-    "Valor Bruto del Gasto/Compra (IVA incluido)", 
-    min_value=0, 
-    step=1,
-    format="%d"
-)
-# Calculo IVA y valor neto
-iva = valor_bruto * 0.19
-valor_neto = valor_bruto - iva
-
-# Formateo visual con separador de miles (solo display opcional)
-monto_formateado = f"{valor_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
-st.write(f"Monto ingresado: ${monto_formateado}")
-
-st.divider()
-
-st.subheader("Centro de Costos")
-
-# CENTRO DE COSTOS
 
 @st.cache_data(ttl=300)
 def cargar_hoja(_spreadsheet, sheet_name: str) -> list[dict]:
@@ -84,403 +37,433 @@ def cargar_hoja(_spreadsheet, sheet_name: str) -> list[dict]:
     Returns:
         Lista de diccionarios (una fila por dict con llaves = encabezados).
     """
-    ws = _spreadsheet.worksheet(sheet_name)
+    ws = spreadsheet.worksheet(sheet_name)
     return ws.get_all_records()
 
-# LISTA DE CENTRO DE COSTOS
-    # Obtener lista dinámica de centro de costos desde la hoja 'ceco'
-try:
-    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["ceco"])
-    ceco_list = [r["ceco"] for r in data if r["ceco"].strip()]
+st.title("📋 Formulario de Registro de Costos")
 
-    # ceco_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["ceco"])
-    # data = ceco_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    # ceco_list = [row["ceco"] for row in data if row["ceco"].strip()]
-except Exception as e:
-    st.error(f"❌ Error al cargar la lista de centro de costos: {e}")
-    ceco_list = []
+spreadsheet = st.session_state.get("spreadsheet")
+if not spreadsheet:
+    st.error("❌ No se pudo acceder al documento. Verifica la conexión en la página principal.")
+    st.stop
 
-ceco = st.selectbox(
-    "Seleccione Centro de Costos", 
-    ceco_list,
-    index=None, 
-    placeholder="Centro de Costos")
+# Mensaje de éxito al recargar
+if st.session_state.pop("registro_guardado", False):
+    st.toast("Registro guardado con éxito", icon="✅")
 
-# LISTA DE CULTIVOS
-    # Obtener lista dinámica de cultivos desde la hoja 'cultivos'
-try:
-    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["cultivos"])
-    cultivo_list = [r["cultivo"] for r in data if r["cultivo"].strip()]
-    # cultivo_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["cultivos"])
-    # data = cultivo_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    # cultivo_list = [row["cultivo"] for row in data if row["cultivo"].strip()]
-except Exception as e:
-    st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
-    cultivo_list = []
+with st.form("form_costos"):
+    st.divider()
+    st.subheader("Información General")
+    descripcion   = st.text_input("Descripción del Gasto", placeholder='Ej: "Pago IVA"')
+    valor_bruto   = st.number_input("Valor Bruto (IVA incl.)", min_value=0, step=1, format="%d")
+    iva           = valor_bruto * 0.19
+    valor_neto    = valor_bruto - iva
+    st.write(f"Monto neto: ${valor_neto:,.0f}".replace(",", "."))
 
-# Definir función que despliega selectbox de cultivos
-def seleccionar_cultivo(cultivo_list):
-    """
-    Muestra un menú desplegable obligatorio para que el usuario seleccione un cultivo.
+    st.divider()
+    st.subheader("Centro de Costos")
 
-    Args:
-        cultivo_list (list): Lista de nombres de cultivos disponibles.
+    # CENTRO DE COSTOS
 
-    Returns:
-        str: Cultivo seleccionado por el usuario.
-    """
-    return st.selectbox(
-        "Seleccione Cultivo",
-        cultivo_list,
-        index=None,
-        placeholder="Cultivos"
-    )
+    # LISTA DE CENTRO DE COSTOS
+        # Obtener lista dinámica de centro de costos desde la hoja 'ceco'
+    try:
+        data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["ceco"])
+        ceco_list = [r["ceco"] for r in data if r["ceco"].strip()]
 
-# LISTA DE MAQUINAS
-    # Obtener lista dinámica desde la hoja 'maquinas'
-try:
-    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["maquinas"])
-    maquinas_list = [r["maquina"] for r in data if r["maquina"].strip()]
+        # ceco_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["ceco"])
+        # data = ceco_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+        # ceco_list = [row["ceco"] for row in data if row["ceco"].strip()]
+    except Exception as e:
+        st.error(f"❌ Error al cargar la lista de centro de costos: {e}")
+        ceco_list = []
 
-    # maquinas_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["maquinas"])
-    # data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    # maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
-except Exception as e:
-    st.error(f"❌ Error al cargar la lista de maquinas: {e}")
-    maquinas_list = []
+    ceco = st.selectbox(
+        "Seleccione Centro de Costos", 
+        ceco_list,
+        index=None, 
+        placeholder="Centro de Costos")
 
-def seleccionar_maquina(maquinas_list):
-    """
-    Muestra un selector desplegable para elegir una máquina desde una lista.
+    # LISTA DE CULTIVOS
+        # Obtener lista dinámica de cultivos desde la hoja 'cultivos'
+    try:
+        data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["cultivos"])
+        cultivo_list = [r["cultivo"] for r in data if r["cultivo"].strip()]
+        # cultivo_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["cultivos"])
+        # data = cultivo_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+        # cultivo_list = [row["cultivo"] for row in data if row["cultivo"].strip()]
+    except Exception as e:
+        st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
+        cultivo_list = []
 
-    Args:
-        maquinas_list: Lista de máquinas disponibles.
+    # Definir función que despliega selectbox de cultivos
+    def seleccionar_cultivo(cultivo_list):
+        """
+        Muestra un menú desplegable obligatorio para que el usuario seleccione un cultivo.
 
-    Returns:
-        La máquina seleccionada o None si no se selecciona ninguna.
-    """
-    return st.selectbox(
-        "Seleccione Maquinaria",
-        maquinas_list,
-        index=None,
-        placeholder="Maquinaria"
-    )
+        Args:
+            cultivo_list (list): Lista de nombres de cultivos disponibles.
 
-
-
-# Condicional CECO
-if ceco == "RRHH":                                                                                             # COLUMNA
-    # st.subheader()
-
-    sub_rrhh = st.selectbox(                                                                                  # COLUMNA
-        "Seleccione sub-categoria RRHH",
-        ["Sueldo administrativo", 
-        "Sueldo operativo", 
-        "Prevención", 
-        "Leyes sociales", 
-        "Capacitación", 
-        "Bonos", 
-        "Viaticos", 
-        "Aguinaldos"],
-        index=None,
-        placeholder="Sub-categorias RRHH"
-    )
-
-    cultivo = seleccionar_cultivo(cultivo_list)
-
-    # DESPUÉS DE RRHH ¿APLICA CONTINUAR CON SECCIÓN PROVEEDOR?
-
-elif ceco == "Agroquimico":                                                                                   # COLUMNA
-
-    cultivo = seleccionar_cultivo(cultivo_list)
-
-    sub_agroquimico = st.selectbox(
-        "Seleccione sub-categoria Agroquímicos",
-        ["Fertilizante", "Fungicida", "Insectida", "Herbicida"],
-        index=None,
-        placeholder="Sub-categorias Agroquímicos"
-    )
-
-elif ceco == "Maquinaria":
-
-    sub_maquinaria = st.selectbox(
-        "Seleccione sub-categoria Maquinaria",
-        ["Mantenimiento", "Reparación", "Mejora", "Servicio a Terceros"],
-        index=None,
-        placeholder="Sub-categorias Maquinaria"
-    )
-
-    maquina = seleccionar_maquina(maquinas_list)
-
-elif ceco == "Administracion":
-    # LISTA DE ADMINISTRACIÓN
-    #     Obtener lista dinámica desde la hoja 'sub_admin'
-    # try:
-    #     sub_admin_sheet = spreadsheet.worksheet("sub_admin")
-    #     data = sub_admin_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    #     sub_admin_list = [row["sub_admin"] for row in data if row["sub_admin"].strip()]
-    # except Exception as e:
-    #     st.error(f"❌ Error al cargar la lista de sub-categorias de Administración: {e}")
-    #     sub_admin_list = []
-    
-    sub_admin = st.selectbox(
-        "Seleccione sub-categoria Administración",
-        ["Asesorias", "Subscripciones", "Viajes", "Form 29"],
-        index=None,
-        placeholder="Sub-categorias Administración"
-    )
-
-elif ceco == "Seguros":
-
-    sub_seguros = st.selectbox(
-        "Seleccione sub-categoria Seguros",
-        ["Transporte", "Equipos", "Infraestructura", "Cultivos"],
-        index=None,
-        placeholder="Sub-categorias Seguros"
-    )
-
-    if sub_seguros == "Transporte":
-        
-        transporte = st.selectbox(
-            "Seleccione Tipo de Transporte",
-            ["Importación", "Exportación", "Carga Nacional"],
+        Returns:
+            str: Cultivo seleccionado por el usuario.
+        """
+        return st.selectbox(
+            "Seleccione Cultivo",
+            cultivo_list,
             index=None,
-            placeholder="Tipo de Transporte"
+            placeholder="Cultivos"
         )
 
-        cultivo = None
-        maquina = None
+    # LISTA DE MAQUINAS
+        # Obtener lista dinámica desde la hoja 'maquinas'
+    try:
+        data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["maquinas"])
+        maquinas_list = [r["maquina"] for r in data if r["maquina"].strip()]
 
-    elif sub_seguros == "Equipos":
+        # maquinas_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["maquinas"])
+        # data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+        # maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
+    except Exception as e:
+        st.error(f"❌ Error al cargar la lista de maquinas: {e}")
+        maquinas_list = []
+
+    def seleccionar_maquina(maquinas_list):
+        """
+        Muestra un selector desplegable para elegir una máquina desde una lista.
+
+        Args:
+            maquinas_list: Lista de máquinas disponibles.
+
+        Returns:
+            La máquina seleccionada o None si no se selecciona ninguna.
+        """
+        return st.selectbox(
+            "Seleccione Maquinaria",
+            maquinas_list,
+            index=None,
+            placeholder="Maquinaria"
+        )
+
+
+
+    # Condicional CECO
+    if ceco == "RRHH":                                                                                             # COLUMNA
+        # st.subheader()
+
+        sub_rrhh = st.selectbox(                                                                                  # COLUMNA
+            "Seleccione sub-categoria RRHH",
+            ["Sueldo administrativo", 
+            "Sueldo operativo", 
+            "Prevención", 
+            "Leyes sociales", 
+            "Capacitación", 
+            "Bonos", 
+            "Viaticos", 
+            "Aguinaldos"],
+            index=None,
+            placeholder="Sub-categorias RRHH"
+        )
+
+        cultivo = seleccionar_cultivo(cultivo_list)
+
+        # DESPUÉS DE RRHH ¿APLICA CONTINUAR CON SECCIÓN PROVEEDOR?
+
+    elif ceco == "Agroquimico":                                                                                   # COLUMNA
+
+        cultivo = seleccionar_cultivo(cultivo_list)
+
+        sub_agroquimico = st.selectbox(
+            "Seleccione sub-categoria Agroquímicos",
+            ["Fertilizante", "Fungicida", "Insectida", "Herbicida"],
+            index=None,
+            placeholder="Sub-categorias Agroquímicos"
+        )
+
+    elif ceco == "Maquinaria":
+
+        sub_maquinaria = st.selectbox(
+            "Seleccione sub-categoria Maquinaria",
+            ["Mantenimiento", "Reparación", "Mejora", "Servicio a Terceros"],
+            index=None,
+            placeholder="Sub-categorias Maquinaria"
+        )
 
         maquina = seleccionar_maquina(maquinas_list)
 
-        transporte = None
+    elif ceco == "Administracion":
+        # # LISTA DE ADMINISTRACIÓN
+        #     # Obtener lista dinámica desde la hoja 'sub_admin'
+        # try:
+        #     data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["sub_admin"])
+        #     sub_admin_list = [r["sub_admin"] for r in data if r["sub_admin"].strip()]
 
-    elif sub_seguros == "Infraestructura":
+        #     # sub_admin_sheet = spreadsheet.worksheet("sub_admin")
+        #     # data = sub_admin_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+        #     # sub_admin_list = [row["sub_admin"] for row in data if row["sub_admin"].strip()]
+        # except Exception as e:
+        #     st.error(f"❌ Error al cargar la lista de sub-categorias de Administración: {e}")
+        #     sub_admin_list = []
+        
+        sub_admin = st.selectbox(
+            "Seleccione sub-categoria Administración",
+            ["Asesorias", "Subscripciones", "Viajes", "Form 29"],
+            index=None,
+            placeholder="Sub-categorias Administración"
+        )
 
-        maquina = None
-        cultivo = None
-        transporte = None
+    elif ceco == "Seguros":
 
-    elif sub_seguros == "Cultivos":
-        cultivo = seleccionar_cultivo(cultivo_list)
+        sub_seguros = st.selectbox(
+            "Seleccione sub-categoria Seguros",
+            ["Transporte", "Equipos", "Infraestructura", "Cultivos"],
+            index=None,
+            placeholder="Sub-categorias Seguros"
+        )
 
-        maquina = None
-        transporte = None
+        if sub_seguros == "Transporte":
+            
+            transporte = st.selectbox(
+                "Seleccione Tipo de Transporte",
+                ["Importación", "Exportación", "Carga Nacional"],
+                index=None,
+                placeholder="Tipo de Transporte"
+            )
 
-elif ceco == "Inversiones":
+            cultivo = None
+            maquina = None
 
-    sub_inv = st.selectbox(
-        "Seleccione Inversión",
-        ["Maquinaria", 
-         "Infraestructura", 
-         "Equipos", 
-         "Preparación Previa"],
-        index=None,
-        placeholder= "Sub-categorias Inverisión"
-    )
-    
-    if sub_inv == "Preparación Previa":
+        elif sub_seguros == "Equipos":
 
-        prep_prev = st.selectbox(
-            "Seleccione Preparación Previa",
-            ["Preparación de Suelo", 
-             "Agroquímico"],
-             index=None,
-             placeholder="Sub-categorias Preparación Previa"
+            maquina = seleccionar_maquina(maquinas_list)
+
+            transporte = None
+
+        elif sub_seguros == "Infraestructura":
+
+            maquina = None
+            cultivo = None
+            transporte = None
+
+        elif sub_seguros == "Cultivos":
+            cultivo = seleccionar_cultivo(cultivo_list)
+
+            maquina = None
+            transporte = None
+
+    elif ceco == "Inversiones":
+
+        sub_inv = st.selectbox(
+            "Seleccione Inversión",
+            ["Maquinaria", 
+            "Infraestructura", 
+            "Equipos", 
+            "Preparación Previa"],
+            index=None,
+            placeholder= "Sub-categorias Inverisión"
         )
         
-        cultivo = None # Preguntar si "Preparación Previa" debe ir enlazada a un cultivo
-    
-    else:
+        if sub_inv == "Preparación Previa":
+
+            prep_prev = st.selectbox(
+                "Seleccione Preparación Previa",
+                ["Preparación de Suelo", 
+                "Agroquímico"],
+                index=None,
+                placeholder="Sub-categorias Preparación Previa"
+            )
+            
+            cultivo = None # Preguntar si "Preparación Previa" debe ir enlazada a un cultivo
+        
+        else:
+
+            cultivo = seleccionar_cultivo(cultivo_list)
+
+            prep_prev = None
+
+    elif ceco == "Servicio Externos MMOO":
 
         cultivo = seleccionar_cultivo(cultivo_list)
 
-        prep_prev = None
+        servicios_externos = st.selectbox(
+            "Seleccione Servicio Externo",
+            ["Cosecha",
+            "Selección",
+            "Plantación",
+            "Limpieza",
+            "Aseo y ornato",
+            "Otros"],
+            index=None,
+            placeholder="Servicios externos"
+        )
 
-elif ceco == "Servicio Externos MMOO":
+    elif ceco == "Servicios Básicos":
 
-    cultivo = seleccionar_cultivo(cultivo_list)
+        servicios_basicos = st.selectbox(
+            "Seleccione Servicio Básico",
+            ["Agua", "Luz", "Gas", "Luz2 (Riego)"],
+            index=None,
+            placeholder="Servicios Básicos"
+        )
 
-    servicios_externos = st.selectbox(
-        "Seleccione Servicio Externo",
-        ["Cosecha",
-         "Selección",
-         "Plantación",
-         "Limpieza",
-         "Aseo y ornato",
-         "Otros"],
-         index=None,
-         placeholder="Servicios externos"
-    )
+    elif ceco == "Combustibles":
+        
+        combustibles = st.selectbox(
+            "Seleccione Combustible",
+            ["Petróleo", "Bencina", "Energia"],
+            index=None,
+            placeholder="Combustibles"
+        )
 
-elif ceco == "Servicios Básicos":
-
-    servicios_basicos = st.selectbox(
-        "Seleccione Servicio Básico",
-        ["Agua", "Luz", "Gas", "Luz2 (Riego)"],
-        index=None,
-        placeholder="Servicios Básicos"
-    )
-
-elif ceco == "Combustibles":
-    
-    combustibles = st.selectbox(
-        "Seleccione Combustible",
-        ["Petróleo", "Bencina", "Energia"],
-        index=None,
-        placeholder="Combustibles"
-    )
-
-# Aqui iría "Gastos Varios / Otros"
+    # Aqui iría "Gastos Varios / Otros"
 
 
-# # Tipo servicio (Petróleo, Energía, Agua, Otro)
-# servicio = st.selectbox(
-#     "Tipo Servicio",
-#     ["Petróleo", "Energía", "Agua", "Otro"],
-#     index=None,
-#     placeholder="Seleccione tipo de servicio"
-# )
+    # # Tipo servicio (Petróleo, Energía, Agua, Otro)
+    # servicio = st.selectbox(
+    #     "Tipo Servicio",
+    #     ["Petróleo", "Energía", "Agua", "Otro"],
+    #     index=None,
+    #     placeholder="Seleccione tipo de servicio"
+    # )
 
-if ceco == "RRHH":  # Si se selecciona RRHH no se necesita especificar proveedor 
+    if ceco == "RRHH":  # Si se selecciona RRHH no se necesita especificar proveedor 
 
-    proveedor_final = None
+        proveedor_final = None
 
-else:
+    else:
+
+        st.divider()
+
+        st.subheader("Proveedores")
+
+        # Proveedores
+        try:
+            # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
+            data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["proveedores"])
+            proveedores_list = [r["proveedor"] for r in data if r["proveedor"].strip()]
+            
+            # proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
+            # data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
+            # proveedores_list = [row["proveedor"] for row in data if row["proveedor"].strip()]
+        except Exception as e:
+            st.error(f"❌ Error al cargar la lista de proveedores: {e}")
+            proveedores_list = []
+
+        proveedor_seleccionado = st.selectbox(
+            "Proveedor", 
+            proveedores_list, 
+            index=None, 
+            placeholder="Seleccione proveedor"
+        )
+
+        # ya no necesitamos nuevo_proveedor ni proveedor_final distinto:
+        proveedor_final = proveedor_seleccionado
+
+        # NUEVO PROVEEDOR:
+
+        # # Limpiar campo de texto si se seleccionó un proveedor de la lista
+        # if proveedor_seleccionado and st.session_state.get("nuevo_proveedor"):
+        #     st.session_state["nuevo_proveedor"] = ""
+
+        # # Input de nuevo proveedor
+        # nuevo_proveedor = st.text_input(
+        #     "¿Proveedor no está en la lista? Escriba nuevo proveedor. De lo contrario dejar en blanco",
+        #     placeholder="Nombre del nuevo proveedor",
+        #     key="nuevo_proveedor"
+        # )
+
+        # # Decidir qué valor usar
+        # proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
+
+        # # Agrega nuevo proveedor a la lista y le genera un id
+        # if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
+        #     num_filas_proveedores = len(proveedores_sheet.get_all_values())
+        #     nuevo_id_proveedor = num_filas_proveedores  # Asumiendo que fila 1 es encabezado
+        #     proveedores_sheet.append_row([nuevo_id_proveedor, nuevo_proveedor.strip()])
+
+        # # Priorizar proveedor seleccionado
+        # proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_proveedor.strip()
 
     st.divider()
 
-    st.subheader("Proveedores")
+    st.subheader("Información Factura")
 
-    # Proveedores
-    try:
-        # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
-        data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["proveedores"])
-        proveedores_list = [r["proveedor"] for r in data if r["proveedor"].strip()]
-        # proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
-        
-        # proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
-        # data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-        # proveedores_list = [row["proveedor"] for row in data if row["proveedor"].strip()]
-    except Exception as e:
-        st.error(f"❌ Error al cargar la lista de proveedores: {e}")
-        proveedores_list = []
-
-    proveedor_seleccionado = st.selectbox(
-        "Proveedor", 
-        proveedores_list, 
-        index=None, 
-        placeholder="Seleccione proveedor"
+    # N° Folio factura
+    numero_folio = st.text_input(
+        "Número de Factura (opcional)",
+        placeholder='Dejar en blanco si no aplica'
     )
 
-    # ya no necesitamos nuevo_proveedor ni proveedor_final distinto:
-    proveedor_final = proveedor_seleccionado
+    # Procesar el valor: si está vacío, lo tratamos como "null"
+    numero_folio = numero_folio.strip() if numero_folio.strip() else "null"
 
-    # NUEVO PROVEEDOR:
+    # Fecha de Emisión
+        # Fecha de emisión de la factura
+    fecha_emision = st.date_input(
+        "Fecha de Emisión Factura",
+        value="today",
+        format="DD/MM/YYYY"
+    )
 
-    # # Limpiar campo de texto si se seleccionó un proveedor de la lista
-    # if proveedor_seleccionado and st.session_state.get("nuevo_proveedor"):
-    #     st.session_state["nuevo_proveedor"] = ""
+    # Para definir fecha de vencimiento del pago (30, 60, 120 días)
 
-    # # Input de nuevo proveedor
-    # nuevo_proveedor = st.text_input(
-    #     "¿Proveedor no está en la lista? Escriba nuevo proveedor. De lo contrario dejar en blanco",
-    #     placeholder="Nombre del nuevo proveedor",
-    #     key="nuevo_proveedor"
-    # )
+    def fecha_vencimiento_input(dias):
+        """
+        Muestra un radio con tres opciones para el vencimiento a X días:
+        - "Establecer fecha": despliega un date_input y devuelve la fecha como string "DD/MM/YYYY"
+        - "No aplica": devuelve None
+        - "Por definir": devuelve "Por definir"
+        
+        Args:
+            dias (int): Plazo en días para el vencimiento (30, 60, 120, ...).
+        
+        Returns:
+            str | None: Fecha en formato "%d/%m/%Y", "Por definir", o None.
+        """
+        opciones = ["Establecer fecha", "No aplica", "Por definir"]
+        eleccion = st.radio(f"Vencimiento a {dias} días", opciones, key=f"radio_venc_{dias}")
+        
+        if eleccion == "Establecer fecha":
+            fecha = st.date_input(
+                f"Elige la fecha para {dias} días", 
+                key=f"fecha_venc_{dias}",
+                format="DD/MM/YYYY"
+            )
+            return fecha.strftime("%d/%m/%Y")
+        elif eleccion == "Por definir":
+            return "Por definir"
+        else:  # "No aplica"
+            return None
 
-    # # Decidir qué valor usar
-    # proveedor_final = nuevo_proveedor.strip() if nuevo_proveedor else proveedor_seleccionado
+    vencimiento_30  = fecha_vencimiento_input(30)
 
-    # # Agrega nuevo proveedor a la lista y le genera un id
-    # if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
-    #     num_filas_proveedores = len(proveedores_sheet.get_all_values())
-    #     nuevo_id_proveedor = num_filas_proveedores  # Asumiendo que fila 1 es encabezado
-    #     proveedores_sheet.append_row([nuevo_id_proveedor, nuevo_proveedor.strip()])
+    st.write("Vencimiento 30 días", vencimiento_30)
 
-    # # Priorizar proveedor seleccionado
-    # proveedor_final = proveedor_seleccionado if proveedor_seleccionado else nuevo_proveedor.strip()
+    vencimiento_60  = fecha_vencimiento_input(60)
 
-st.divider()
+    st.write("Vencimiento 60 días", vencimiento_60)
 
-st.subheader("Información Factura")
+    vencimiento_120 = fecha_vencimiento_input(120)
 
-# N° Folio factura
-numero_folio = st.text_input(
-    "Número de Factura (opcional)",
-    placeholder='Dejar en blanco si no aplica'
-)
+    st.write("Vencimientos:", vencimiento_120)
 
-# Procesar el valor: si está vacío, lo tratamos como None
-numero_folio = numero_folio.strip() or None
+    st.divider()
 
-# Fecha de Emisión
-    # Fecha de emisión de la factura
-fecha_emision = st.date_input(
-    "Fecha de Emisión Factura",
-    value="today",
-    format="DD/MM/YYYY"
-)
+    # Comentario opcional del usuario
+    comentario = st.text_area(
+        "Comentario (opcional)", 
+        placeholder="Agregue una nota o comentario"
+    )
 
-# Para definir fecha de vencimiento del pago (30, 60, 120 días)
+    # Botón de envío del formulario
+    submitted = st.form_submit_button("Guardar Registro")
 
-def fecha_vencimiento_input(dias):
-    """
-    Muestra un radio con tres opciones para el vencimiento a X días:
-      - "Establecer fecha": despliega un date_input y devuelve la fecha como string "DD/MM/YYYY"
-      - "No aplica": devuelve None
-      - "Por definir": devuelve "Por definir"
-    
-    Args:
-        dias (int): Plazo en días para el vencimiento (30, 60, 120, ...).
-    
-    Returns:
-        str | None: Fecha en formato "%d/%m/%Y", "Por definir", o None.
-    """
-    opciones = ["Establecer fecha", "No aplica", "Por definir"]
-    eleccion = st.radio(f"Vencimiento a {dias} días", opciones, key=f"radio_venc_{dias}")
-    
-    if eleccion == "Establecer fecha":
-        fecha = st.date_input(
-            f"Elige la fecha para {dias} días", 
-            key=f"fecha_venc_{dias}",
-            format="DD/MM/YYYY"
-        )
-        return fecha.strftime("%d/%m/%Y")
-    elif eleccion == "Por definir":
-        return "Por definir"
-    else:  # "No aplica"
-        return None
+# --- FIN st.form ---
 
-vencimiento_30  = fecha_vencimiento_input(30)
+# # Inicializar estado si no existe
+# if "registro_guardado" not in st.session_state:
+#     st.session_state["registro_guardado"] = False
 
-st.write("Vencimiento 30 días", vencimiento_30)
-
-vencimiento_60  = fecha_vencimiento_input(60)
-
-st.write("Vencimiento 60 días", vencimiento_60)
-
-vencimiento_120 = fecha_vencimiento_input(120)
-
-st.write("Vencimientos:", vencimiento_120)
-
-st.divider()
-
-# Comentario opcional del usuario
-comentario = st.text_area(
-    "Comentario (opcional)", 
-    placeholder="Agregue una nota o comentario"
-)
-
-# Botón de guardar registro
-
-# Inicializar estado si no existe
-if "registro_guardado" not in st.session_state:
-    st.session_state["registro_guardado"] = False
-
-if st.button("Guardar Registro"):
+if submitted:
     # ——— INICIO SECCIÓN DE VALIDACIÓN ———
     errores = []
 
@@ -538,7 +521,7 @@ if st.button("Guardar Registro"):
             errores.append("Debe seleccionar o ingresar un proveedor.")
 
     # 4) Número de factura (puede estar en blanco o “null”)
-    if numero_folio not in ("", None):
+    if numero_folio not in ("", "null"):
         if not numero_folio.isdigit():
             errores.append("El número de factura debe ser numérico o dejarse en blanco.")
 
