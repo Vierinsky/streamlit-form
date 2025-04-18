@@ -12,7 +12,7 @@ HOJAS_GOOGLE_SHEETS = {
     "Administracion": "administracion",
     "Seguros": "seguros",
     "Inversiones": "inversiones",
-    "Servicio Externos MMOO": "servicio_externos",
+    "Servicio Externos MMOO": "servicios_externos",
     "Servicios Básicos": "servicios_basicos",
     "Combustibles": "combustibles",
     "Gastos Varios / Otros": "gastos_varios",
