@@ -452,7 +452,7 @@ def fecha_vencimiento_input(dias):
     elif eleccion == "Por definir":
         return "Por definir"
     else:  # "No aplica"
-        return None
+        return "null"
 
 vencimiento_30  = fecha_vencimiento_input(30)
 
