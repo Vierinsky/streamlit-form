@@ -831,6 +831,7 @@ if st.button("Guardar Registro"):
                     "iva": iva,
                     "centro_costo": ceco,
                     "subcategoria": combustibles,
+                    "proveedor": proveedor_final,
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
@@ -852,7 +853,6 @@ if st.button("Guardar Registro"):
                     "valor_neto": valor_neto,
                     "iva": iva,
                     "centro_costo": ceco,
-                    # "subcategoria": combustibles,     # No Aplica
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
@@ -866,11 +866,11 @@ if st.button("Guardar Registro"):
             # Insertar la fila
             sheet.append_row(fila_final)
 
-            # ✅ Marcar éxito y refrescar
-            st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
+            # # ✅ Marcar éxito y refrescar
+            # st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
 
-            # 🔄 Refrescar la app
-            st.rerun()
+            # # 🔄 Refrescar la app
+            # st.rerun()
 
             # inyectar un script de JavaScript que recargue la página completamente 
             # después de guardar el registro
