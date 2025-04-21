@@ -866,16 +866,17 @@ if st.button("Guardar Registro"):
             # Insertar la fila
             sheet.append_row(fila_final)
 
-            # ✅ Marcar éxito y refrescar
-            st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
+            # ✅ Marcar éxito y mostrar mensaje
+            st.session_state["registro_guardado"] = True
+            st.toast("Registro guardado con éxito", icon="✅")
 
-            # # 🔄 Refrescar la app
-            # st.rerun()
-
-            # inyectar un script de JavaScript que recargue la página completamente 
-            # después de guardar el registro
+            # 🔄 Esperar 2s y luego recargar
             st.markdown("""
-                <meta http-equiv="refresh" content="0">
+                <script>
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                </script>
             """, unsafe_allow_html=True)
 
 
