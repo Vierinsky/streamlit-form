@@ -40,7 +40,7 @@ except Exception as e:
 HOJAS_GOOGLE_SHEETS = { 
     # Hojas principales por CECO
     "RRHH": "rrhh",
-    "Agroquimico": "agroquimico",
+    "Agroquimicos": "agroquimicos",
     "Maquinaria": "maquinaria",
     "Administracion": "administracion",
     "Seguros": "seguros",
