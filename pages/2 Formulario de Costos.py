@@ -870,13 +870,9 @@ if st.button("Guardar Registro"):
             st.session_state["registro_guardado"] = True
             st.toast("Registro guardado con éxito", icon="✅")
 
-            # 🔄 Esperar 2s y luego recargar
+            # 🔄 Recarga la página
             st.markdown("""
-                <script>
-                    setTimeout(function() {
-                        window.location.reload();
-                    }, 2000);
-                </script>
+                <meta http-equiv="refresh" content="0">
             """, unsafe_allow_html=True)
 
 
