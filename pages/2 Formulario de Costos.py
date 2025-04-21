@@ -289,6 +289,7 @@ elif ceco == "Seguros":
         maquina = seleccionar_maquina(maquinas_list)
 
         transporte = None
+        cultivo = None
 
     elif sub_seguros == "Infraestructura":
 
