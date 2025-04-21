@@ -495,11 +495,17 @@ vencimiento_30  = fecha_vencimiento_input(30)
 
 st.write("Selección vencimiento 30 días:", vencimiento_30)
 
+st.divider()
+
+
 st.markdown("**Vencimiento a 60 días**")
 
 vencimiento_60  = fecha_vencimiento_input(60)
 
 st.write("Selección vencimiento 60 días:", vencimiento_60)
+
+st.divider()
+
 
 st.markdown("**Vencimiento a 120 días**")
 
@@ -861,10 +867,6 @@ if st.button("Guardar Registro"):
 
             # ✅ Marcar éxito y refrescar
             st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
-
-            # # Solo si se usó un nuevo proveedor y no está en la lista
-            # if not proveedor_seleccionado and nuevo_proveedor.strip() and nuevo_proveedor.strip() not in proveedores_list:
-            #     proveedores_sheet.append_row(["", nuevo_proveedor.strip()])
 
             # 🔄 Refrescar la app
             st.rerun()
