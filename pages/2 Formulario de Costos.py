@@ -489,17 +489,23 @@ def fecha_vencimiento_input(dias):
 
 st.markdown("### Vencimiento Factura")
 
+st.markdown("**Vencimiento a 30 días**")
+
 vencimiento_30  = fecha_vencimiento_input(30)
 
-st.write("**Selección vencimiento 30 días:**", vencimiento_30)
+st.write("Selección vencimiento 30 días:", vencimiento_30)
+
+st.markdown("**Vencimiento a 60 días**")
 
 vencimiento_60  = fecha_vencimiento_input(60)
 
-st.write("**Selección vencimiento 60 días:**", vencimiento_60)
+st.write("Selección vencimiento 60 días:", vencimiento_60)
+
+st.markdown("**Vencimiento a 120 días**")
 
 vencimiento_120 = fecha_vencimiento_input(120)
 
-st.write("**Selección vencimiento 120 días:**", vencimiento_120)
+st.write("Selección vencimiento 120 días:", vencimiento_120)
 
 st.divider()
 
