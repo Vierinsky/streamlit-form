@@ -869,8 +869,8 @@ if st.button("Guardar Registro"):
             # ✅ Marcar éxito y refrescar
             st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
 
-            # # 🔄 Refrescar la app
-            # st.rerun()
+            # 🔄 Refrescar la app
+            st.rerun()
 
             # inyectar un script de JavaScript que recargue la página completamente 
             # después de guardar el registro
