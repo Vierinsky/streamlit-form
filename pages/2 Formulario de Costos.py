@@ -487,6 +487,8 @@ def fecha_vencimiento_input(dias):
     else:  # "No aplica"
         return None
 
+st.markdown("### Vencimiento Factura")
+
 vencimiento_30  = fecha_vencimiento_input(30)
 
 st.write("Selección vencimiento 30 días:", vencimiento_30)
