@@ -473,7 +473,7 @@ def fecha_vencimiento_input(dias):
         str | None: Fecha en formato "%d/%m/%Y", "Por definir", o None.
     """
     opciones = ["Establecer fecha", "No aplica", "Por definir"]
-    eleccion = st.radio(f"Vencimiento a {dias} días", opciones, key=f"radio_venc_{dias}")
+    eleccion = st.radio(f"Seleccione una opción para \nvencimiento a {dias} días", opciones, key=f"radio_venc_{dias}")
     
     if eleccion == "Establecer fecha":
         fecha = st.date_input(
@@ -489,15 +489,15 @@ def fecha_vencimiento_input(dias):
 
 vencimiento_30  = fecha_vencimiento_input(30)
 
-st.write("Vencimiento 30 días", vencimiento_30)
+st.write("Selección vencimiento 30 días:", vencimiento_30)
 
 vencimiento_60  = fecha_vencimiento_input(60)
 
-st.write("Vencimiento 60 días", vencimiento_60)
+st.write("Selección vencimiento 60 días:", vencimiento_60)
 
 vencimiento_120 = fecha_vencimiento_input(120)
 
-st.write("Vencimientos:", vencimiento_120)
+st.write("Selección vencimiento 120 días:", vencimiento_120)
 
 st.divider()
 
