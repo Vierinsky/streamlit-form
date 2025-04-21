@@ -866,8 +866,8 @@ if st.button("Guardar Registro"):
             # Insertar la fila
             sheet.append_row(fila_final)
 
-            # # ✅ Marcar éxito y refrescar
-            # st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
+            # ✅ Marcar éxito y refrescar
+            st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
 
             # # 🔄 Refrescar la app
             # st.rerun()
