@@ -865,17 +865,11 @@ if st.button("Guardar Registro"):
             # Insertar la fila
             sheet.append_row(fila_final)
 
-            # Marcar que se guardó con éxito
-            st.session_state["registro_guardado"] = True
+            # ✅ Marcar éxito y refrescar
+            st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
 
-            # Limpiar valores para que se reinicien en la recarga
-            for key in list(st.session_state.keys()):
-                if key not in ("spreadsheet", "registro_guardado"):
-                    del st.session_state[key]
-
-            # Recargar la página
+            # 🔄 Refrescar la app
             st.rerun()
-
 
         except Exception as e:
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
