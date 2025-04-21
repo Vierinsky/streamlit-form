@@ -872,7 +872,8 @@ if st.button("Guardar Registro"):
             # # 🔄 Refrescar la app
             # st.rerun()
 
-            # inyectar un pequeño script de JavaScript que recargue la página completamente
+            # inyectar un script de JavaScript que recargue la página completamente 
+            # después de guardar el registro
             st.markdown("""
                 <meta http-equiv="refresh" content="0">
             """, unsafe_allow_html=True)
