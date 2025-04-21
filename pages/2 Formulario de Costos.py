@@ -871,6 +871,8 @@ if st.button("Guardar Registro"):
             st.toast("Registro guardado con éxito", icon="✅")
 
             # 🔄 Recarga la página
+                # Nota: Hay otras formas de recargar la página pero hasta el momento
+                #       Este fue el que mejor funcionó.
             st.markdown("""
                 <meta http-equiv="refresh" content="0">
             """, unsafe_allow_html=True)
