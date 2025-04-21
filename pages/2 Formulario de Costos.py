@@ -871,6 +871,13 @@ if st.button("Guardar Registro"):
             # 🔄 Refrescar la app
             st.rerun()
 
+            # inyectar un pequeño script de JavaScript que recargue la página completamente
+            st.markdown("""
+                <script>
+                    window.location.reload();
+                </script>
+            """, unsafe_allow_html=True)
+
         except Exception as e:
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
             st.session_state["registro_guardado"] = False  # Resetear si falló
