@@ -1,6 +1,39 @@
 import streamlit as st
 from datetime import datetime
+from google.oauth2.service_account import Credentials
+import gspread
+import json
+import os
 import pytz
+
+# Configuración de autenticación con Google Sheets usando google-auth
+SCOPE = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
+
+# Intentar abrir la hoja de Google Sheets
+SHEET_NAME = "prueba_streamlit"             # ⚠️Modificar en producción⚠️
+
+# Autenticación y conexión con Google Sheets
+try:
+    service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])             # ⚠️Modificar en producción⚠️
+    credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
+    client = gspread.authorize(credentials)
+    spreadsheet = client.open(SHEET_NAME)
+
+    # Guardar en sesión para que esté accesible en otras páginas
+    st.session_state["spreadsheet"] = spreadsheet
+
+    # Mostrar estado en la barra lateral
+    with st.sidebar:
+        with st.expander("🔧 Estado de conexión", expanded=False):
+            st.success("✅ Conexión con Google Sheets exitosa")
+            st.success(f"✅ Hoja activa: '{SHEET_NAME}'")
+
+except Exception as e:
+    st.sidebar.error("❌ Falló la conexión con Google Sheets")
+    st.stop()
 
 st.title("📋 Formulario de Registro de Ingresos")
 
