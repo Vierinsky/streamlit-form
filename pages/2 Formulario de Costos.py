@@ -652,7 +652,7 @@ if st.button("Guardar Registro"):
             # "Agroquimico"
             elif ceco == "Agroquimico":
 
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Agroquimico"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Agroquimicos"])
 
                 registro = {
                     "id" : nuevo_index,
