@@ -56,7 +56,7 @@ HOJAS_GOOGLE_SHEETS = {
     "ceco": "ceco",
     "cultivos": "cultivos",
     "maquinas": "maquinas",
-    "tipo de pago" : "tipo_pagos"
+    "tipo_pagos" : "tipo_pagos"
 }
 
 st.title("📋 Formulario de Registro de Costos")
@@ -199,7 +199,6 @@ def seleccionar_maquina(maquinas_list):
         index=None,
         placeholder="Maquinaria"
     )
-
 
 
 # Condicional CECO
