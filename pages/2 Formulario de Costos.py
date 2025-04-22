@@ -367,17 +367,6 @@ elif ceco == "Combustibles":
         placeholder="Combustibles"
     )
 
-# Aqui iría "Gastos Varios / Otros"
-
-
-# # Tipo servicio (Petróleo, Energía, Agua, Otro)
-# servicio = st.selectbox(
-#     "Tipo Servicio",
-#     ["Petróleo", "Energía", "Agua", "Otro"],
-#     index=None,
-#     placeholder="Seleccione tipo de servicio"
-# )
-
 if ceco == "RRHH":  # Si se selecciona RRHH no se necesita especificar proveedor 
 
     proveedor_final = None
@@ -488,7 +477,7 @@ def fecha_vencimiento_input(dias):
     else:  # "No aplica"
         return None
     
-def pago_input(vencimiento):
+def pago_input(vencimiento, dias):
     """
     Devuelve la forma de pago asociada a un vencimiento determinado.
 
@@ -523,7 +512,8 @@ def pago_input(vencimiento):
             "Seleccione una forma de pago", 
             bancos_lista, 
             index=None, 
-            placeholder="Forma de pago"
+            placeholder="Forma de pago",
+            key=f"selectbox_pago_{dias}"
         )
     
     return tipo_pago
@@ -534,7 +524,7 @@ st.markdown("### Vencimiento Factura")
 # st.markdown("**Vencimiento a 30 días**")
 
 vencimiento_30  = fecha_vencimiento_input(30)
-pago_30 = pago_input(vencimiento_30)
+pago_30 = pago_input(vencimiento_30, 30)
 
 st.write("Selección vencimiento 30 días:", vencimiento_30,"\n",
          "Forma de pago a 30 días:", pago_30)
@@ -545,7 +535,7 @@ st.divider()
 # st.markdown("**Vencimiento a 60 días**")
 
 vencimiento_60  = fecha_vencimiento_input(60)
-pago_60 = pago_input(vencimiento_60)
+pago_60 = pago_input(vencimiento_60, 60)
 
 st.write("Selección vencimiento 60 días:", vencimiento_60,"\n",
          "Forma de pago a 60 días:", pago_60)
@@ -556,7 +546,7 @@ st.divider()
 # st.markdown("**Vencimiento a 120 días**")
 
 vencimiento_120 = fecha_vencimiento_input(120)
-pago_120 = pago_input(vencimiento_120)
+pago_120 = pago_input(vencimiento_120, 120)
 
 st.write("Selección vencimiento 120 días:", vencimiento_120,"\n",
          "Forma de pago a 120 días:", pago_120)
