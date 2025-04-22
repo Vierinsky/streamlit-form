@@ -55,7 +55,8 @@ HOJAS_GOOGLE_SHEETS = {
     # "clientes": "clientes",         # Esto es para el Formulario de Ingresos
     "ceco": "ceco",
     "cultivos": "cultivos",
-    "maquinas": "maquinas"
+    "maquinas": "maquinas",
+    "tipo de pago" : "tipo_pagos"
 }
 
 st.title("📋 Formulario de Registro de Costos")
@@ -487,14 +488,57 @@ def fecha_vencimiento_input(dias):
         return "Por definir"
     else:  # "No aplica"
         return None
+    
+def pago_input(vencimiento):
+    """
+    Devuelve la forma de pago asociada a un vencimiento determinado.
+
+    Dependiendo del valor de `vencimiento`, la función:
+    - Devuelve "Por definir" si el vencimiento es "Por definir".
+    - Devuelve None si el vencimiento no aplica.
+    - Muestra un selectbox con opciones de forma de pago si se establece una fecha válida.
+
+    Args:
+        vencimiento (str | None): Valor devuelto por `fecha_vencimiento_input()`.
+            Puede ser:
+              - Una fecha como string en formato "DD/MM/YYYY"
+              - "Por definir"
+              - None
+
+    Returns:
+        str | None: Forma de pago seleccionada, "Por definir" o None.
+    """
+    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["tipo_pagos"])
+    bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
+    if vencimiento == "Por definir":
+
+        tipo_pago = "Por definir"
+
+    elif vencimiento == None:
+
+        tipo_pago = None
+
+    else:
+
+        tipo_pago = st.selectbox(
+            "Seleccione una forma de pago", 
+            bancos_lista, 
+            index=None, 
+            placeholder="Forma de pago"
+        )
+    
+    return tipo_pago
+     
 
 st.markdown("### Vencimiento Factura")
 
 # st.markdown("**Vencimiento a 30 días**")
 
 vencimiento_30  = fecha_vencimiento_input(30)
+pago_30 = pago_input(vencimiento_30)
 
-st.write("Selección vencimiento 30 días:", vencimiento_30)
+st.write("Selección vencimiento 30 días:", vencimiento_30,"\n",
+         "Forma de pago a 30 días:", pago_30)
 
 st.divider()
 
@@ -502,8 +546,10 @@ st.divider()
 # st.markdown("**Vencimiento a 60 días**")
 
 vencimiento_60  = fecha_vencimiento_input(60)
+pago_60 = pago_input(vencimiento_60)
 
-st.write("Selección vencimiento 60 días:", vencimiento_60)
+st.write("Selección vencimiento 60 días:", vencimiento_60,"\n",
+         "Forma de pago a 60 días:", pago_60)
 
 st.divider()
 
@@ -511,8 +557,10 @@ st.divider()
 # st.markdown("**Vencimiento a 120 días**")
 
 vencimiento_120 = fecha_vencimiento_input(120)
+pago_120 = pago_input(vencimiento_120)
 
-st.write("Selección vencimiento 120 días:", vencimiento_120)
+st.write("Selección vencimiento 120 días:", vencimiento_120,"\n",
+         "Forma de pago a 120 días:", pago_120)
 
 st.divider()
 
@@ -644,8 +692,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,       # ¿APLICA?
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
 
@@ -668,8 +719,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
 
@@ -694,8 +748,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
 
@@ -718,8 +775,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
 
@@ -744,8 +804,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
 
@@ -768,8 +831,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
             # "Servicio Externos MMOO"
@@ -791,8 +857,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
 
@@ -813,8 +882,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
             # "Combustibles"
@@ -835,8 +907,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
        
@@ -856,8 +931,11 @@ if st.button("Guardar Registro"):
                     "numero_folio": numero_folio,
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
+                    "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
+                    "tipo_pago_60" : pago_60,
                     "fecha_vencimiento_120": vencimiento_120,
+                    "tipo_pago_120" : pago_120,
                     "comentario": comentario
                 }
 
