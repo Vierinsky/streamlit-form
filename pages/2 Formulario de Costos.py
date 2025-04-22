@@ -526,8 +526,8 @@ st.markdown("### Vencimiento Factura")
 vencimiento_30  = fecha_vencimiento_input(30)
 pago_30 = pago_input(vencimiento_30, 30)
 
-st.write("Selección vencimiento 30 días:", vencimiento_30,"\n",
-         "Forma de pago a 30 días:", pago_30)
+st.write("Selección vencimiento 30 días:", vencimiento_30)
+st.write("Forma de pago a 30 días:", pago_30)
 
 st.divider()
 
@@ -537,8 +537,8 @@ st.divider()
 vencimiento_60  = fecha_vencimiento_input(60)
 pago_60 = pago_input(vencimiento_60, 60)
 
-st.write("Selección vencimiento 60 días:", vencimiento_60,"\n",
-         "Forma de pago a 60 días:", pago_60)
+st.write("Selección vencimiento 60 días:", vencimiento_60)
+st.write("Forma de pago a 60 días:", pago_60)
 
 st.divider()
 
@@ -548,8 +548,8 @@ st.divider()
 vencimiento_120 = fecha_vencimiento_input(120)
 pago_120 = pago_input(vencimiento_120, 120)
 
-st.write("Selección vencimiento 120 días:", vencimiento_120,"\n",
-         "Forma de pago a 120 días:", pago_120)
+st.write("Selección vencimiento 120 días:", vencimiento_120)
+st.write("Forma de pago a 120 días:", pago_120)
 
 st.divider()
 
