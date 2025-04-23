@@ -475,7 +475,7 @@ def fecha_vencimiento_input(dias):
     elif eleccion == "Por definir":
         return "Por definir"
     else:  # "No aplica"
-        return None
+        return "N/A"
     
 def pago_input(vencimiento, dias):
     """
@@ -502,9 +502,9 @@ def pago_input(vencimiento, dias):
 
         tipo_pago = "Por definir"
 
-    elif vencimiento == None:
+    elif vencimiento == "N/A":
 
-        tipo_pago = None
+        tipo_pago = "N/A"
 
     else:
 
@@ -689,7 +689,7 @@ if st.button("Guardar Registro"):
                     "subcategoria": sub_rrhh,
                     # "proveedor": proveedor_final,     # NO APLICA EN RRHH
                     "cultivo" : cultivo,
-                    "numero_folio": numero_folio,       # ¿APLICA?
+                    "numero_folio": numero_folio,       # ¿APLICA EN RRHH?
                     "fecha_emision": fecha_emision.strftime("%d/%m/%Y"),            # datetime se transforma a string
                     "fecha_vencimiento_30": vencimiento_30,
                     "tipo_pago_30" : pago_30,
