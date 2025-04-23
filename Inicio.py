@@ -32,34 +32,6 @@ with col3:
     if st.button("Ir a Formulario de Ingresos"):
         st.switch_page("pages/3 Formulario de Ingresos.py")
 
-# st.write("")    # Separador visual
-# col0, col1, col2, col3, col4 = st.columns([1, 2, 2, 2, 1])  # col0 y col4 actúan como márgenes
-
-# # Botón para ir a Formulario de Costos
-
-# with col1:
-#     if st.button("Ir a Reporte"):
-#         st.switch_page("pages/1 Reporte.py")
-
-# with col2:
-#     if st.button("Ir a Formulario de Costos"):
-#         st.switch_page("pages/2 Formulario de Costos.py")
-
-# with col3:
-#     if st.button("Ir a Formulario de Ingresos"):
-#         st.switch_page("pages/3 Formulario de Ingresos.py")
-
-# if st.button("Ir a Reporte"):
-#     st.switch_page("pages/1 Reporte.py")
-
-# # Botón para ir a Formulario de Costos
-# if st.button("Ir a Formulario de Costos"):
-#     st.switch_page("pages/2 Formulario de Costos.py")
-
-# # Botón para ir a Formulario de Ingresos
-# if st.button("Ir a Formulario de Ingresos"):
-#     st.switch_page("pages/3 Formulario de Ingresos.py")
-
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
