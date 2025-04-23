@@ -531,7 +531,6 @@ st.write("Forma de pago a 30 días:", pago_30)
 
 st.divider()
 
-
 # st.markdown("**Vencimiento a 60 días**")
 
 vencimiento_60  = fecha_vencimiento_input(60)
@@ -563,12 +562,13 @@ st.write("Forma de pago a 120 días:", pago_120)
 
 st.divider()
 
-
 # Comentario opcional del usuario
 comentario = st.text_area(
     "Comentario (opcional)", 
     placeholder="Agregue una nota o comentario"
 )
+
+# IMPLEMENTAR SECCIÓN PARA INGRESAR FOTO DE LA BOLETA
 
 # Botón de guardar registro
 
