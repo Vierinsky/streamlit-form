@@ -2,6 +2,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import json
 import os
+import pandas as pd
 import streamlit as st
 
 st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered")
@@ -60,3 +61,49 @@ try:
 except Exception as e:
     st.sidebar.error("❌ Falló la conexión con Google Sheets")
     st.stop()
+
+# 🔽 Nueva sección: vencimientos "Por definir"
+
+def obtener_filas_con_por_definir(spreadsheet):
+    hojas = [
+        "rrhh", "agroquimicos", "maquinaria", "administracion", "seguros",
+        "inversiones", "servicios_externos", "servicios_basicos", "combustibles", "gastos_varios"
+    ]
+    columnas_objetivo = [
+        "fecha_vencimiento_30", "fecha_vencimiento_60",
+        "fecha_vencimiento_90", "fecha_vencimiento_120"
+    ]
+
+    resultados = []
+
+    for hoja in hojas:
+        try:
+            ws = spreadsheet.worksheet(hoja)
+            registros = ws.get_all_records()
+            df = pd.DataFrame(registros)
+            df["hoja_origen"] = hoja
+
+            columnas_presentes = [col for col in columnas_objetivo if col in df.columns]
+            if not columnas_presentes:
+                continue
+
+            filtro = df[columnas_presentes].apply(lambda fila: "Por definir" in fila.values, axis=1)
+            df_filtrado = df[filtro]
+
+            if not df_filtrado.empty:
+                resultados.append(df_filtrado)
+
+        except Exception as e:
+            print(f"Error en hoja {hoja}: {e}")
+            continue
+
+    return pd.concat(resultados, ignore_index=True) if resultados else pd.DataFrame()
+
+st.divider()
+st.markdown("### ⏳ Vencimientos pendientes por definir")
+
+df_alertas = obtener_filas_con_por_definir(st.session_state["spreadsheet"])
+if not df_alertas.empty:
+    st.dataframe(df_alertas)
+else:
+    st.info("No hay vencimientos marcados como 'Por definir'.")
