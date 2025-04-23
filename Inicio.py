@@ -100,7 +100,7 @@ def obtener_filas_con_por_definir(spreadsheet):
     return pd.concat(resultados, ignore_index=True) if resultados else pd.DataFrame()
 
 st.divider()
-st.markdown("### ⏳ Vencimientos pendientes por definir")
+st.markdown("### Vencimientos pendientes por definir")
 
 df_alertas = obtener_filas_con_por_definir(st.session_state["spreadsheet"])
 if not df_alertas.empty:
