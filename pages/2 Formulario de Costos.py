@@ -695,6 +695,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
@@ -722,6 +724,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
@@ -751,6 +755,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
@@ -778,6 +784,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
@@ -807,6 +815,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
@@ -834,6 +844,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
@@ -860,6 +872,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
@@ -885,6 +899,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
@@ -910,6 +926,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
@@ -934,6 +952,8 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
+                    "vencimiento_90": vencimiento_90,
+                    "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
                     "comentario": comentario
