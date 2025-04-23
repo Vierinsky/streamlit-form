@@ -9,10 +9,16 @@ st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered"
 st.title("Bienvenido al Sistema de Registro")
 st.subheader("Selecciona una opción para comenzar:")
 
-st.write("")    # Separador visual
-col0, col1, col2, col3, col4 = st.columns([1, 2, 2, 2, 1])  # col0 y col4 actúan como márgenes
+col1, col2, col3 = st.columns(3)
 
-# Botón para ir a Formulario de Costos
+button_style = """
+    <style>
+    div.stButton > button {
+        width: 100%;
+    }
+    </style>
+"""
+st.markdown(button_style, unsafe_allow_html=True)
 
 with col1:
     if st.button("Ir a Reporte"):
@@ -25,6 +31,23 @@ with col2:
 with col3:
     if st.button("Ir a Formulario de Ingresos"):
         st.switch_page("pages/3 Formulario de Ingresos.py")
+
+# st.write("")    # Separador visual
+# col0, col1, col2, col3, col4 = st.columns([1, 2, 2, 2, 1])  # col0 y col4 actúan como márgenes
+
+# # Botón para ir a Formulario de Costos
+
+# with col1:
+#     if st.button("Ir a Reporte"):
+#         st.switch_page("pages/1 Reporte.py")
+
+# with col2:
+#     if st.button("Ir a Formulario de Costos"):
+#         st.switch_page("pages/2 Formulario de Costos.py")
+
+# with col3:
+#     if st.button("Ir a Formulario de Ingresos"):
+#         st.switch_page("pages/3 Formulario de Ingresos.py")
 
 # if st.button("Ir a Reporte"):
 #     st.switch_page("pages/1 Reporte.py")
