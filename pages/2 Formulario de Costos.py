@@ -543,6 +543,16 @@ st.write("Forma de pago a 60 días:", pago_60)
 st.divider()
 
 
+# st.markdown("**Vencimiento a 90 días**")
+
+vencimiento_90 = fecha_vencimiento_input(90)
+pago_90 = pago_input(vencimiento_90, 90)
+
+st.write("Selección vencimiento 120 días:", vencimiento_90)
+st.write("Forma de pago a 120 días:", pago_90)
+
+st.divider()
+
 # st.markdown("**Vencimiento a 120 días**")
 
 vencimiento_120 = fecha_vencimiento_input(120)
@@ -552,6 +562,7 @@ st.write("Selección vencimiento 120 días:", vencimiento_120)
 st.write("Forma de pago a 120 días:", pago_120)
 
 st.divider()
+
 
 # Comentario opcional del usuario
 comentario = st.text_area(
