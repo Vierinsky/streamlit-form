@@ -202,10 +202,9 @@ def seleccionar_maquina(maquinas_list):
 
 
 # Condicional CECO
-if ceco == "RRHH":                                                                                             # COLUMNA
+if ceco == "RRHH":
     # st.subheader()
-
-    sub_rrhh = st.selectbox(                                                                                  # COLUMNA
+    sub_rrhh = st.selectbox(
         "Seleccione sub-categoria RRHH",
         ["Sueldo administrativo", 
         "Sueldo operativo", 
@@ -223,7 +222,7 @@ if ceco == "RRHH":                                                              
 
     # DESPUÉS DE RRHH ¿APLICA CONTINUAR CON SECCIÓN PROVEEDOR?
 
-elif ceco == "Agroquimico":                                                                                   # COLUMNA
+elif ceco == "Agroquimico":
 
     cultivo = seleccionar_cultivo(cultivo_list)
 
