@@ -280,27 +280,27 @@ elif ceco == "Seguros":
             placeholder="Tipo de Transporte"
         )
 
-        cultivo = None
-        maquina = None
+        cultivo = "N/A"
+        maquina = "N/A"
 
     elif sub_seguros == "Equipos":
 
         maquina = seleccionar_maquina(maquinas_list)
 
-        transporte = None
-        cultivo = None
+        transporte = "N/A"
+        cultivo = "N/A"
 
     elif sub_seguros == "Infraestructura":
 
-        maquina = None
-        cultivo = None
-        transporte = None
+        maquina = "N/A"
+        cultivo = "N/A"
+        transporte = "N/A"
 
     elif sub_seguros == "Cultivos":
         cultivo = seleccionar_cultivo(cultivo_list)
 
-        maquina = None
-        transporte = None
+        maquina = "N/A"
+        transporte = "N/A"
 
 elif ceco == "Inversiones":
 
@@ -324,13 +324,13 @@ elif ceco == "Inversiones":
              placeholder="Sub-categorias Preparación Previa"
         )
         
-        cultivo = None # Preguntar si "Preparación Previa" debe ir enlazada a un cultivo
+        cultivo = "N/A" # Preguntar si "Preparación Previa" debe ir enlazada a un cultivo
     
     else:
 
         cultivo = seleccionar_cultivo(cultivo_list)
 
-        prep_prev = None
+        prep_prev = "N/A"
 
 elif ceco == "Servicio Externos MMOO":
 
@@ -368,7 +368,7 @@ elif ceco == "Combustibles":
 
 if ceco == "RRHH":  # Si se selecciona RRHH no se necesita especificar proveedor 
 
-    proveedor_final = None
+    proveedor_final = "N/A"
 
 else:
 
@@ -436,7 +436,7 @@ numero_folio = st.text_input(
 )
 
 # Procesar el valor: si está vacío, lo tratamos como None
-numero_folio = numero_folio.strip() or None
+numero_folio = numero_folio.strip() or "N/A"
 
 # Fecha de Emisión
     # Fecha de emisión de la factura
@@ -450,16 +450,23 @@ fecha_emision = st.date_input(
 
 def fecha_vencimiento_input(dias):
     """
-    Muestra un radio con tres opciones para el vencimiento a X días:
-      - "Establecer fecha": despliega un date_input y devuelve la fecha como string "DD/MM/YYYY"
-      - "No aplica": devuelve None
-      - "Por definir": devuelve "Por definir"
-    
+    Muestra un selector de vencimiento para un plazo determinado.
+
+    Ofrece tres opciones:
+      - "Establecer fecha": despliega un date_input y devuelve la fecha seleccionada como string en formato "DD/MM/YYYY".
+      - "Por definir": devuelve la cadena "Por definir".
+      - "No aplica": devuelve la cadena "N/A".
+
+    Esta función se usa para capturar la fecha de vencimiento de una factura según distintos plazos (30, 60, 120 días, etc.).
+
     Args:
-        dias (int): Plazo en días para el vencimiento (30, 60, 120, ...).
-    
+        dias (int): Plazo en días para el vencimiento (por ejemplo, 30, 60, 120).
+
     Returns:
-        str | None: Fecha en formato "%d/%m/%Y", "Por definir", o None.
+        str: Una de las siguientes opciones:
+            - Fecha como string en formato "DD/MM/YYYY"
+            - "Por definir"
+            - "N/A"
     """
     opciones = ["Establecer fecha", "No aplica", "Por definir"]
     eleccion = st.radio(f"**Vencimiento a {dias} días:**", opciones, key=f"radio_venc_{dias}")
@@ -482,21 +489,23 @@ def pago_input(vencimiento, dias):
 
     Dependiendo del valor de `vencimiento`, la función:
     - Devuelve "Por definir" si el vencimiento es "Por definir".
-    - Devuelve None si el vencimiento no aplica.
+    - Devuelve "N/A" si el vencimiento no aplica (en lugar de None, para visibilidad en la planilla).
     - Muestra un selectbox con opciones de forma de pago si se establece una fecha válida.
 
     Args:
-        vencimiento (str | None): Valor devuelto por `fecha_vencimiento_input()`.
+        vencimiento (str): Valor devuelto por `fecha_vencimiento_input()`.
             Puede ser:
               - Una fecha como string en formato "DD/MM/YYYY"
               - "Por definir"
-              - None
+              - "N/A"
+        dias (int): Número de días del vencimiento (ej. 30, 60, 120). Se usa como parte del key único del selectbox.
 
     Returns:
-        str | None: Forma de pago seleccionada, "Por definir" o None.
+        str: Forma de pago seleccionada, o los valores "Por definir" o "N/A".
     """
     data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["tipo_pagos"])
     bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
+    
     if vencimiento == "Por definir":
 
         tipo_pago = "Por definir"
@@ -632,8 +641,8 @@ if st.button("Guardar Registro"):
         if not proveedor_final:
             errores.append("Debe seleccionar o ingresar un proveedor.")
 
-    # 4) Número de factura (puede estar en blanco o “null”)
-    if numero_folio not in ("", None):
+    # 4) Número de factura (puede estar en blanco o “N/A”)
+    if numero_folio not in ("", "N/A"):
         if not numero_folio.isdigit():
             errores.append("El número de factura debe ser numérico o dejarse en blanco.")
 
