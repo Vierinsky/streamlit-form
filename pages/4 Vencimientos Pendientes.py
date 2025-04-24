@@ -36,6 +36,7 @@ except Exception as e:
 
 # 🔽 Sección: vencimientos "Por definir"
 
+@st.cache_data(ttl=300)     # Esto evita recargar los datos cada vez que recargas la página, salvo que hayan pasado 5 minutos (ttl=300 segundos).
 def obtener_filas_con_por_definir(spreadsheet):
     hojas = [
         "rrhh", "agroquimicos", "maquinaria", "administracion", "seguros",
@@ -71,7 +72,7 @@ def obtener_filas_con_por_definir(spreadsheet):
             if not columnas_presentes:
                 continue
 
-            filtro = df[columnas_presentes].apply(lambda fila: "Por definir" in fila.values, axis=1)
+            filtro = df[columnas_presentes].eq("Por definir").any(axis=1)
             df_filtrado = df[filtro]
 
             if not df_filtrado.empty:
@@ -84,11 +85,12 @@ def obtener_filas_con_por_definir(spreadsheet):
 
     return pd.concat(resultados, ignore_index=True) if resultados else pd.DataFrame()
 
-# Hoja Vencimientos Pendientes:
-
+# Page 4 Vencimientos Pendientes
+# Mostrar con spinner
 st.markdown("### Vencimientos pendientes por definir")
+with st.spinner("Cargando vencimientos..."):
+    df_alertas = obtener_filas_con_por_definir(st.session_state["spreadsheet"])
 
-df_alertas = obtener_filas_con_por_definir(st.session_state["spreadsheet"])
 if not df_alertas.empty:
     st.dataframe(df_alertas)
 else:
