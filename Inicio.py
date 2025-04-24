@@ -9,7 +9,7 @@ st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered"
 st.title("Bienvenido al Sistema de Registro")
 st.subheader("Selecciona una opción para comenzar:")
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(3)
 
 button_style = """
     <style>
@@ -31,6 +31,10 @@ with col2:
 with col3:
     if st.button("Ir a Formulario de Ingresos"):
         st.switch_page("pages/3 Formulario de Ingresos.py")
+
+with col4:
+    if st.button("Ir a Vencimientos Pendientes"):
+        st.switch_page("pages/4 Vencimientos Pendientes")
 
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
