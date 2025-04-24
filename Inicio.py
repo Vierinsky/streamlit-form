@@ -9,7 +9,7 @@ st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered"
 st.title("Bienvenido al Sistema de Registro")
 st.subheader("Selecciona una opción para comenzar:")
 
-col1, col2, col3, col4 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 button_style = """
     <style>
