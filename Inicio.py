@@ -74,6 +74,14 @@ def obtener_filas_con_por_definir(spreadsheet):
         "fecha_vencimiento_90", "fecha_vencimiento_120"
     ]
 
+    columnas_a_mostrar = [
+        "hoja_origen", "descripcion", "valor_bruto", "fecha_emision",
+        "fecha_vencimiento_30", "tipo_pago_30",
+        "fecha_vencimiento_60", "tipo_pago_60",
+        "fecha_vencimiento_90", "tipo_pago_90",
+        "fecha_vencimiento_120", "tipo_pago_120"
+    ]
+
     resultados = []
 
     for hoja in hojas:
@@ -91,13 +99,18 @@ def obtener_filas_con_por_definir(spreadsheet):
             df_filtrado = df[filtro]
 
             if not df_filtrado.empty:
-                resultados.append(df_filtrado)
+                columnas_validas = [col for col in columnas_a_mostrar if col in df_filtrado.columns]
+                resultados.append(df_filtrado[columnas_validas])
 
         except Exception as e:
             print(f"Error en hoja {hoja}: {e}")
             continue
 
     return pd.concat(resultados, ignore_index=True) if resultados else pd.DataFrame()
+
+# Mostrar solo estas columnas:
+# columnas_a_mostrar = ["centro_costo", "descripcion", "valor_bruto", "fecha_emision", "fecha_vencimiento_30", "tipo_pago_30", "fecha_vencimiento_60", "tipo_pago_60", "fecha_vencimiento_90", "tipo_pago_90", "fecha_vencimiento_120", "tipo_pago_120"]
+# ¿Se deberia incluir: [ "numero_folio", "subcategoria", "cultivo", "comentario"]?
 
 st.divider()
 st.markdown("### Vencimientos pendientes por definir")
