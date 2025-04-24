@@ -1,6 +1,11 @@
 Nota: 
 * Agregar Hoja ingresos
 * Traducir dicc al inglés
+* Arreglar tablas markdown de este archivo
+* Agregar si columna acepta o no "null"
+
+Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inversiones", "servicios_externos", "servicios_basicos", "combustibles", "gastos_varios"]
+
 
 # Hoja "rrhh"
 
