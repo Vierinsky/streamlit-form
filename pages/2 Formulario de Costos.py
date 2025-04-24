@@ -93,7 +93,7 @@ valor_bruto = st.number_input(
     format="%d"
 )
 # Calculo IVA y valor neto
-iva = valor_bruto * 0.19
+iva = int(valor_bruto * 0.19)       # Redondea hacia abajo
 valor_neto = valor_bruto - iva
 
 # Formateo visual con separador de miles (solo display opcional)
