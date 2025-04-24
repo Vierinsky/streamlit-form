@@ -37,7 +37,7 @@ except Exception as e:
 # 🔽 Sección: vencimientos "Por definir"
 
 @st.cache_data(ttl=300)     # Esto evita recargar los datos cada vez que recargas la página, salvo que hayan pasado 5 minutos (ttl=300 segundos).
-def obtener_filas_con_por_definir(spreadsheet):
+def obtener_filas_con_por_definir(_spreadsheet):
     hojas = [
         "rrhh", "agroquimicos", "maquinaria", "administracion", "seguros",
         "inversiones", "servicios_externos", "servicios_basicos", "combustibles", "gastos_varios"
@@ -63,7 +63,7 @@ def obtener_filas_con_por_definir(spreadsheet):
 
     for hoja in hojas:
         try:
-            ws = spreadsheet.worksheet(hoja)
+            ws = _spreadsheet.worksheet(hoja)
             registros = ws.get_all_records()
             df = pd.DataFrame(registros)
             df["hoja_origen"] = hoja
