@@ -21,8 +21,8 @@ button_style = """
 st.markdown(button_style, unsafe_allow_html=True)
 
 with col1:
-    if st.button("Ir a Reporte"):
-        st.switch_page("pages/1 Reporte.py")
+    if st.button("Ir a Reporte General"):
+        st.switch_page("pages/1 Reporte General.py")
 
 with col2:
     if st.button("Ir a Formulario de Costos"):
