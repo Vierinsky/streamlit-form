@@ -30,11 +30,11 @@ with col2:
 
 with col3:
     if st.button("Ir a Formulario de Ingresos"):
-        st.switch_page("pages/3 Formulario de Ingresos.py")
+        st.switch_page("pages/3 Formulario de Ingresos.py") 
 
 with col4:
     if st.button("Ir a Vencimientos Pendientes"):
-        st.switch_page("pages/4 Vencimientos Pendientes")
+        st.switch_page("pages\4 Vencimientos Pendientes.py")
 
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
