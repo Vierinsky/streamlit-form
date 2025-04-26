@@ -95,3 +95,5 @@ if not df_alertas.empty:
     st.dataframe(df_alertas)
 else:
     st.info("No hay vencimientos marcados como 'Por definir'.")
+
+# AGREGAR SECCIÓN PARA MODIFICAR COSTOS CON "Por definir"

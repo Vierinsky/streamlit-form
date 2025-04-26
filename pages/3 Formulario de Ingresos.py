@@ -39,7 +39,7 @@ st.title("📋 Formulario de Registro de Ingresos")
 
 spreadsheet = st.session_state.get("spreadsheet")
 if not spreadsheet:
-    st.error("❌ No se pudo acceder al documento. Verifica la conexión en la página principal.")
+    st.error("❌ No se pudo acceder al documento. Verifica la conexión")
     st.stop()
 
 # Obtener la hoja de ingresos
@@ -56,7 +56,7 @@ if st.session_state.get("registro_guardado"):
 
 
 # Inputs
-st.divider()
+# st.divider()
 st.subheader("Infromación General")
 
 descripcion = st.text_input("Descripción del Ingreso")
@@ -64,32 +64,28 @@ valor_bruto = st.number_input("Valor Bruto del Ingreso", min_value=0, step=1, fo
 iva = int(valor_bruto * 0.19)       # Redondea hacia abajo
 valor_neto = valor_bruto - iva
 
-# Formateo visual con separador de miles (solo display opcional)
-monto_formateado = f"{valor_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
-st.write(f"Monto ingresado: ${monto_formateado}")
+# Formateo visual con separador de miles
+st.write(f"Monto ingresado: ${valor_bruto}".replace(",", "."))
 
-# item
+# Cultivo
 st.divider()
-st.subheader("Tipo de Ingreso")
+st.subheader("Cultivo")
 
 try:
-    # Obtener lista dinámica de items desde la hoja 'items'
-    items_sheet = spreadsheet.worksheet("items")
+    # Obtener lista dinámica de cultivos desde la hoja 'cultivos'
+    items_sheet = spreadsheet.worksheet("cultivos")
     data = items_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    item_list = [
-        row["item"]
-        for row in data
-        if row["item"].strip() and row["item"] not in ["Aseo y Ornato"]
-    ]
+    cultivo_list = [r["cultivo"] for r in data if r["cultivo"].strip()]
+    
 except Exception as e:
-    st.error(f"❌ Error al cargar la lista de items: {e}")
-    item_list = []
+    st.error(f"❌ Error al cargar la lista de cultivos: {e}")
+    cultivo_list = []
 
-item = st.selectbox(
-    "Ítem", 
-    item_list,
+cultivo = st.selectbox(
+    "Seleccione cultivo o centro de costos", 
+    cultivo_list,
     index=None, 
-    placeholder="Seleccione ítem o centro de costos")
+    placeholder="Cultivo")
 
 # Clientes
 st.divider()
@@ -99,36 +95,82 @@ try:
     # Obtener lista dinámica de Clientes desde la hoja 'clientes'
     clientes_sheet = spreadsheet.worksheet("clientes")
     data = clientes_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    clientes_list = [row["cliente"] for row in data if row["cliente"].strip()]
+    clientes_list = [r["cliente"] for r in data if r["cliente"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de clientes: {e}")
     clientes_list = []
 
-cliente_seleccionado = st.selectbox(
-    "clientes", 
+cliente = st.selectbox(
+    "Seleccione cliente", 
     clientes_list, 
     index=None, 
-    placeholder="Seleccione cliente"
+    placeholder="Cliente"
 )
 
+# Folio y Fecha
 st.divider()
 st.subheader("Fecha del Ingreso")
 
-fecha_ingreso = st.date_input("Fecha del Ingreso")
 
+numero_folio = st.text_input("Número de Folio", placeholder="Dejar en blanco si no aplica").strip() or "N/A"
+fecha_ingreso = st.date_input("Fecha del Ingreso", format="DD/MM/YYYY")
+
+# Vencimientos
+st.divider()
+st.subheader("Vencimientos")
+
+def fecha_vencimiento_input(dias):
+    opciones = ["Establecer fecha", "No aplica", "Por definir"]
+    eleccion = st.radio(f"**Vencimiento a {dias} días:**", opciones, key=f"radio_venc_{dias}")
+    if eleccion == "Establecer fecha":
+        fecha = st.date_input(f"Elija la fecha para {dias} días", key=f"fecha_venc_{dias}", format="DD/MM/YYYY")
+        return fecha.strftime("%d/%m/%Y")
+    elif eleccion == "Por definir":
+        return "Por definir"
+    else:
+        return "N/A"
+
+def pago_input(vencimiento, dias):
+    data = spreadsheet.worksheet("tipo_pagos").get_all_records()
+    bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
+    if vencimiento == "Por definir":
+        return "Por definir"
+    elif vencimiento == "N/A":
+        return "N/A"
+    else:
+        return st.selectbox("Seleccione forma de pago", bancos_lista, index=None, placeholder="Forma de pago", key=f"pago_{dias}")
+
+vencimiento_30 = fecha_vencimiento_input(30)
+pago_30 = pago_input(vencimiento_30, 30)
+vencimiento_60 = fecha_vencimiento_input(60)
+pago_60 = pago_input(vencimiento_60, 60)
+vencimiento_90 = fecha_vencimiento_input(90)
+pago_90 = pago_input(vencimiento_90, 90)
+vencimiento_120 = fecha_vencimiento_input(120)
+pago_120 = pago_input(vencimiento_120, 120)
+
+# Comentarios
 st.divider()
 comentario = st.text_area("Comentario (opcional)", placeholder="Notas adicionales")
 
 # Botón de guardar registro
-
 if st.button("Guardar Registro"):
+    errores = []
     if not descripcion.strip():
         st.warning("La descripción es obligatoria.")
-    elif valor_bruto <= 0:
-        st.warning("El valor bruto debe ser mayor a 0.")
-    # Agregar más a medida que aumenten las columnas/campos.
+    if valor_bruto <= 0:
+        errores.append("El valor bruto debe ser mayor que cero.")
+    if not cultivo:
+        errores.append("Debe seleccionar un cultivo.")
+    if not cliente:
+        errores.append("Debe seleccionar un cliente.")
+
+    if errores:
+        for err in errores:
+            st.warning(err)
     else:
         try:
+            ingresos_sheet = spreadsheet.worksheet("ingresos")
             headers = ingresos_sheet.row_values(1)
             zona_horaria = pytz.timezone('Chile/Continental')
             fecha_envio = datetime.now(zona_horaria).strftime("%d/%m/%Y %H:%M:%S")
@@ -140,10 +182,19 @@ if st.button("Guardar Registro"):
                 "descripcion": descripcion,
                 "valor_bruto": valor_bruto,
                 "valor_neto" : valor_neto,
-                "iva" : iva,
-                "item" : item,
-                "cliente" : cliente_seleccionado,
+                "iva": iva,
+                "cultivo": cultivo,
+                "cliente": cliente,
+                "numero_folio": numero_folio,
                 "fecha_ingreso": fecha_ingreso.strftime("%d/%m/%Y"),
+                "fecha_vencimiento_30": vencimiento_30,
+                "tipo_pago_30": pago_30,
+                "fecha_vencimiento_60": vencimiento_60,
+                "tipo_pago_60": pago_60,
+                "fecha_vencimiento_90": vencimiento_90,
+                "tipo_pago_90": pago_90,
+                "fecha_vencimiento_120": vencimiento_120,
+                "tipo_pago_120": pago_120,
                 "comentarios": comentario
             }
 
@@ -151,11 +202,10 @@ if st.button("Guardar Registro"):
             ingresos_sheet.append_row(fila_final)
             
             # ✅ Marcar éxito y refrescar
-            st.session_state["registro_guardado"] = True  # Marcar que se guardó con éxito
-            
-            # 🔄 Refrescar la app
+
+            st.session_state["registro_guardado"] = True
+            st.toast("Registro guardado con éxito", icon="✅")
             st.rerun()
 
         except Exception as e:
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
-            st.session_state["registro_guardado"] = False  # Resetear si falló
