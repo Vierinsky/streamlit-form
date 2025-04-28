@@ -448,33 +448,39 @@ fecha_emision = st.date_input(
 
 # Para definir fecha de vencimiento del pago (30, 60, 120 días)
 
-def fecha_vencimiento_input(dias, fecha_ingreso):
+def fecha_vencimiento_input(dias):
     """
-    Despliega un radio para elegir vencimiento a X días y muestra un date_input si aplica.
+    Muestra un selector de vencimiento para un plazo determinado.
+
+    Ofrece tres opciones:
+      - "Establecer fecha": despliega un date_input y devuelve la fecha seleccionada como string en formato "DD/MM/YYYY".
+      - "Por definir": devuelve la cadena "Por definir".
+      - "No aplica": devuelve la cadena "N/A".
+
+    Esta función se usa para capturar la fecha de vencimiento de una factura según distintos plazos (30, 60, 120 días, etc.).
 
     Args:
-        dias (int): Número de días del vencimiento (30, 60, 90, 120...).
-        fecha_ingreso (datetime.date): Fecha base sobre la cual calcular el vencimiento sugerido.
+        dias (int): Plazo en días para el vencimiento (por ejemplo, 30, 60, 120).
 
     Returns:
-        str: Fecha como string en formato "%d/%m/%Y", o "Por definir", o "N/A"
+        str: Una de las siguientes opciones:
+            - Fecha como string en formato "DD/MM/YYYY"
+            - "Por definir"
+            - "N/A"
     """
     opciones = ["Establecer fecha", "No aplica", "Por definir"]
     eleccion = st.radio(f"**Vencimiento a {dias} días:**", opciones, key=f"radio_venc_{dias}")
-
+    
     if eleccion == "Establecer fecha":
-        # Fecha sugerida = fecha_ingreso + dias
-        fecha_sugerida = fecha_ingreso + timedelta(days=dias)
         fecha = st.date_input(
-            f"Elija la fecha para {dias} días",
-            value=fecha_sugerida,
+            f"Elige la fecha para {dias} días", 
             key=f"fecha_venc_{dias}",
             format="DD/MM/YYYY"
         )
         return fecha.strftime("%d/%m/%Y")
     elif eleccion == "Por definir":
         return "Por definir"
-    else:
+    else:  # "No aplica"
         return "N/A"
     
 def pago_input(vencimiento, dias):

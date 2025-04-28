@@ -120,7 +120,7 @@ fecha_ingreso = st.date_input("Fecha del Ingreso", format="DD/MM/YYYY")
 st.divider()
 st.subheader("Vencimientos")
 
-def fecha_vencimiento_input(dias, fecha_ingreso):
+def fecha_vencimiento_input(dias):
     """
     Despliega un radio para elegir vencimiento a X días y muestra un date_input si aplica.
 
@@ -135,8 +135,8 @@ def fecha_vencimiento_input(dias, fecha_ingreso):
     eleccion = st.radio(f"**Vencimiento a {dias} días:**", opciones, key=f"radio_venc_{dias}")
 
     if eleccion == "Establecer fecha":
-        # Fecha sugerida = fecha_ingreso + dias
-        fecha_sugerida = fecha_ingreso + timedelta(days=dias)
+        # Fecha sugerida = fecha hoy + dias
+        fecha_sugerida = datetime.today() + timedelta(days=dias)
         fecha = st.date_input(
             f"Elija la fecha para {dias} días",
             value=fecha_sugerida,
