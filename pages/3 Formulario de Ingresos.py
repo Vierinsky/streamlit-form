@@ -31,6 +31,25 @@ def get_fresh_spreadsheet():
         st.session_state["spreadsheet"] = client.open(SHEET_NAME)
     return st.session_state["spreadsheet"]
 
+@st.cache_data(ttl=300)
+def cargar_lista(nombre_hoja, columna):
+    """
+    Carga los registros de una hoja específica y extrae los valores de una columna.
+
+    Args:
+        nombre_hoja (str): Nombre de la hoja en el documento de Google Sheets.
+        columna (str): Nombre de la columna a extraer.
+
+    Returns:
+        list: Lista de valores únicos, sin espacios vacíos.
+    """
+    try:
+        sheet = get_fresh_spreadsheet().worksheet(nombre_hoja)
+        data = sheet.get_all_records()
+        return [r[columna] for r in data if r[columna].strip()]
+    except:
+        return []
+
 # Intentar conexión
 try:
     spreadsheet = get_fresh_spreadsheet()
@@ -62,25 +81,13 @@ st.write(f"Monto ingresado: ${monto_formateado}")
 # Cultivo
 st.divider()
 st.subheader("Cultivo")
-try:
-    data = spreadsheet.worksheet("cultivos").get_all_records()
-    cultivo_list = [r["cultivo"] for r in data if r["cultivo"].strip()]
-except Exception as e:
-    st.error(f"❌ Error al cargar la lista de cultivos: {e}")
-    cultivo_list = []
-
+cultivo_list = cargar_lista("cultivos", "cultivo")
 cultivo = st.selectbox("Seleccione cultivo o centro de costos", cultivo_list, index=None, placeholder="Cultivo")
 
 # Clientes
 st.divider()
 st.subheader("Clientes")
-try:
-    data = spreadsheet.worksheet("clientes").get_all_records()
-    clientes_list = [r["cliente"] for r in data if r["cliente"].strip()]
-except Exception as e:
-    st.error(f"❌ Error al cargar la lista de clientes: {e}")
-    clientes_list = []
-
+clientes_list = cargar_lista("clientes", "cliente")
 cliente = st.selectbox("Seleccione cliente", clientes_list, index=None, placeholder="Cliente")
 
 # Folio y Fecha
@@ -105,12 +112,7 @@ def fecha_vencimiento_input(dias):
     return "N/A"
 
 def pago_input(vencimiento, dias):
-    try:
-        data = spreadsheet.worksheet("tipo_pagos").get_all_records()
-        bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
-    except:
-        bancos_lista = []
-
+    bancos_lista = cargar_lista("tipo_pagos", "tipo_pago")
     if vencimiento == "Por definir":
         return "Por definir"
     elif vencimiento == "N/A":
