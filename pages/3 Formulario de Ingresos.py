@@ -17,23 +17,15 @@ SHEET_NAME = "prueba_streamlit"  # ⚠️Modificar en producción⚠️
 def get_fresh_spreadsheet():
     """
     Crea y retorna una conexión fresca al documento de Google Sheets.
-
-    Esta función vuelve a autenticar las credenciales y abre el archivo
-    de Google Sheets especificado en la constante SHEET_NAME. Es útil en
-    contextos donde la conexión puede expirar o volverse inválida a lo largo
-    de una sesión de Streamlit.
-
-    Returns:
-        gspread.Spreadsheet: Objeto Spreadsheet conectado y listo para usar.
-
-    Raises:
-        Exception: Si la autenticación falla o no se puede abrir la hoja.
+    Reutiliza una conexión existente si ya está en la sesión de Streamlit.
     """
-
-    service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
-    credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
-    client = gspread.authorize(credentials)
-    return client.open(SHEET_NAME)
+    if "spreadsheet" not in st.session_state:
+        service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
+        credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
+        client = gspread.authorize(credentials)
+        st.session_state["spreadsheet"] = client.open(SHEET_NAME)
+    
+    return st.session_state["spreadsheet"]
 
 # Intentar conexión
 try:
