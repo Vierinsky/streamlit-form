@@ -472,8 +472,11 @@ def fecha_vencimiento_input(dias):
     eleccion = st.radio(f"**Vencimiento a {dias} días:**", opciones, key=f"radio_venc_{dias}")
     
     if eleccion == "Establecer fecha":
+        # Fecha sugerida = fecha hoy + dias
+        fecha_sugerida = datetime.today() + timedelta(days=dias) # Sugiere una fecha x días más a la de hoy
         fecha = st.date_input(
-            f"Elige la fecha para {dias} días", 
+            f"Elija la fecha para {dias} días",
+            value=fecha_sugerida,
             key=f"fecha_venc_{dias}",
             format="DD/MM/YYYY"
         )
@@ -555,8 +558,8 @@ st.divider()
 vencimiento_90 = fecha_vencimiento_input(90)
 pago_90 = pago_input(vencimiento_90, 90)
 
-st.write("Selección vencimiento 120 días:", vencimiento_90)
-st.write("Forma de pago a 120 días:", pago_90)
+st.write("Selección vencimiento 90 días:", vencimiento_90)
+st.write("Forma de pago a 90 días:", pago_90)
 
 st.divider()
 

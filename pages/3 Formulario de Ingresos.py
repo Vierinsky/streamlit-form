@@ -126,7 +126,6 @@ def fecha_vencimiento_input(dias):
 
     Args:
         dias (int): Número de días del vencimiento (30, 60, 90, 120...).
-        fecha_ingreso (datetime.date): Fecha base sobre la cual calcular el vencimiento sugerido.
 
     Returns:
         str: Fecha como string en formato "%d/%m/%Y", o "Por definir", o "N/A"
@@ -136,7 +135,7 @@ def fecha_vencimiento_input(dias):
 
     if eleccion == "Establecer fecha":
         # Fecha sugerida = fecha hoy + dias
-        fecha_sugerida = datetime.today() + timedelta(days=dias)
+        fecha_sugerida = datetime.today() + timedelta(days=dias)    # Sugiere una fecha x días más a la de hoy
         fecha = st.date_input(
             f"Elija la fecha para {dias} días",
             value=fecha_sugerida,
@@ -159,14 +158,38 @@ def pago_input(vencimiento, dias):
     else:
         return st.selectbox("Seleccione forma de pago", bancos_lista, index=None, placeholder="Forma de pago", key=f"pago_{dias}")
 
+st.markdown("### Vencimiento Factura")
+
 vencimiento_30 = fecha_vencimiento_input(30)
 pago_30 = pago_input(vencimiento_30, 30)
+
+st.write("Selección vencimiento 30 días:", vencimiento_30)
+st.write("Forma de pago a 30 días:", pago_30)
+
+st.divider()
+
 vencimiento_60 = fecha_vencimiento_input(60)
 pago_60 = pago_input(vencimiento_60, 60)
+
+st.write("Selección vencimiento 60 días:", vencimiento_60)
+st.write("Forma de pago a 60 días:", pago_60)
+
+st.divider()
+
+
 vencimiento_90 = fecha_vencimiento_input(90)
 pago_90 = pago_input(vencimiento_90, 90)
+
+st.write("Selección vencimiento 90 días:", vencimiento_90)
+st.write("Forma de pago a 90 días:", pago_90)
+
+st.divider()
+
+
 vencimiento_120 = fecha_vencimiento_input(120)
 pago_120 = pago_input(vencimiento_120, 120)
+st.write("Selección vencimiento 120 días:", vencimiento_120)
+st.write("Forma de pago a 120 días:", pago_120)
 
 # Comentarios
 st.divider()
