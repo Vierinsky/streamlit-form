@@ -1,5 +1,5 @@
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, timedelta
 from google.oauth2.service_account import Credentials
 import gspread
 import json
@@ -120,11 +120,29 @@ fecha_ingreso = st.date_input("Fecha del Ingreso", format="DD/MM/YYYY")
 st.divider()
 st.subheader("Vencimientos")
 
-def fecha_vencimiento_input(dias):
+def fecha_vencimiento_input(dias, fecha_ingreso):
+    """
+    Despliega un radio para elegir vencimiento a X días y muestra un date_input si aplica.
+
+    Args:
+        dias (int): Número de días del vencimiento (30, 60, 90, 120...).
+        fecha_ingreso (datetime.date): Fecha base sobre la cual calcular el vencimiento sugerido.
+
+    Returns:
+        str: Fecha como string en formato "%d/%m/%Y", o "Por definir", o "N/A"
+    """
     opciones = ["Establecer fecha", "No aplica", "Por definir"]
     eleccion = st.radio(f"**Vencimiento a {dias} días:**", opciones, key=f"radio_venc_{dias}")
+
     if eleccion == "Establecer fecha":
-        fecha = st.date_input(f"Elija la fecha para {dias} días", key=f"fecha_venc_{dias}", format="DD/MM/YYYY")
+        # Fecha sugerida = fecha_ingreso + dias
+        fecha_sugerida = fecha_ingreso + timedelta(days=dias)
+        fecha = st.date_input(
+            f"Elija la fecha para {dias} días",
+            value=fecha_sugerida,
+            key=f"fecha_venc_{dias}",
+            format="DD/MM/YYYY"
+        )
         return fecha.strftime("%d/%m/%Y")
     elif eleccion == "Por definir":
         return "Por definir"
