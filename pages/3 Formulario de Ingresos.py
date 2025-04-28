@@ -16,15 +16,19 @@ SHEET_NAME = "prueba_streamlit"  # ⚠️Modificar en producción⚠️
 
 def get_fresh_spreadsheet():
     """
-    Crea y retorna una conexión fresca al documento de Google Sheets.
-    Reutiliza una conexión existente si ya está en la sesión de Streamlit.
+    Crea y retorna una conexión reutilizable al documento de Google Sheets.
+
+    Reutiliza una conexión existente guardada en st.session_state si está disponible,
+    y la renueva si no existe.
+
+    Returns:
+        gspread.Spreadsheet: Objeto Spreadsheet conectado y listo para usar.
     """
     if "spreadsheet" not in st.session_state:
         service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
         credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
         client = gspread.authorize(credentials)
         st.session_state["spreadsheet"] = client.open(SHEET_NAME)
-    
     return st.session_state["spreadsheet"]
 
 # Intentar conexión
@@ -59,7 +63,7 @@ st.write(f"Monto ingresado: ${monto_formateado}")
 st.divider()
 st.subheader("Cultivo")
 try:
-    data = get_fresh_spreadsheet().worksheet("cultivos").get_all_records()
+    data = spreadsheet.worksheet("cultivos").get_all_records()
     cultivo_list = [r["cultivo"] for r in data if r["cultivo"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de cultivos: {e}")
@@ -71,7 +75,7 @@ cultivo = st.selectbox("Seleccione cultivo o centro de costos", cultivo_list, in
 st.divider()
 st.subheader("Clientes")
 try:
-    data = get_fresh_spreadsheet().worksheet("clientes").get_all_records()
+    data = spreadsheet.worksheet("clientes").get_all_records()
     clientes_list = [r["cliente"] for r in data if r["cliente"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de clientes: {e}")
@@ -102,7 +106,7 @@ def fecha_vencimiento_input(dias):
 
 def pago_input(vencimiento, dias):
     try:
-        data = get_fresh_spreadsheet().worksheet("tipo_pagos").get_all_records()
+        data = spreadsheet.worksheet("tipo_pagos").get_all_records()
         bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
     except:
         bancos_lista = []
@@ -138,7 +142,7 @@ if st.button("Guardar Registro"):
         for err in errores: st.warning(err)
     else:
         try:
-            sheet = get_fresh_spreadsheet().worksheet("ingresos")
+            sheet = spreadsheet.worksheet("ingresos")
             headers = sheet.row_values(1)
             fecha_envio = datetime.now(pytz.timezone('Chile/Continental')).strftime("%d/%m/%Y %H:%M:%S")
             nuevo_id = len(sheet.get_all_values())
