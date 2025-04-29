@@ -1,4 +1,7 @@
 import streamlit as st
+
+st.set_page_config(page_title="Dashboard de Reportes", layout="wide")
+
 import pandas as pd
 from google.oauth2.service_account import Credentials
 import gspread
