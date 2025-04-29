@@ -94,7 +94,7 @@ cliente = st.selectbox("Seleccione cliente", clientes_list, index=None, placehol
 st.divider()
 st.subheader("Fecha del Ingreso")
 numero_folio = st.text_input("Número de Folio", placeholder="Dejar en blanco si no aplica").strip() or "N/A"
-fecha_ingreso = st.date_input("Fecha del Ingreso", value=datetime.today(), format="DD/MM/YYYY")
+fecha_ingreso = st.date_input("Fecha del Ingreso", value=datetime.today().date(), format="DD/MM/YYYY")
 
 # Vencimientos
 st.divider()
