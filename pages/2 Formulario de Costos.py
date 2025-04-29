@@ -454,9 +454,11 @@ numero_folio = numero_folio.strip() or "N/A"
 
 # Fecha de Emisión
     # Fecha de emisión de la factura
+fecha_hoy_chile = datetime.now(pytz.timezone('Chile/Continental')).date()
+
 fecha_emision = st.date_input(
     "Fecha de Emisión Factura",
-    value=datetime.now(pytz.timezone('Chile/Continental')).date(),
+    value=fecha_hoy_chile,
     format="DD/MM/YYYY"
 )
 
@@ -484,10 +486,12 @@ def fecha_vencimiento_input(dias):
     """
     opciones = ["Establecer fecha", "No aplica", "Por definir"]
     eleccion = st.radio(f"**Vencimiento a {dias} días:**", opciones, key=f"radio_venc_{dias}")
-    
+    fecha_hoy_chile = datetime.now(pytz.timezone('Chile/Continental')).date()
+
+
     if eleccion == "Establecer fecha":
         # Fecha sugerida = fecha hoy + dias
-        fecha_sugerida = datetime.today() + timedelta(days=dias) # Sugiere una fecha x días más a la de hoy
+        fecha_sugerida = fecha_hoy_chile + timedelta(days=dias) # Sugiere una fecha x días más a la de hoy
         fecha = st.date_input(
             f"Elija la fecha para {dias} días",
             value=fecha_sugerida,

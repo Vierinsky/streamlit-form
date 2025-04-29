@@ -94,17 +94,19 @@ cliente = st.selectbox("Seleccione cliente", clientes_list, index=None, placehol
 st.divider()
 st.subheader("Fecha del Ingreso")
 numero_folio = st.text_input("Número de Folio", placeholder="Dejar en blanco si no aplica").strip() or "N/A"
-fecha_ingreso = st.date_input("Fecha del Ingreso", datetime.now(pytz.timezone('Chile/Continental')).date(), format="DD/MM/YYYY")
+fecha_hoy_chile = datetime.now(pytz.timezone('Chile/Continental')).date()
+fecha_ingreso = st.date_input("Fecha del Ingreso", fecha_hoy_chile, format="DD/MM/YYYY")
 
 # Vencimientos
 st.divider()
 st.subheader("Vencimientos")
 
 def fecha_vencimiento_input(dias):
+    fecha_hoy_chile = datetime.now(pytz.timezone('Chile/Continental')).date()
     opciones = ["Establecer fecha", "No aplica", "Por definir"]
     eleccion = st.radio(f"**Vencimiento a {dias} días:**", opciones, key=f"radio_venc_{dias}")
     if eleccion == "Establecer fecha":
-        sugerida = datetime.today() + timedelta(days=dias)
+        sugerida = fecha_hoy_chile + timedelta(days=dias)
         fecha = st.date_input(f"Elija la fecha para {dias} días", value=sugerida, key=f"fecha_venc_{dias}", format="DD/MM/YYYY")
         return fecha.strftime("%d/%m/%Y")
     elif eleccion == "Por definir":
