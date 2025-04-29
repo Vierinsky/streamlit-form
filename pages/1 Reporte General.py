@@ -60,7 +60,7 @@ except Exception as e:
 
 # === Configuración Streamlit ===
 # st.set_page_config(page_title="Dashboard de Reportes", layout="wide")
-st.title("\ud83d\udcca Reporte General de Costos e Ingresos")
+st.title("📊 Reporte General de Costos e Ingresos")
 
 # === Cargar datos ===
 try:
