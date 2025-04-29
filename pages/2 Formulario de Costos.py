@@ -471,10 +471,10 @@ def fecha_vencimiento_input(dias):
       - "Por definir": devuelve la cadena "Por definir".
       - "No aplica": devuelve la cadena "N/A".
 
-    Esta función se usa para capturar la fecha de vencimiento de una factura según distintos plazos (30, 60, 120 días, etc.).
+    Esta función se usa para capturar la fecha de vencimiento de una factura según distintos plazos (30, 60, 90, 120 días).
 
     Args:
-        dias (int): Plazo en días para el vencimiento (por ejemplo, 30, 60, 120).
+        dias (int): Plazo en días para el vencimiento (por ejemplo, 30, 60, 90, 120).
 
     Returns:
         str: Una de las siguientes opciones:
@@ -515,7 +515,7 @@ def pago_input(vencimiento, dias):
               - Una fecha como string en formato "DD/MM/YYYY"
               - "Por definir"
               - "N/A"
-        dias (int): Número de días del vencimiento (ej. 30, 60, 120). Se usa como parte del key único del selectbox.
+        dias (int): Número de días del vencimiento (ej. 30, 60, 90, 120). Se usa como parte del key único del selectbox.
 
     Returns:
         str: Forma de pago seleccionada, o los valores "Por definir" o "N/A".
@@ -720,7 +720,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
@@ -749,7 +749,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
@@ -780,7 +780,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
@@ -809,7 +809,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
@@ -840,7 +840,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
@@ -869,7 +869,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
@@ -897,7 +897,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
@@ -924,7 +924,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
@@ -951,7 +951,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
@@ -977,7 +977,7 @@ if st.button("Guardar Registro"):
                     "tipo_pago_30" : pago_30,
                     "fecha_vencimiento_60": vencimiento_60,
                     "tipo_pago_60" : pago_60,
-                    "vencimiento_90": vencimiento_90,
+                    "fecha_vencimiento_90": vencimiento_90,
                     "tipo_pago_90": pago_90,
                     "fecha_vencimiento_120": vencimiento_120,
                     "tipo_pago_120" : pago_120,
