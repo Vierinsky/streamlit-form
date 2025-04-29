@@ -175,6 +175,12 @@ if st.button("Guardar Registro"):
             sheet.append_row(fila_final)
             st.session_state["registro_guardado"] = True
             st.toast("Registro guardado con éxito", icon="✅")
-            st.rerun()
+            # st.rerun()
+            # 🔄 Recarga la página
+                # Nota: Hay otras formas de recargar la página pero hasta el momento
+                #       Este fue el que mejor funcionó.
+            st.markdown("""
+                <meta http-equiv="refresh" content="0">
+            """, unsafe_allow_html=True)
         except Exception as e:
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
