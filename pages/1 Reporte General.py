@@ -59,7 +59,7 @@ except Exception as e:
     st.stop()
 
 # === Configuración Streamlit ===
-st.set_page_config(page_title="Dashboard de Reportes", layout="wide")
+# st.set_page_config(page_title="Dashboard de Reportes", layout="wide")
 st.title("\ud83d\udcca Reporte General de Costos e Ingresos")
 
 # === Cargar datos ===
