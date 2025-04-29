@@ -6,34 +6,74 @@ import os
 import pytz
 import streamlit as st
 
-# Configuración de autenticación con Google Sheets usando google-auth
+# === Configuración Google Sheets ===
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
-# Intentar abrir la hoja de Google Sheets
 SHEET_NAME = "prueba_streamlit"             # ⚠️Modificar en producción⚠️
 
-# Autenticación y conexión con Google Sheets
+# === Funciones de Utilidad ===
+def get_fresh_spreadsheet():
+    """
+    Devuelve una conexión activa a Google Sheets. Si ya existe en session_state la reutiliza.
+
+    Returns:
+        gspread.Spreadsheet: conexión activa.
+    """
+    if "spreadsheet" not in st.session_state:
+        service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
+        credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
+        client = gspread.authorize(credentials)
+        st.session_state["spreadsheet"] = client.open(SHEET_NAME)
+    return st.session_state["spreadsheet"]
+
+@st.cache_data(ttl=300)
+def cargar_hoja(nombre_hoja: str) -> list[dict]:
+    """
+    Lee todos los registros de una hoja de Google Sheets y cachea el resultado.
+
+    Args:
+        nombre_hoja (str): nombre de la pestaña a leer.
+
+    Returns:
+        list: Lista de diccionarios.
+    """
+    sheet = get_fresh_spreadsheet().worksheet(nombre_hoja)
+    return sheet.get_all_records()
+
+# === Conexión Inicial ===
 try:
-    service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])             # ⚠️Modificar en producción⚠️
-    credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
-    client = gspread.authorize(credentials)
-    spreadsheet = client.open(SHEET_NAME)
-
-    # Guardar en sesión para que esté accesible en otras páginas
-    st.session_state["spreadsheet"] = spreadsheet
-
-    # Mostrar estado en la barra lateral
+    spreadsheet = get_fresh_spreadsheet()
     with st.sidebar:
         with st.expander("🔧 Estado de conexión", expanded=False):
             st.success("✅ Conexión con Google Sheets exitosa")
             st.success(f"✅ Hoja activa: '{SHEET_NAME}'")
-
 except Exception as e:
     st.sidebar.error("❌ Falló la conexión con Google Sheets")
     st.stop()
+
+
+# Autenticación y conexión con Google Sheets
+# try:
+#     service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])             # ⚠️Modificar en producción⚠️
+#     credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
+#     client = gspread.authorize(credentials)
+#     spreadsheet = client.open(SHEET_NAME)
+
+#     # Guardar en sesión para que esté accesible en otras páginas
+#     st.session_state["spreadsheet"] = spreadsheet
+
+#     # Mostrar estado en la barra lateral
+#     with st.sidebar:
+#         with st.expander("🔧 Estado de conexión", expanded=False):
+#             st.success("✅ Conexión con Google Sheets exitosa")
+#             st.success(f"✅ Hoja activa: '{SHEET_NAME}'")
+
+# except Exception as e:
+#     st.sidebar.error("❌ Falló la conexión con Google Sheets")
+#     st.stop()
 
 # Diccionario de hojas de la planilla
     # Cambiar key en caso de modificaciones
@@ -59,23 +99,21 @@ HOJAS_GOOGLE_SHEETS = {
     "tipo_pagos" : "tipo_pagos"
 }
 
+# === Formulario Principal ===
 st.title("📋 Formulario de Registro de Costos")
 
-spreadsheet = st.session_state.get("spreadsheet")
-if not spreadsheet:
-    st.error("❌ No se pudo acceder al documento. Verifica la conexión en la página principal.")
-    st.stop
+# spreadsheet = st.session_state.get("spreadsheet")
+# if not spreadsheet:
+#     st.error("❌ No se pudo acceder al documento. Verifica la conexión en la página principal.")
+#     st.stop
 
-# # Obtener la hoja de costos
-# sheet = spreadsheet.worksheet("costos")
 
 # ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
 if st.session_state.get("registro_guardado"):
     st.toast("Registro guardado con éxito", icon="✅")
     st.session_state["registro_guardado"] = False
 
-# Inputs
-
+# === Sección Descripción e Importe ===
 st.divider()
 
 st.subheader("Información General")
@@ -106,30 +144,27 @@ st.subheader("Centro de Costos")
 
 # CENTRO DE COSTOS
 
-@st.cache_data(ttl=300)
-def cargar_hoja(_spreadsheet, sheet_name: str) -> list[dict]:
-    """
-    Lee todos los registros de una hoja de Google Sheets y cachea el resultado.
+# @st.cache_data(ttl=300)
+# def cargar_hoja(_spreadsheet, sheet_name: str) -> list[dict]:
+#     """
+#     Lee todos los registros de una hoja de Google Sheets y cachea el resultado.
 
-    Args:
-        spreadsheet: objeto gspread.Spreadsheet ya autenticado.
-        sheet_name (str): nombre de la pestaña a leer.
+#     Args:
+#         spreadsheet: objeto gspread.Spreadsheet ya autenticado.
+#         sheet_name (str): nombre de la pestaña a leer.
 
-    Returns:
-        Lista de diccionarios (una fila por dict con llaves = encabezados).
-    """
-    ws = _spreadsheet.worksheet(sheet_name)
-    return ws.get_all_records()
+#     Returns:
+#         Lista de diccionarios (una fila por dict con llaves = encabezados).
+#     """
+#     ws = _spreadsheet.worksheet(sheet_name)
+#     return ws.get_all_records()
 
 # LISTA DE CENTRO DE COSTOS
     # Obtener lista dinámica de centro de costos desde la hoja 'ceco'
 try:
-    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["ceco"])
+    data = cargar_hoja(HOJAS_GOOGLE_SHEETS["ceco"])
     ceco_list = [r["ceco"] for r in data if r["ceco"].strip()]
 
-    # ceco_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["ceco"])
-    # data = ceco_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    # ceco_list = [row["ceco"] for row in data if row["ceco"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de centro de costos: {e}")
     ceco_list = []
@@ -143,11 +178,8 @@ ceco = st.selectbox(
 # LISTA DE CULTIVOS
     # Obtener lista dinámica de cultivos desde la hoja 'cultivos'
 try:
-    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["cultivos"])
+    data = cargar_hoja(HOJAS_GOOGLE_SHEETS["cultivos"])
     cultivo_list = [r["cultivo"] for r in data if r["cultivo"].strip()]
-    # cultivo_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["cultivos"])
-    # data = cultivo_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    # cultivo_list = [row["cultivo"] for row in data if row["cultivo"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
     cultivo_list = []
@@ -173,12 +205,8 @@ def seleccionar_cultivo(cultivo_list):
 # LISTA DE MAQUINAS
     # Obtener lista dinámica desde la hoja 'maquinas'
 try:
-    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["maquinas"])
+    data = cargar_hoja(HOJAS_GOOGLE_SHEETS["maquinas"])
     maquinas_list = [r["maquina"] for r in data if r["maquina"].strip()]
-
-    # maquinas_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["maquinas"])
-    # data = maquinas_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    # maquinas_list = [row["maquina"] for row in data if row["maquina"].strip()]
 except Exception as e:
     st.error(f"❌ Error al cargar la lista de maquinas: {e}")
     maquinas_list = []
@@ -245,15 +273,6 @@ elif ceco == "Maquinaria":
     maquina = seleccionar_maquina(maquinas_list)
 
 elif ceco == "Administracion":
-    # LISTA DE ADMINISTRACIÓN
-    #     Obtener lista dinámica desde la hoja 'sub_admin'
-    # try:
-    #     sub_admin_sheet = spreadsheet.worksheet("sub_admin")
-    #     data = sub_admin_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-    #     sub_admin_list = [row["sub_admin"] for row in data if row["sub_admin"].strip()]
-    # except Exception as e:
-    #     st.error(f"❌ Error al cargar la lista de sub-categorias de Administración: {e}")
-    #     sub_admin_list = []
     
     sub_admin = st.selectbox(
         "Seleccione sub-categoria Administración",
@@ -379,13 +398,8 @@ else:
     # Proveedores
     try:
         # Obtener lista dinámica de proveedores desde la hoja 'proveedores'
-        data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["proveedores"])
+        data = cargar_hoja(HOJAS_GOOGLE_SHEETS["proveedores"])
         proveedores_list = [r["proveedor"] for r in data if r["proveedor"].strip()]
-        # proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
-        
-        # proveedores_sheet = spreadsheet.worksheet(HOJAS_GOOGLE_SHEETS["proveedores"])
-        # data = proveedores_sheet.get_all_records()  # Devuelve una lista de diccionarios, ignorando encabezado
-        # proveedores_list = [row["proveedor"] for row in data if row["proveedor"].strip()]
     except Exception as e:
         st.error(f"❌ Error al cargar la lista de proveedores: {e}")
         proveedores_list = []
@@ -506,7 +520,7 @@ def pago_input(vencimiento, dias):
     Returns:
         str: Forma de pago seleccionada, o los valores "Por definir" o "N/A".
     """
-    data = cargar_hoja(spreadsheet, HOJAS_GOOGLE_SHEETS["tipo_pagos"])
+    data = cargar_hoja(HOJAS_GOOGLE_SHEETS["tipo_pagos"])
     bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
     
     if vencimiento == "Por definir":
@@ -659,21 +673,20 @@ if st.button("Guardar Registro"):
     else:
         # Si todo está en orden se procede a agregar los datos a la planilla
 
-        def preparar_registro(spreadsheet, sheet_name):
+        def preparar_registro(sheet_name):
             """
             Prepara una hoja específica de Google Sheets para registrar un nuevo dato.
 
             Args:
-                spreadsheet: Objeto Spreadsheet conectado.
                 sheet_name (str): Nombre de la hoja.
 
             Returns:
-                sheet: Objeto Worksheet correspondiente.
+                sheet (gspread.Worksheet): Objeto Worksheet correspondiente.
                 headers (list): Lista de nombres de columna.
                 nuevo_index (int): Número de fila a insertar (sin contar encabezado).
                 fecha_hora_actual (str): Timestamp en formato %d/%m/%Y %H:%M:%S.
             """
-            sheet = spreadsheet.worksheet(sheet_name)
+            sheet = get_fresh_spreadsheet().worksheet(sheet_name)
             headers = sheet.row_values(1)
 
             zona_horaria_chile = pytz.timezone('Chile/Continental')
@@ -682,11 +695,12 @@ if st.button("Guardar Registro"):
 
             return sheet, headers, nuevo_index, fecha_hora_actual
 
+
         try:
             # "RRHH"
             if ceco == "RRHH":
 
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["RRHH"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS["RRHH"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -716,7 +730,7 @@ if st.button("Guardar Registro"):
             # "Agroquimico"
             elif ceco == "Agroquimico":
 
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Agroquimicos"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS["Agroquimicos"])
 
                 registro = {
                     "id" : nuevo_index,
@@ -745,7 +759,7 @@ if st.button("Guardar Registro"):
             # "Maquinaria"
             elif ceco == "Maquinaria":
 
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Maquinaria"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS["Maquinaria"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -775,7 +789,7 @@ if st.button("Guardar Registro"):
 
             # "Administracion"
             elif ceco == "Administracion":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Administracion"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS["Administracion"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -804,7 +818,7 @@ if st.button("Guardar Registro"):
 
             # "Seguros"
             elif ceco == "Seguros":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Seguros"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS["Seguros"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -835,7 +849,7 @@ if st.button("Guardar Registro"):
 
             # "Inversiones"
             elif ceco == "Inversiones":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Inversiones"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS["Inversiones"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -864,7 +878,7 @@ if st.button("Guardar Registro"):
             # "Servicio Externos MMOO"
 
             elif ceco == "Servicio Externos MMOO":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Servicio Externos MMOO"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS["Servicio Externos MMOO"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -892,7 +906,7 @@ if st.button("Guardar Registro"):
 
             # "Servicios Básicos"
             elif ceco == "Servicios Básicos":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS['Servicios Básicos'])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS['Servicios Básicos'])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -918,7 +932,7 @@ if st.button("Guardar Registro"):
                 }
             # "Combustibles"
             elif ceco == "Combustibles":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Combustibles"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS["Combustibles"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
@@ -946,7 +960,7 @@ if st.button("Guardar Registro"):
        
             # "Gastos Varios / Otros"
             elif ceco == "Gastos Varios / Otros":
-                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(spreadsheet, HOJAS_GOOGLE_SHEETS["Gastos Varios / Otros"])
+                sheet, headers, nuevo_index, fecha_hora_actual = preparar_registro(HOJAS_GOOGLE_SHEETS["Gastos Varios / Otros"])
 
                 # Armar diccionario con los datos usando los nombres de las columnas
                 registro = {
