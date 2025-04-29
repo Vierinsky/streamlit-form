@@ -456,7 +456,7 @@ numero_folio = numero_folio.strip() or "N/A"
     # Fecha de emisión de la factura
 fecha_emision = st.date_input(
     "Fecha de Emisión Factura",
-    value="today",
+    value=datetime.today(),
     format="DD/MM/YYYY"
 )
 
