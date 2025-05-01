@@ -56,9 +56,6 @@ except Exception as e:
 # st.set_page_config(page_title="Dashboard de Reportes", layout="wide")
 st.title("📊 Reporte General de Costos e Ingresos")
 
-# TODO:
-#   * Crear Dataframe para costos y otro para ingresos.
-
 # === Cargar datos ===
 
 try:
@@ -85,20 +82,6 @@ columnas_fechas = ["fecha_ingreso", "fecha_vencimiento_30", "fecha_vencimiento_6
 
 columnas_fecha_hora = ["fecha_envio"]
 
-# dataframes_list = [
-#     "df_rrhh",
-#     "df_agroquimicos", 
-#     "df_maquinaria",
-#     "df_administracion",
-#     "df_seguros",
-#     "df_inversiones",
-#     "df_servicios_externos",
-#     "df_servicios_basicos",
-#     "df_combustibles",
-#     "df_gastos_varios",
-#     "df_ingresos"
-#     ]
-
 # Procesar columnas con fecha y hora
 for nombre, df in dataframes_dict.items():
     for col in columnas_fecha_hora:
@@ -121,7 +104,7 @@ for nombre, df in dataframes_dict.items():
     
     # NOTA : rrhh cambiará
 
-total_costos = sum(df["valor_bruto"].sum() for nombre, df in dataframes_dict.items())
+total_costos = sum(df["valor_bruto"].sum() for df in dataframes_dict.values())
 total_ingresos = dataframes_dict["ingresos"]["valor_bruto"].sum()
 balance = total_ingresos - total_costos
 
