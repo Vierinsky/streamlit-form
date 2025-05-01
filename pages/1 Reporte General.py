@@ -124,11 +124,22 @@ st.divider()
 
 # === Gráficos de distribución ===
 
+df_costos_total = pd.concat(
+    [df for nombre, df in dataframes_dict.items() if nombre != "ingresos" and not df.empty],
+    ignore_index=True
+)
+
+# Agrupar por centro de costos
+costos_por_ceco = df_costos_total.groupby("centro_costo")["valor_bruto"].sum().sort_values(ascending=False)
+
+# Mostrar un solo gráfico
 st.subheader("Distribución de Costos por Centro de Costos")
-for nombre, df in dataframes_dict.items():
-    if not df.empty and nombre != "ingresos":
-        costos_por_ceco = df.groupby("centro_costo")["valor_bruto"].sum().sort_values(ascending=False)
-        st.bar_chart(costos_por_ceco, color="#FF0000")
+st.bar_chart(costos_por_ceco, color="#FF0000")
+
+# for nombre, df in dataframes_dict.items():
+#     if not df.empty and nombre != "ingresos":
+#         costos_por_ceco = df.groupby("centro_costo")["valor_bruto"].sum().sort_values(ascending=False)
+#         st.bar_chart(costos_por_ceco, color="#FF0000")
 
 # INGRESOS POR CULTIVO (?)
 
