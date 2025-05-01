@@ -62,17 +62,19 @@ st.title("📊 Reporte General de Costos e Ingresos")
 # === Cargar datos ===
 
 try:
-    df_rrhh = cargar_dataframe("rrhh")  # ESTE VA A CAMBIAR A UN FORMULARIO INDEPENDIENTE DE LAS COMPRAS, POR LO TANTO, SU ESTRUCTURA TAMBIÉN CAMBIARÁ
-    df_agroquimicos = cargar_dataframe("agroquimicos") 
-    df_maquinaria = cargar_dataframe("maquinaria")
-    df_administracion = cargar_dataframe("administracion")
-    df_seguros = cargar_dataframe("seguros")
-    df_inversiones = cargar_dataframe("inversiones")
-    df_servicios_externos = cargar_dataframe("servicios_externos")
-    df_servicios_basicos = cargar_dataframe("servicios_basicos")
-    df_combustibles = cargar_dataframe("combustibles")
-    df_gastos_varios = cargar_dataframe("gastos_varios")
-    df_ingresos = cargar_dataframe("ingresos")
+    dataframes_dict = {
+        "rrhh": cargar_dataframe("rrhh"),
+        "agroquimicos": cargar_dataframe("agroquimicos"),
+        "maquinaria": cargar_dataframe("maquinaria"),
+        "administracion": cargar_dataframe("administracion"),
+        "seguros": cargar_dataframe("seguros"),
+        "inversiones": cargar_dataframe("inversiones"),
+        "servicios_externos": cargar_dataframe("servicios_externos"),
+        "servicios_basicos": cargar_dataframe("servicios_basicos"),
+        "combustibles": cargar_dataframe("combustibles"),
+        "gastos_varios": cargar_dataframe("gastos_varios"),
+        "ingresos": cargar_dataframe("ingresos"),
+    }
 except Exception as e:
     st.error(f"❌ Error al cargar datos: {e}")
     st.stop()
@@ -83,29 +85,29 @@ columnas_fechas = ["fecha_ingreso", "fecha_vencimiento_30", "fecha_vencimiento_6
 
 columnas_fecha_hora = ["fecha_envio"]
 
-dataframes_list = [
-    "df_rrhh",
-    "df_agroquimicos", 
-    "df_maquinaria",
-    "df_administracion",
-    "df_seguros",
-    "df_inversiones",
-    "df_servicios_externos",
-    "df_servicios_basicos",
-    "df_combustibles",
-    "df_gastos_varios",
-    "df_ingresos"
-    ]
+# dataframes_list = [
+#     "df_rrhh",
+#     "df_agroquimicos", 
+#     "df_maquinaria",
+#     "df_administracion",
+#     "df_seguros",
+#     "df_inversiones",
+#     "df_servicios_externos",
+#     "df_servicios_basicos",
+#     "df_combustibles",
+#     "df_gastos_varios",
+#     "df_ingresos"
+#     ]
 
 # Procesar columnas con fecha y hora
-for df in dataframes_list:
+for nombre, df in dataframes_dict.items():
     for col in columnas_fecha_hora:
         if col in df.columns:
             df[col] = pd.to_datetime(df[col], format="%d/%m/%Y %H:%M:%S", errors="coerce")
 
 
 # Procesar columnas solo con fecha
-for df in dataframes_list:
+for nombre, df in dataframes_dict.items():
     for col in columnas_fechas:
         if col in df.columns:
             df[col] = pd.to_datetime(df[col], format="%d/%m/%Y", errors="coerce" )
@@ -119,8 +121,8 @@ for df in dataframes_list:
     
     # NOTA : rrhh cambiará
 
-total_costos = sum(df["valor_bruto"].sum() for df in dataframes_list)
-total_ingresos = df_ingresos["valor_bruto"].sum()
+total_costos = sum(df["valor_bruto"].sum() for nombre, df in dataframes_dict.items())
+total_ingresos = dataframes_dict["ingresos"]["valor_bruto"].sum()
 balance = total_ingresos - total_costos
 
 # === Tarjetas resumen ===
