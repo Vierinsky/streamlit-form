@@ -120,13 +120,17 @@ col3.metric(
     help="Ingresos - Costos"
 )
 
-# st.divider()
+st.divider()
 
-# # === Gráficos de distribución ===
-# st.subheader("Distribución de Costos por Ítem")
-# if not df_costos.empty and "item" in df_costos.columns:
-#     costos_por_item = df_costos.groupby("item")["valor_bruto"].sum().sort_values(ascending=False)
-#     st.bar_chart(costos_por_item, color="#FF0000")
+# === Gráficos de distribución ===
+
+st.subheader("Distribución de Costos por Centro de Costos")
+for nombre, df in dataframes_dict.items():
+    if not df.empty and nombre != "ingresos":
+        costos_por_ceco = df.groupby("centro_costo")["valor_bruto"].sum().sort_values(ascending=False)
+        st.bar_chart(costos_por_ceco, color="#FF0000")
+
+# INGRESOS POR CULTIVO (?)
 
 # st.subheader("Distribución de Ingresos por Ítem")
 # if not df_ingresos.empty and "item" in df_ingresos.columns:
