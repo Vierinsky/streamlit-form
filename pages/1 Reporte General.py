@@ -163,8 +163,16 @@ costos_por_ceco = df_costos_total.groupby("centro_costo")["valor_bruto"].sum().s
 
 # Lista de colores (puedes expandirla o generarla dinámicamente)
 colores = [
-    "#e74c3c", "#3498db", "#2ecc71", "#9b59b6",
-    "#f1c40f", "#e67e22", "#1abc9c", "#34495e", "#95a5a6"
+    "#e74c3c",  # Rojo intenso (Alizarin)
+    "#3498db",  # Azul claro (Peter River)
+    "#2ecc71",  # Verde brillante (Emerald)
+    "#9b59b6",  # Púrpura medio (Amethyst)
+    "#f1c40f",  # Amarillo dorado (Sun Flower)
+    "#e67e22",  # Naranja quemado (Carrot)
+    "#1abc9c",  # Verde agua (Turquoise)
+    "#34495e",  # Azul gris oscuro (Wet Asphalt)
+    "#95a5a6",  # Gris claro (Concrete)
+    "#d35400"   # Naranja profundo (Pumpkin)
 ]
 
 # , "#d35400"
@@ -174,7 +182,7 @@ fig = go.Figure(data=[
     go.Bar(
         x=costos_por_ceco.index,
         y=costos_por_ceco.values,
-        marker_color="colores",     # <- lista de colores por barra
+        marker_color=colores,     # <- lista de colores por barra
         text=[f"${v:,.0f}" for v in costos_por_ceco.values],  # Mostrar valor encima
         textposition="outside",
         hovertext=[f"{ceco}: ${v:,.0f}" for ceco, v in zip(costos_por_ceco.index, costos_por_ceco.values)],
