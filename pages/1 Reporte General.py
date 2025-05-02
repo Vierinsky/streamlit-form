@@ -1,10 +1,11 @@
 from google.oauth2.service_account import Credentials
 import gspread
 import json
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 import os
 import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
 
 # === Configuración Google Sheets ===
 SCOPE = [
@@ -139,12 +140,21 @@ fig, ax = plt.subplots(figsize=(10, 5))
 costos_por_ceco.plot(kind="bar", color="#FF0000", ax=ax)
 
 # Etíquetas y título
+
 ax.set_title("Distribución de Costos por Centro de Costos", fontsize=16)
-ax.set_xlabel("Centro de Costos")
+# ax.set_xlabel("Centro de Costos")
 ax.set_ylabel("Costo Total")
 ax.tick_params(axis="x", rotation=45)
 
-# Mostrar en Stremlit
+# Fondo transparente
+
+fig.patch.set_alpha(0.0)   # Fondo de la figura
+ax.patch.set_alpha(0.0)    # Fondo del área de gráficos
+
+# Display de valores en eje "y" en formato 1.2 M
+ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{x / 1e6:.1f} M"))
+
+# Mostrar en Streamlit
 st.pyplot(fig)
 
 # st.subheader("Distribución de Costos por Centro de Costos")
