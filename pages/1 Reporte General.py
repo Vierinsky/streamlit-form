@@ -1,9 +1,10 @@
-import streamlit as st
-import pandas as pd
 from google.oauth2.service_account import Credentials
 import gspread
 import json
 import os
+import pandas as pd
+import streamlit as st
+import matplotlib.pyplot as plt
 
 # === Configuración Google Sheets ===
 SCOPE = [
@@ -132,9 +133,22 @@ df_costos_total = pd.concat(
 # Agrupar por centro de costos
 costos_por_ceco = df_costos_total.groupby("centro_costo")["valor_bruto"].sum().sort_values(ascending=False)
 
-# Mostrar un solo gráfico
-st.subheader("Distribución de Costos por Centro de Costos")
-st.bar_chart(costos_por_ceco, color="#FF0000")
+# Gráfico de Barras con Matplotlib
+
+fig, ax = plt.subplots(figsize=(10, 5))
+costos_por_ceco.plot(kind="bar", color="#FF0000", ax=ax)
+
+# Etíquetas y título
+ax.set_title("Distribución de Costos por Centro de Costos", fontsize=16)
+ax.set_xlabel("Centro de Costos")
+ax.set_ylabel("Costo Total")
+ax.tick_params(axis="x", rotation=45)
+
+# Mostrar en Stremlit
+st.pyplot(fig)
+
+# st.subheader("Distribución de Costos por Centro de Costos")
+# st.bar_chart(costos_por_ceco, color="#FF0000")
 
 # for nombre, df in dataframes_dict.items():
 #     if not df.empty and nombre != "ingresos":
