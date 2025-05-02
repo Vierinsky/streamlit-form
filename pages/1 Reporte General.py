@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt                 # Evaluar si se usará. Si no, p
 from matplotlib.ticker import FuncFormatter     # Evaluar si se usará. Si no, para sacarlo
 import os
 import pandas as pd
-import plotly.express as px     # TESTING para gráficos más interactivos
+import plotly.graph_objects as go    # TESTING para gráficos más interactivos
 import streamlit as st
 
 # === Configuración Google Sheets ===
@@ -160,18 +160,30 @@ costos_por_ceco = df_costos_total.groupby("centro_costo")["valor_bruto"].sum().s
 # st.pyplot(fig)
 
 # Gráfico de barras con pyplot (Más interactivo)
-fig = px.bar(
-    x=costos_por_ceco.index,
-    y=costos_por_ceco.values,
-    labels={"x": "Centro de Costos", "y": "Valor Bruto"},
-    text=costos_por_ceco.values,
-    title="Distribución por Centro de Costos",
-    hovertemplate="<b><b/> %{x}<br><b>Valor:</b> $%{y:,.0f}<extra></extra>"
+# Crear figura con go.Bar
+fig = go.Figure(data=[
+    go.Bar(
+        x=costos_por_ceco.index,
+        y=costos_por_ceco.values,
+        marker_color="crimson",
+        text=[f"${v:,.0f}" for v in costos_por_ceco.values],  # Mostrar valor encima
+        textposition="outside",
+        hovertext=[f"{ceco}: ${v:,.0f}" for ceco, v in zip(costos_por_ceco.index, costos_por_ceco.values)],
+        hoverinfo="text"
+    )
+])
+
+# Personalizar layout
+fig.update_layout(
+    title="Distribución de Costos por Centro de Costos",
+    yaxis_title=None,
+    xaxis_title=None,
+    plot_bgcolor="rgba(0,0,0,0)",
+    bargap=0.3,
+    height=500
 )
 
-fig.update_traces(texttemplate="%{text:.2s}", textposition="outside")
-fig.update_layout(yaxis_title=None, xaxis_title=None, plot_bgcolor="rgba(0,0,0,0)")
-
+# Mostrar en Streamlit
 st.plotly_chart(fig, use_container_width=True)
 
 # st.subheader("Distribución de Costos por Centro de Costos")
