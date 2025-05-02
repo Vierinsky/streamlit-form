@@ -1,7 +1,7 @@
 from google.oauth2.service_account import Credentials
 import gspread
 import json
-import matplotlib.pyplot as plt                 # Evaluar si se usará. Si no, para sacarlo
+import matplotlib.pyplot as plt                 # Evaluar si se usará. Si no, para sacarlo. Sacar de requirements.txt
 from matplotlib.ticker import FuncFormatter     # Evaluar si se usará. Si no, para sacarlo
 import os
 import pandas as pd
@@ -56,7 +56,6 @@ except Exception as e:
     st.stop()
 
 # === Configuración Streamlit ===
-# st.set_page_config(page_title="Dashboard de Reportes", layout="wide")
 st.title("📊 Reporte General de Costos e Ingresos")
 
 # === Cargar datos ===
@@ -177,18 +176,46 @@ colores = [
 
 # , "#d35400"
 
+# centro_de_costos = [
+#     "rrhh", "agroquimicos", "maquinaria", "administracion",
+# "seguros", "inversiones", "servicios_externos",
+# "servicios_basicos", "combustibles", "gastos_varios"
+# ]
+
+# Lista de valores reales que aparecen en la columna 'centro_costo'
+centros_costo_valores = [
+    "RRHH", "Agroquimicos", "Maquinaria", "Administracion",
+    "Seguros", "Inversiones", "Servicio Externos MMOO",
+    "Servicios Básicos", "Combustibles", "Gastos Varios / Otros"
+]
+
+# Mapeo fijo: centro de costo → color
+ceco_colores = dict(zip(centros_costo_valores, colores))
+
 # Crear figura con go.Bar
 fig = go.Figure(data=[
     go.Bar(
         x=costos_por_ceco.index,
         y=costos_por_ceco.values,
-        marker_color=colores,     # <- lista de colores por barra
-        text=[f"${v:,.0f}" for v in costos_por_ceco.values],  # Mostrar valor encima
+        marker_color=[ceco_colores.get(ceco, "#cccccc") for ceco in costos_por_ceco.index],  # usa color mapeado
+        text=[f"${v:,.0f}" for v in costos_por_ceco.values],
         textposition="outside",
         hovertext=[f"{ceco}: ${v:,.0f}" for ceco, v in zip(costos_por_ceco.index, costos_por_ceco.values)],
         hoverinfo="text"
     )
 ])
+
+# fig = go.Figure(data=[
+#     go.Bar(
+#         x=costos_por_ceco.index,
+#         y=costos_por_ceco.values,
+#         marker_color=colores,     # <- lista de colores por barra
+#         text=[f"${v:,.0f}" for v in costos_por_ceco.values],  # Mostrar valor encima
+#         textposition="outside",
+#         hovertext=[f"{ceco}: ${v:,.0f}" for ceco, v in zip(costos_por_ceco.index, costos_por_ceco.values)],
+#         hoverinfo="text"
+#     )
+# ])
 
 # Personalizar layout
 fig.update_layout(
