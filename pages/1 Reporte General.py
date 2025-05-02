@@ -1,10 +1,11 @@
 from google.oauth2.service_account import Credentials
 import gspread
 import json
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
+import matplotlib.pyplot as plt                 # Evaluar si se usará. Si no, para sacarlo
+from matplotlib.ticker import FuncFormatter     # Evaluar si se usará. Si no, para sacarlo
 import os
 import pandas as pd
+import plotly.express as px     # TESTING para gráficos más interactivos
 import streamlit as st
 
 # === Configuración Google Sheets ===
@@ -134,28 +135,43 @@ df_costos_total = pd.concat(
 # Agrupar por centro de costos
 costos_por_ceco = df_costos_total.groupby("centro_costo")["valor_bruto"].sum().sort_values(ascending=False)
 
-# Gráfico de Barras con Matplotlib
+# # Gráfico de Barras con Matplotlib
 
-fig, ax = plt.subplots(figsize=(10, 5))
-costos_por_ceco.plot(kind="bar", color="#FF0000", ax=ax)
+# fig, ax = plt.subplots(figsize=(10, 5))
+# costos_por_ceco.plot(kind="bar", color="#FF0000", ax=ax)
 
-# Etíquetas y título
+# # Etíquetas y título
 
-ax.set_title("Distribución de Costos por Centro de Costos", fontsize=16)
+# ax.set_title("Distribución de Costos por Centro de Costos", fontsize=16)
 # ax.set_xlabel("Centro de Costos")
-ax.set_ylabel("Costo Total")
-ax.tick_params(axis="x", rotation=45)
+# # ax.set_ylabel("Costo Total")
+# ax.set_xlabel("")
+# ax.tick_params(axis="x", rotation=45)
 
-# Fondo transparente
+# # Fondo transparente
 
-fig.patch.set_alpha(0.0)   # Fondo de la figura
-ax.patch.set_alpha(0.0)    # Fondo del área de gráficos
+# fig.patch.set_alpha(0.0)   # Fondo de la figura
+# ax.patch.set_alpha(0.0)    # Fondo del área de gráficos
 
-# Display de valores en eje "y" en formato 1.2 M
-ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{x / 1e6:.1f} M"))
+# # Display de valores en eje "y" en formato 1.2 M
+# ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{x / 1e6:.1f} M"))
 
-# Mostrar en Streamlit
-st.pyplot(fig)
+# # Mostrar en Streamlit
+# st.pyplot(fig)
+
+# Gráfico de barras con pyplot (Más interactivo)
+fig = px.bar(
+    x=costos_por_ceco.index,
+    y=costos_por_ceco.values,
+    labels={"x": "Centro de Costos", "y": "Valor Bruto"},
+    text=costos_por_ceco.values,
+    title="Distribución por Centro de Costos",
+)
+
+fig.update_traces(texttemplate="%{text:.2s}", textposition="outside")
+fig.update_layout(yaxis_title=None, xaxis_title=None, plot_bgcolor="rgba(0,0,0,0)")
+
+st.plotly_chart(fig, use_container_width=True)
 
 # st.subheader("Distribución de Costos por Centro de Costos")
 # st.bar_chart(costos_por_ceco, color="#FF0000")
@@ -172,14 +188,3 @@ st.pyplot(fig)
 #     ingresos_por_item = df_ingresos.groupby("item")["valor_bruto"].sum().sort_values(ascending=False)
 #     st.bar_chart(ingresos_por_item, color="#008000")
 
-# st.divider()
-
-# # === Últimos registros ===
-# st.subheader("Últimos Registros")
-# st.write("\ud83d\udd34 Últimos 5 costos registrados")
-# if not df_costos.empty:
-#     st.dataframe(df_costos.sort_values("id", ascending=False).head(5), use_container_width=True)
-
-# st.write("\ud83d\udfe9 Últimos 5 ingresos registrados")
-# if not df_ingresos.empty:
-#     st.dataframe(df_ingresos.sort_values("id", ascending=False).head(5), use_container_width=True)
