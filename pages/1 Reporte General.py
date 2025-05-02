@@ -166,6 +166,7 @@ fig = px.bar(
     labels={"x": "Centro de Costos", "y": "Valor Bruto"},
     text=costos_por_ceco.values,
     title="Distribución por Centro de Costos",
+    hovertemplate="<b><b/> %{x}<br><b>Valor:</b> $%{y:,.0f}<extra></extra>"
 )
 
 fig.update_traces(texttemplate="%{text:.2s}", textposition="outside")
