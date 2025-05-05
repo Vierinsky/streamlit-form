@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt                 # Evaluar si se usará. Si no, p
 from matplotlib.ticker import FuncFormatter     # Evaluar si se usará. Si no, para sacarlo
 import os
 import pandas as pd
-import plotly.graph_objects as go    # TESTING para gráficos más interactivos
+import plotly.graph_objects as go    # TESTING (para gráficos más interactivos)
 import streamlit as st
 
 # === Configuración Google Sheets ===
@@ -124,43 +124,20 @@ col3.metric(
 
 st.divider()
 
-# === Gráficos de distribución ===
+# === Gráficos ===
 
 df_costos_total = pd.concat(
     [df for nombre, df in dataframes_dict.items() if nombre != "ingresos" and not df.empty],
     ignore_index=True
 )
 
-# Agrupar por centro de costos
+# Agrupar por centro de costos (Sumatoria costos)
 costos_por_ceco = df_costos_total.groupby("centro_costo")["valor_bruto"].sum().sort_values(ascending=False)
 
-# # Gráfico de Barras con Matplotlib
-
-# fig, ax = plt.subplots(figsize=(10, 5))
-# costos_por_ceco.plot(kind="bar", color="#FF0000", ax=ax)
-
-# # Etíquetas y título
-
-# ax.set_title("Distribución de Costos por Centro de Costos", fontsize=16)
-# ax.set_xlabel("Centro de Costos")
-# # ax.set_ylabel("Costo Total")
-# ax.set_xlabel("")
-# ax.tick_params(axis="x", rotation=45)
-
-# # Fondo transparente
-
-# fig.patch.set_alpha(0.0)   # Fondo de la figura
-# ax.patch.set_alpha(0.0)    # Fondo del área de gráficos
-
-# # Display de valores en eje "y" en formato 1.2 M
-# ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{x / 1e6:.1f} M"))
-
-# # Mostrar en Streamlit
-# st.pyplot(fig)
-
+# === Gráfico de barras ===
 # Gráfico de barras con pyplot (Más interactivo)
 
-# Lista de colores (puedes expandirla o generarla dinámicamente)
+# Lista de colores (se puede expandir o generar dinámicamente)
 colores = [
     "#e74c3c",  # Rojo intenso (Alizarin)
     "#3498db",  # Azul claro (Peter River)
@@ -173,8 +150,6 @@ colores = [
     "#95a5a6",  # Gris claro (Concrete)
     "#d35400"   # Naranja profundo (Pumpkin)
 ]
-
-# , "#d35400"
 
 # centro_de_costos = [
 #     "rrhh", "agroquimicos", "maquinaria", "administracion",
@@ -193,7 +168,7 @@ centros_costo_valores = [
 ceco_colores = dict(zip(centros_costo_valores, colores))
 
 # Crear figura con go.Bar
-fig = go.Figure(data=[
+fig_bar = go.Figure(data=[
     go.Bar(
         x=costos_por_ceco.index,
         y=costos_por_ceco.values,
@@ -205,20 +180,8 @@ fig = go.Figure(data=[
     )
 ])
 
-# fig = go.Figure(data=[
-#     go.Bar(
-#         x=costos_por_ceco.index,
-#         y=costos_por_ceco.values,
-#         marker_color=colores,     # <- lista de colores por barra
-#         text=[f"${v:,.0f}" for v in costos_por_ceco.values],  # Mostrar valor encima
-#         textposition="outside",
-#         hovertext=[f"{ceco}: ${v:,.0f}" for ceco, v in zip(costos_por_ceco.index, costos_por_ceco.values)],
-#         hoverinfo="text"
-#     )
-# ])
-
 # Personalizar layout
-fig.update_layout(
+fig_bar.update_layout(
     title="Distribución de Costos por Centro de Costos",
     yaxis_title=None,
     xaxis_title=None,
@@ -228,15 +191,41 @@ fig.update_layout(
 )
 
 # Mostrar en Streamlit
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig_bar, use_container_width=True)
 
-# st.subheader("Distribución de Costos por Centro de Costos")
-# st.bar_chart(costos_por_ceco, color="#FF0000")
+# === Gráfico de torta ===
 
-# for nombre, df in dataframes_dict.items():
-#     if not df.empty and nombre != "ingresos":
-#         costos_por_ceco = df.groupby("centro_costo")["valor_bruto"].sum().sort_values(ascending=False)
-#         st.bar_chart(costos_por_ceco, color="#FF0000")
+fig_pie = go.Figure(data=[
+    go.Pie(
+        labels=costos_por_ceco.index,
+        values=costos_por_ceco.values,
+        marker=dict(colors=[ceco_colores.get(ceco, "#cccccc") for ceco in costos_por_ceco.index]),
+        textinfo="label+percent"
+        hoverinfo="label+value+percent",
+        hole=0.4 # 0 para torta completa, 0.4 para dona
+    )
+])
+
+# Personalizar layout
+fig_pie.update_layout(
+    title="Proporción de costos por Centro de Costos",
+    showlegend=True,
+    height=500,
+    plot_bgcolor="rgba(0,0,0,0)"
+)
+
+# Mostrar en Streamlit
+st.plotly_chart(fig_pie, use_container_width=True)
+
+# Elementos enalzados a cultivos:
+    # * RRHH
+    # * Agroquímicos
+    # * Seguros:
+        # * Solo sección cultivo
+    # * Inversiones
+    # * Servicios Externos MMOO
+
+
 
 # INGRESOS POR CULTIVO (?)
 
@@ -244,4 +233,3 @@ st.plotly_chart(fig, use_container_width=True)
 # if not df_ingresos.empty and "item" in df_ingresos.columns:
 #     ingresos_por_item = df_ingresos.groupby("item")["valor_bruto"].sum().sort_values(ascending=False)
 #     st.bar_chart(ingresos_por_item, color="#008000")
-
