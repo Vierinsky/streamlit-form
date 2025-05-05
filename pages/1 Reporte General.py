@@ -260,7 +260,7 @@ for ceco in df_cultivos_ceco_sum:
         x=df_cultivos_ceco_sum.index,
         y=df_cultivos_ceco_sum[ceco],
         marker_color=ceco_colores.get(ceco, "#cccccc"),
-        hovertemplate=f"<b>{ceco}</b><br>Cultivo: %{x}<br>Valor: $%{{y:,.0f}}<extra></extra>"
+        hovertemplate=f"<b>{ceco}</b><br>Cultivo: %{{x}}<br>Valor: $%{{y:,.0f}}<extra></extra>"
     ))
 
 
