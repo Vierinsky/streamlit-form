@@ -202,13 +202,13 @@ fig_pie = go.Figure(data=[
         marker=dict(colors=[ceco_colores.get(ceco, "#cccccc") for ceco in costos_por_ceco.index]),
         textinfo="label+percent",
         hoverinfo="label+value+percent",
-        hole=0.4 # 0 para torta completa, 0.4 para dona
+        # hole=0.4 # 0 para torta completa, 0.4 para dona
     )
 ])
 
 # Personalizar layout
 fig_pie.update_layout(
-    title="Proporción de costos por Centro de Costos",
+    title="Proporción de Costos por Centro de Costos",
     showlegend=True,
     height=500,
     plot_bgcolor="rgba(0,0,0,0)"
