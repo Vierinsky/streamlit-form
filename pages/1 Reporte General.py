@@ -200,7 +200,7 @@ fig_pie = go.Figure(data=[
         labels=costos_por_ceco.index,
         values=costos_por_ceco.values,
         marker=dict(colors=[ceco_colores.get(ceco, "#cccccc") for ceco in costos_por_ceco.index]),
-        textinfo="label+percent"
+        textinfo="label+percent",
         hoverinfo="label+value+percent",
         hole=0.4 # 0 para torta completa, 0.4 para dona
     )
