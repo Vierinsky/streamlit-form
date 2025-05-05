@@ -110,8 +110,15 @@ df_costos_total = pd.concat(
 # Filtrar cultivos válidos (excluyendo "N/A" si lo deseas)
 df_costos_por_cultivo = df_costos_total[df_costos_total["cultivo"] != "N/A"]
 
+# Agrupar y pivotear: Cultivos y Centro de Costos
+df_cultivos_ceco_sum = (
+    df_costos_por_cultivo.groupby(["cultivo", "centro_costo"])["valor_bruto"]
+    .sum()
+    .unstack(fill_value=0)
+)
+
 # Agrupar por cultivo y sumar (Cambiar "sum" si se pretende hacer otra cosa con este df)
-costos_por_cultivo = df_costos_por_cultivo.groupby("cultivo")["valor_bruto"].sum().sort_values(ascending=False)
+# costos_por_cultivo = df_costos_por_cultivo.groupby("cultivo")["valor_bruto"].sum().sort_values(ascending=False)
 
 # === Cálculos generales ===
     
@@ -231,27 +238,42 @@ st.plotly_chart(fig_pie, use_container_width=True)
 
 # TESTEO gráfico costos por cultivo
 
-fig_bar_cultivo = go.Figure(data=[
-    go.Bar(
-        x=costos_por_cultivo.index,
-        y=costos_por_cultivo.values,
-        marker_color="teal",
-        text=[f"${v:,.0f}" for v in costos_por_cultivo.values],
-        textposition="outside",
-        hovertext=[f"{cultivo}: ${v:,.0f}" for cultivo, v in zip(costos_por_cultivo.index, costos_por_cultivo.values)],
-        hoverinfo="text"
-    )
-])
+# fig_bar_cultivo = go.Figure(data=[
+#     go.Bar(
+#         x=costos_por_cultivo.index,
+#         y=costos_por_cultivo.values,
+#         marker_color="teal",
+#         text=[f"${v:,.0f}" for v in costos_por_cultivo.values],
+#         textposition="outside",
+#         hovertext=[f"{cultivo}: ${v:,.0f}" for cultivo, v in zip(costos_por_cultivo.index, costos_por_cultivo.values)],
+#         hoverinfo="text"
+#     )
+# ])
 
-fig_bar_cultivo.update_layout(
-    title="Distribución de Costos por Cultivo",
+# === Gráfico de barras stacked ===
+
+fig_stack_bar = go.Figure()
+
+for ceco in df_cultivos_ceco_sum:
+    fig_stack_bar.add_trace(go.Bar(
+        name=ceco,
+        x=df_cultivos_ceco_sum.index,
+        y=df_cultivos_ceco_sum[ceco],
+        marker_color=ceco_colores.get(ceco, "#cccccc"),
+        hovertemplate=f"<b>{ceco}</b><br>Cultivo: %{x}<br>Valor: $%{{y:,.0f}}<extra></extra>"
+    ))
+
+
+fig_stack_bar.update_layout(
+    barmode='stack',
+    title="Costos por Cultivo y Centro de Costos",
     xaxis_title="Cultivo",
     yaxis_title="Costo Total",
     plot_bgcolor="rgba(0,0,0,0)",
     height=500
 )
 
-st.plotly_chart(fig_bar_cultivo, use_container_width=True)
+st.plotly_chart(fig_stack_bar, use_container_width=True)
 
 # TODO: 
     # - Hacer Dataframe que agrupe por cultivos
