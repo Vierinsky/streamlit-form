@@ -117,6 +117,8 @@ df_cultivos_ceco_sum = (
     .unstack(fill_value=0)
 )
 
+
+
 # Agrupar por cultivo y sumar (Cambiar "sum" si se pretende hacer otra cosa con este df)
 # costos_por_cultivo = df_costos_por_cultivo.groupby("cultivo")["valor_bruto"].sum().sort_values(ascending=False)
 
@@ -148,6 +150,14 @@ df_costos_total = pd.concat(
     [df for nombre, df in dataframes_dict.items() if nombre != "ingresos" and not df.empty],
     ignore_index=True
 )
+
+# Elementos Centros de Costos con sección cultivos:
+    # * RRHH
+    # * Agroquímicos
+    # * Seguros:
+        # * Solo sección cultivo
+    # * Inversiones
+    # * Servicios Externos MMOO
 
 # Agrupar por centro de costos (Sumatoria costos)
 costos_por_ceco = df_costos_total.groupby("centro_costo")["valor_bruto"].sum().sort_values(ascending=False)
@@ -235,21 +245,6 @@ fig_pie.update_layout(
 # Mostrar en Streamlit
 st.plotly_chart(fig_pie, use_container_width=True)
 
-
-# TESTEO gráfico costos por cultivo
-
-# fig_bar_cultivo = go.Figure(data=[
-#     go.Bar(
-#         x=costos_por_cultivo.index,
-#         y=costos_por_cultivo.values,
-#         marker_color="teal",
-#         text=[f"${v:,.0f}" for v in costos_por_cultivo.values],
-#         textposition="outside",
-#         hovertext=[f"{cultivo}: ${v:,.0f}" for cultivo, v in zip(costos_por_cultivo.index, costos_por_cultivo.values)],
-#         hoverinfo="text"
-#     )
-# ])
-
 # === Gráfico de barras stacked ===
 
 fig_stack_bar = go.Figure()
@@ -263,16 +258,29 @@ for ceco in df_cultivos_ceco_sum:
         hovertemplate=f"<b>{ceco}</b><br>Cultivo: %{{x}}<br>Valor: $%{{y:,.0f}}<extra></extra>"
     ))
 
+# Calcular totales por cultivo (suma horizontal por fila)
+totales_por_cultivo = df_cultivos_ceco_sum.sum(axis=1)
+
+# Agregar texto encima de las barras con el total
+fig_stack_bar.add_trace(go.Scatter(
+    x=totales_por_cultivo.index,
+    y=totales_por_cultivo.values,
+    text=[f"${v:,.0f}" for v in totales_por_cultivo],
+    mode="text",
+    textposition="top center",
+    showlegend=False
+))
 
 fig_stack_bar.update_layout(
     barmode='stack',
     title="Costos por Cultivo y Centro de Costos",
-    xaxis_title="Cultivo",
+    # xaxis_title="Cultivo",
     yaxis_title="Costo Total",
     plot_bgcolor="rgba(0,0,0,0)",
     height=500
 )
 
+# Mostrar gráfico en Streamlit
 st.plotly_chart(fig_stack_bar, use_container_width=True)
 
 # TODO: 
@@ -280,13 +288,6 @@ st.plotly_chart(fig_stack_bar, use_container_width=True)
     # - Hacer gráficos con "ingresos"
     # - Implementar filtros (Considerar filtros por año y temporada)
 
-# Elementos enalzados a cultivos:
-    # * RRHH
-    # * Agroquímicos
-    # * Seguros:
-        # * Solo sección cultivo
-    # * Inversiones
-    # * Servicios Externos MMOO
 
 
 # INGRESOS POR CULTIVO (?)
