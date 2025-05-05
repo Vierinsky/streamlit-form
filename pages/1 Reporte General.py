@@ -1,8 +1,6 @@
 from google.oauth2.service_account import Credentials
 import gspread
 import json
-import matplotlib.pyplot as plt                 # Evaluar si se usará. Si no, para sacarlo. Sacar de requirements.txt
-from matplotlib.ticker import FuncFormatter     # Evaluar si se usará. Si no, para sacarlo
 import os
 import pandas as pd
 import plotly.graph_objects as go    # TESTING (para gráficos más interactivos)
@@ -101,6 +99,19 @@ for nombre, df in dataframes_dict.items():
     # T2223
     # T2324
     # T2425 
+# === Crear Dataframe cultivos ===
+
+# Concatenar todos los dataframes excepto "ingresos"
+df_costos_total = pd.concat(
+    [df for nombre, df in dataframes_dict.items() if nombre != "ingresos" and not df.empty],
+    ignore_index=True
+)
+
+# Filtrar cultivos válidos (excluyendo "N/A" si lo deseas)
+df_costos_por_cultivo = df_costos_total[df_costos_total["cultivo"] != "N/A"]
+
+# Agrupar por cultivo y sumar (Cambiar "sum" si se pretende hacer otra cosa con este df)
+costos_por_cultivo = df_costos_por_cultivo.groupby("cultivo")["valor_bruto"].sum().sort_values(ascending=False)
 
 # === Cálculos generales ===
     
@@ -217,6 +228,36 @@ fig_pie.update_layout(
 # Mostrar en Streamlit
 st.plotly_chart(fig_pie, use_container_width=True)
 
+
+# TESTEO gráfico costos por cultivo
+
+fig_bar_cultivo = go.Figure(data=[
+    go.Bar(
+        x=costos_por_cultivo.index,
+        y=costos_por_cultivo.values,
+        marker_color="teal",
+        text=[f"${v:,.0f}" for v in costos_por_cultivo.values],
+        textposition="outside",
+        hovertext=[f"{cultivo}: ${v:,.0f}" for cultivo, v in zip(costos_por_cultivo.index, costos_por_cultivo.values)],
+        hoverinfo="text"
+    )
+])
+
+fig_bar_cultivo.update_layout(
+    title="Distribución de Costos por Cultivo",
+    xaxis_title="Cultivo",
+    yaxis_title="Costo Total",
+    plot_bgcolor="rgba(0,0,0,0)",
+    height=500
+)
+
+st.plotly_chart(fig_bar_cultivo, use_container_width=True)
+
+# TODO: 
+    # - Hacer Dataframe que agrupe por cultivos
+    # - Hacer gráficos con "ingresos"
+    # - Implementar filtros (Considerar filtros por año y temporada)
+
 # Elementos enalzados a cultivos:
     # * RRHH
     # * Agroquímicos
@@ -224,7 +265,6 @@ st.plotly_chart(fig_pie, use_container_width=True)
         # * Solo sección cultivo
     # * Inversiones
     # * Servicios Externos MMOO
-
 
 
 # INGRESOS POR CULTIVO (?)
