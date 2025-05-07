@@ -117,8 +117,6 @@ df_cultivos_ceco_sum = (
     .unstack(fill_value=0)
 )
 
-
-
 # Agrupar por cultivo y sumar (Cambiar "sum" si se pretende hacer otra cosa con este df)
 # costos_por_cultivo = df_costos_por_cultivo.groupby("cultivo")["valor_bruto"].sum().sort_values(ascending=False)
 
@@ -151,6 +149,7 @@ df_costos_total = pd.concat(
     ignore_index=True
 )
 
+# Nota:
 # Elementos Centros de Costos con sección cultivos:
     # * RRHH
     # * Agroquímicos

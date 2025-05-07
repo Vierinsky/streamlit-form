@@ -1,13 +1,14 @@
-Nota: 
-* Agregar Hoja ingresos
-* Traducir dicc al inglés
-* Arreglar tablas markdown de este archivo
+# WIP
+
+TODO: 
+* Traducir al inglés
 * Agregar si columna acepta o no "null"
 
-Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inversiones", "servicios_externos", "servicios_basicos", "combustibles", "gastos_varios"]
+Hojas: ["rrhh"(WIP), "agroquimicos", "maquinaria", "administracion", "seguros", "inversiones", "servicios_externos", "servicios_basicos", "combustibles", "gastos_varios"]
 
+# Data Dictionary
 
-# Hoja "rrhh"
+## Hoja "rrhh"
 
 | **Columna**             | **Tipo** | **Definición**                                                                         |
 | ----------------------- | -------- | -------------------------------------------------------------------------------------- |
@@ -32,7 +33,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `tipo_pago_120`         | str      | Igual que `tipo_pago_30`.                                                              |
 | `comentario`            | str      | Comentario opcional. Texto libre o `None`.                                             |
 
-# Hoja "agroquimicos"
+## Hoja "agroquimicos"
 
 | **Columna**             | **Tipo** | **Definición**                                                                         |
 | ----------------------- | -------- | -------------------------------------------------------------------------------------- |
@@ -58,7 +59,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `tipo_pago_120`         | str      | Igual que `tipo_pago_30`.                                                              |
 | `comentario`            | str      | Comentario opcional. Texto libre o `None`.                                             |
 
-# Hoja "maquinaria"
+## Hoja "maquinaria"
 
 | **Columna**             | **Tipo** | **Definición**                                                          |
 | ----------------------- | -------- | ----------------------------------------------------------------------- |
@@ -84,7 +85,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `tipo_pago_120`         | str      | Igual que `tipo_pago_30`.                                               |
 | `comentario`            | str      | Comentario opcional o `None`.                                           |
 
-# Hoja "administracion"
+## Hoja "administracion"
 
 | **Columna**             | **Tipo** | **Definición**                                              |
 | ----------------------- | -------- | ----------------------------------------------------------- |
@@ -110,7 +111,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `comentario`            | str      | Opcional o `None`.                                          |
 
 
-# Hoja "seguros"
+## Hoja "seguros"
 
 | **Columna**             | **Tipo** | **Definición**                                                                            |
 | ----------------------- | -------- | ----------------------------------------------------------------------------------------- |
@@ -139,7 +140,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `comentario`            | str      | Comentario opcional. Texto libre o `None`.                                                |
 
 
-# Hoja "inversiones"
+## Hoja "inversiones"
 
 | **Columna**             | **Tipo** | **Definición**                                                                                        |
 | ----------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
@@ -167,7 +168,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `comentario`            | str      | Comentario opcional.                                                                                  |
 
 
-# Hoja "servicios_externos"
+## Hoja "servicios_externos"
 
 | **Columna**             | **Tipo** | **Definición**                                                                                         |
 | ----------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
@@ -194,7 +195,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `comentario`            | str      | Comentario opcional. Texto libre o `None`.                                                             |
 
 
-# Hoja "servicios_basicos"
+## Hoja "servicios_basicos"
 
 | **Columna**             | **Tipo** | **Definición**                                                   |
 | ----------------------- | -------- | ---------------------------------------------------------------- |
@@ -220,7 +221,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `comentario`            | str      | Comentario opcional.                                             |
 
 
-# Hoja "combustibles"
+## Hoja "combustibles"
 
 | **Columna**             | **Tipo** | **Definición**                                                  |
 | ----------------------- | -------- | --------------------------------------------------------------- |
@@ -245,7 +246,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `tipo_pago_120`         | str      | Tipo de pago a 120 días.                                        |
 | `comentario`            | str      | Comentario opcional.                                            |
 
-# Hoja "gastos_varios"
+## Hoja "gastos_varios"
 
 | **Columna**             | **Tipo** | **Definición**                                           |
 | ----------------------- | -------- | -------------------------------------------------------- |
@@ -270,7 +271,7 @@ Hojas: ["rrhh", "agroquimicos", "maquinaria", "administracion", "seguros", "inve
 | `comentario`            | str      | Comentario opcional.                                     |
 
 
-# Hoja "ingresos"
+## Hoja "ingresos"
 
 | **Columna**                | **Tipo** | **Definición** |
 |----------------------------|----------|----------------|

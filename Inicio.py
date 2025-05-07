@@ -7,9 +7,9 @@ import streamlit as st
 st.set_page_config(page_title="Registro de Costos e Ingresos", layout="centered")
 
 st.title("Bienvenido al Sistema de Registro")
-st.subheader("Selecciona una opción para comenzar:")
+st.subheader("Seleccione una Página:")
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4, col5 = st.columns(5)
 
 button_style = """
     <style>
@@ -21,20 +21,24 @@ button_style = """
 st.markdown(button_style, unsafe_allow_html=True)
 
 with col1:
-    if st.button("Ir a Reporte: Costos v/s Ingresos"):
+    if st.button("Reporte: Costos v/s Ingresos"):
         st.switch_page("pages/1 Reporte General.py")
 
 with col2:
-    if st.button("Ir a Formulario de Costos"):
-        st.switch_page("pages/2 Formulario de Costos.py")
+    if st.button("Formulario de Compras"):
+        st.switch_page("pages/2 Formulario de Compras.py")
 
 with col3:
-    if st.button("Ir a Formulario de Ingresos"):
-        st.switch_page("pages/3 Formulario de Ingresos.py") 
+    if st.button("Formulario de Sueldos"):
+        st.switch_page("page/3 Formulario de Sueldos.py")
 
 with col4:
-    if st.button("Ir a Vencimientos Pendientes"):
-        st.switch_page("pages/4 Vencimientos Pendientes.py")
+    if st.button("Formulario de Ingresos"):
+        st.switch_page("pages/4 Formulario de Ingresos.py") 
+
+with col5:
+    if st.button("Vencimientos Pendientes"):
+        st.switch_page("pages/5 Vencimientos Pendientes.py")
 
 # Configuración de autenticación con Google Sheets usando google-auth
 SCOPE = [
