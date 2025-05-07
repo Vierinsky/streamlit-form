@@ -64,34 +64,34 @@ except Exception as e:
 
 # === Calculo leyes sociales ===
 
-    # Porcentajes leyes sociales
-        # REVISAR
-    TASAS = {
-        "Indefinido": {
-            "afp": 0.10,
-            "salud": 0.07,
-            "cesantia_trabajador": 0.006,
-            "cesantia_empleador": 0.024,
-            "sis": 0.0153,
-            "atep": 0.0093
-        },
-        "Plazo Fijo": {
-            "afp": 0.10,
-            "salud": 0.07,
-            "cesantia_trabajador": 0.0,
-            "cesantia_empleador": 0.03,
-            "sis": 0.0153,
-            "atep": 0.0093
-        },
-        "Honorarios": {
-            "afp": 0.0,
-            "salud": 0.0,
-            "cesantia_trabajador": 0.0,
-            "cesantia_empleador": 0.0,
-            "sis": 0.0,
-            "atep": 0.0
-        }
+# Porcentajes leyes sociales
+    # REVISAR
+TASAS = {
+    "Indefinido": {
+        "afp": 0.10,
+        "salud": 0.07,
+        "cesantia_trabajador": 0.006,
+        "cesantia_empleador": 0.024,
+        "sis": 0.0153,
+        "atep": 0.0093
+    },
+    "Plazo Fijo": {
+        "afp": 0.10,
+        "salud": 0.07,
+        "cesantia_trabajador": 0.0,
+        "cesantia_empleador": 0.03,
+        "sis": 0.0153,
+        "atep": 0.0093
+    },
+    "Honorarios": {
+        "afp": 0.0,
+        "salud": 0.0,
+        "cesantia_trabajador": 0.0,
+        "cesantia_empleador": 0.0,
+        "sis": 0.0,
+        "atep": 0.0
     }
+}
 
 def calcular_leyes_sociales(sueldo_bruto: int, tipo_contrato: str) -> dict:
     """
