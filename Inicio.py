@@ -30,7 +30,7 @@ with col2:
 
 with col3:
     if st.button("Formulario de Sueldos"):
-        st.switch_page("page/3 Formulario de Sueldos.py")
+        st.switch_page("pages/3 Formulario de Sueldos.py")
 
 with col4:
     if st.button("Formulario de Ingresos"):
