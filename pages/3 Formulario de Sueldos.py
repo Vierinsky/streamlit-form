@@ -122,3 +122,48 @@ def calcular_leyes_sociales(sueldo_bruto: int, tipo_contrato: str) -> dict:
     detalle["total_aportes"] = sum(detalle.values())
     
     return detalle
+
+# === Formulario Principal ===
+st.title("📋 Formulario de Registro de Sueldos")
+
+st.text_input(
+    "Escriba nombre del trabajador",
+    placeholder="Nombre completo"
+)
+
+tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"])
+
+sueldo_bruto = st.number_input(
+    "Inserte sueldo bruto:",
+    min_value=0, 
+    step=1,
+    format="%d"
+)
+
+leyes = calcular_leyes_sociales(sueldo_bruto, tipo_contrato)
+
+# Formateo visual con separador de miles (solo display opcional)
+monto_formateado = f"{sueldo_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
+st.write(f"Sueldo Bruto = ${monto_formateado}")
+st.write(f"Prevision (AFP) = ${leyes["afp"]}")
+st.write(f"Salud (Fonasa o Isapre) = ${leyes["salud"]}")
+st.write(f"Seguro de Cesantía (Trabajador) = ${leyes["cesantia_trabajador"]}")
+st.write(f"Seguro de Cesantía (Empleador) = ${leyes["cesantia_empleador"]}")
+st.write(f"Cotización SIS (por invalidez y sobrevivencia) = ${leyes["sis"]}")
+st.write(f"Accidentes del Trabajo (ATEP) = ${leyes["atep"]}")
+
+ 
+# 1. Ingrese sueldo bruto
+#       - Que muestre desglose.
+#       - Que permita dividir el sueldo según días trabajados en x cultivo.
+#       - Que se agregue nombre del trabajador. 
+
+# 2. Desea agregar Gratificaciones?
+
+# Nota: 
+#   ¿Debe haber sección banco también?
+#   ¿Si se tiene a un trabajador contratado se debe auto agregar todos los meses su sueldo?
+
+# 3. Mostrar resúmen
+# 4. Sección "Comentario"
+# 4. Enviar formulario

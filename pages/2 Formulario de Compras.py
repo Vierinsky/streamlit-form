@@ -55,26 +55,6 @@ except Exception as e:
     st.stop()
 
 
-# Autenticación y conexión con Google Sheets
-# try:
-#     service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])             # ⚠️Modificar en producción⚠️
-#     credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
-#     client = gspread.authorize(credentials)
-#     spreadsheet = client.open(SHEET_NAME)
-
-#     # Guardar en sesión para que esté accesible en otras páginas
-#     st.session_state["spreadsheet"] = spreadsheet
-
-#     # Mostrar estado en la barra lateral
-#     with st.sidebar:
-#         with st.expander("🔧 Estado de conexión", expanded=False):
-#             st.success("✅ Conexión con Google Sheets exitosa")
-#             st.success(f"✅ Hoja activa: '{SHEET_NAME}'")
-
-# except Exception as e:
-#     st.sidebar.error("❌ Falló la conexión con Google Sheets")
-#     st.stop()
-
 # Diccionario de hojas de la planilla
     # Cambiar key en caso de modificaciones
 HOJAS_GOOGLE_SHEETS = { 
@@ -100,13 +80,7 @@ HOJAS_GOOGLE_SHEETS = {
 }
 
 # === Formulario Principal ===
-st.title("📋 Formulario de Registro de Costos")
-
-# spreadsheet = st.session_state.get("spreadsheet")
-# if not spreadsheet:
-#     st.error("❌ No se pudo acceder al documento. Verifica la conexión en la página principal.")
-#     st.stop
-
+st.title("📋 Formulario de Registro de Compras")
 
 # ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
 if st.session_state.get("registro_guardado"):
