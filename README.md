@@ -6,6 +6,22 @@ TODO:
 
 Hojas: ["rrhh"(WIP), "agroquimicos", "maquinaria", "administracion", "seguros", "inversiones", "servicios_externos", "servicios_basicos", "combustibles", "gastos_varios"]
 
+# Notes:
+## Leyes Sociales para sueldos
+
+| **Ítem**                            | **% Aproximado** | **Responsable** | **Descripción**                                                            | **Ejemplo (sueldo bruto \$1.000.000)** |
+| ----------------------------------- | ---------------- | --------------- | -------------------------------------------------------------------------- | -------------------------------------- |
+| **Sueldo Bruto**                    | -                | -               | Remuneración total antes de descuentos                                     | \$1.000.000                            |
+| **AFP (previsión)**                 | 10% + comisión   | Trabajador      | Fondo de pensiones obligatorio                                             | \$100.000 + comisión (ej. \$11.000)    |
+| **Salud (Fonasa o Isapre)**         | 7%               | Trabajador      | Cobertura de salud pública o privada                                       | \$70.000                               |
+| **Seguro de Cesantía**              | 0.6%             | Trabajador      | Protección ante desempleo (solo indefinidos)                               | \$6.000                                |
+| **Seguro de Cesantía**              | 2.4%             | Empleador       | Aporte adicional del empleador                                             | \$24.000                               |
+| **SIS (invalidez y sobrevivencia)** | 1.53%            | Empleador       | Seguro obligatorio de la AFP, cubre invalidez o fallecimiento              | \$15.300                               |
+| **ATEP (accidentes laborales)**     | 0.93% – 3.4%     | Empleador       | Seguro por accidentes del trabajo o trayecto, varía según riesgo del rubro | \$9.300 (mínimo legal)                 |
+| **Impuesto Único (si aplica)**      | Variable         | Trabajador      | Según tabla SII, si el sueldo supera los tramos exentos                    | \$0 – depende del sueldo               |
+| **Sueldo Líquido Aproximado**       | -                | -               | Total a pagar al trabajador tras descuentos legales                        | \~\$813.000                            |
+
+
 # Data Dictionary
 
 ## Hoja "rrhh"

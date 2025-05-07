@@ -62,10 +62,10 @@ except Exception as e:
     st.sidebar.error("❌ Falló la conexión con Google Sheets")
     st.stop()
 
-def calcular_leyes_sociales(sueldo_bruto, tipo_contrato):
-    '''
-    '''
+# === Calculo leyes sociales ===
+
     # Porcentajes leyes sociales
+        # REVISAR
     TASAS = {
         "Indefinido": {
             "afp": 0.10,
@@ -92,10 +92,31 @@ def calcular_leyes_sociales(sueldo_bruto, tipo_contrato):
             "atep": 0.0
         }
     }
-    tasas = TASAS[tipo_contrato]
+
+def calcular_leyes_sociales(sueldo_bruto: int, tipo_contrato: str) -> dict:
+    """
+    Calcula el desglose de leyes sociales para un trabajador en Chile según su tipo de contrato.
+
+    Args:
+        sueldo_bruto (int): Sueldo bruto mensual del trabajador.
+        tipo_contrato (str): Tipo de contrato del trabajador. Debe ser una clave válida en el diccionario TASAS.
+
+    Returns:
+        dict: Un diccionario con el monto correspondiente a cada componente de las leyes sociales, 
+              según las tasas establecidas para el tipo de contrato. Si el tipo de contrato no existe 
+              en TASAS, se retorna un diccionario vacío.
+    
+    Ejemplo de retorno:
+        {
+            "afp": 10000,
+            "salud": 7000,
+            "seguro_cesantia": 3000
+        }
+    """
+    tasas = TASAS.get(tipo_contrato	, {})
     detalle = {}
 
-    for item, tasa in tasa.item():
+    for item, tasa in tasas.item():
         detalle[item] = round(sueldo_bruto * tasa)
     
     detalle["total_aportes"] = sum(detalle.values())
