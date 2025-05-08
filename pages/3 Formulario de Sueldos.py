@@ -160,7 +160,7 @@ cesantia_emp = f"{leyes['cesantia_empleador']:,}".replace(",", ".")
 sis = f"{leyes['sis']:,}".replace(",", ".")
 atep = f"{leyes['atep']:,}".replace(",", ".")
 
-
+st.write(f"Sueldo Bruto = ${sueldo_bruto_formateado}")
 st.write(f"Sueldo Neto = ${sueldo_neto_formateado}")
 st.write(f"Prevision (AFP) = ${afp}")
 st.write(f"Salud (Fonasa o Isapre) = ${salud}")
@@ -168,7 +168,6 @@ st.write(f"Seguro de Cesantía (Trabajador) = ${cesantia_trab}")
 st.write(f"Seguro de Cesantía (Empleador) = ${cesantia_emp}")
 st.write(f"Cotización SIS (por invalidez y sobrevivencia) = ${sis}")
 st.write(f"Accidentes del Trabajo (ATEP) = ${atep}")
-st.write(f"Sueldo Bruto = ${sueldo_bruto_formateado}")
 
 # === Validación ===
 
