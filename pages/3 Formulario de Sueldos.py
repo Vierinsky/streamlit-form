@@ -156,12 +156,12 @@ sueldo_neto = sueldo_bruto - sum([
     leyes['atep']
     ])
 
-porcentaje_afp = str(TASAS[tipo_contrato]['afp'] * 100)
-porcentaje_salud = str(TASAS[tipo_contrato]['salud'] * 100)
-porcentaje_cestrab = str(TASAS[tipo_contrato]['cesantia_trabajador'] * 100)
-porcentaje_cesemp = str(TASAS[tipo_contrato]['cesantia_empleador'] * 100)
-porcentaje_sis = str(TASAS[tipo_contrato]['sis'] * 100)
-porcentaje_atep = str(TASAS[tipo_contrato]['atep'] * 100)
+porcentaje_afp = str(round(TASAS[tipo_contrato]['afp'] * 100, 2))
+porcentaje_salud = str(round(TASAS[tipo_contrato]['salud'] * 100, 2))
+porcentaje_cestrab = str(round(TASAS[tipo_contrato]['cesantia_trabajador'] * 100, 2))
+porcentaje_cesemp = str(round(TASAS[tipo_contrato]['cesantia_empleador'] * 100, 2))
+porcentaje_sis = str(round(TASAS[tipo_contrato]['sis'] * 100, 2))
+porcentaje_atep = str(round(TASAS[tipo_contrato]['atep'] * 100, 2))
 
 
 # Formateo visual con separador de miles (solo display opcional)
