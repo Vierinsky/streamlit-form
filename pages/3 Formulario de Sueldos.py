@@ -65,7 +65,7 @@ except Exception as e:
 # === Calculo leyes sociales ===
 
 # Porcentajes leyes sociales
-    # REVISAR
+    # REVISAR (pq lo hizo DonGepe)
 TASAS = {
     "Indefinido": {
         "afp": 0.10,
@@ -124,7 +124,6 @@ def calcular_leyes_sociales(sueldo_bruto: int, tipo_contrato: str) -> dict:
     return detalle
 
 # === Formulario Principal ===
-
 st.title("📋 Formulario de Registro de Sueldos")
 
 # ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
@@ -148,7 +147,22 @@ sueldo_bruto = st.number_input(
 
 leyes = calcular_leyes_sociales(sueldo_bruto, tipo_contrato)
 
-sueldo_neto = sueldo_bruto - sum([leyes['afp'], leyes['salud'], leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep']])
+sueldo_neto = sueldo_bruto - sum([
+    leyes['afp'],
+    leyes['salud'],
+    leyes['cesantia_trabajador'], 
+    leyes['cesantia_empleador'], 
+    leyes['sis'], 
+    leyes['atep']
+    ])
+
+porcentaje_afp = str(TASAS[tipo_contrato]['afp'] * 100)
+porcentaje_salud = str(TASAS[tipo_contrato]['salud'] * 100)
+porcentaje_cestrab = str(TASAS[tipo_contrato]['cesantia_trabajador'] * 100)
+porcentaje_cesemp = str(TASAS[tipo_contrato]['cesantia_empleador'] * 100)
+porcentaje_sis = str(TASAS[tipo_contrato]['sis'] * 100)
+porcentaje_atep = str(TASAS[tipo_contrato]['atep'] * 100)
+
 
 # Formateo visual con separador de miles (solo display opcional)
 sueldo_bruto_formateado = f"{sueldo_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
@@ -160,14 +174,15 @@ cesantia_emp = f"{leyes['cesantia_empleador']:,}".replace(",", ".")
 sis = f"{leyes['sis']:,}".replace(",", ".")
 atep = f"{leyes['atep']:,}".replace(",", ".")
 
+sr.write(f"Tipo de contrato: {tipo_contrato}")
 st.write(f"Sueldo Bruto = ${sueldo_bruto_formateado}")
 st.write(f"Sueldo Neto = ${sueldo_neto_formateado}")
-st.write(f"Prevision (AFP) = ${afp}")
-st.write(f"Salud (Fonasa o Isapre) = ${salud}")
-st.write(f"Seguro de Cesantía (Trabajador) = ${cesantia_trab}")
-st.write(f"Seguro de Cesantía (Empleador) = ${cesantia_emp}")
-st.write(f"Cotización SIS (por invalidez y sobrevivencia) = ${sis}")
-st.write(f"Accidentes del Trabajo (ATEP) = ${atep}")
+st.write(f"Prevision (AFP) ({porcentaje_afp}%) = ${afp}")
+st.write(f"Salud (Fonasa o Isapre) ({porcentaje_salud}%) = ${salud}")
+st.write(f"Seguro de Cesantía (Trabajador) ({porcentaje_cestrab}%) = ${cesantia_trab}")
+st.write(f"Seguro de Cesantía (Empleador) ({porcentaje_cesemp}%) = ${cesantia_emp}")
+st.write(f"Cotización SIS (por invalidez y sobrevivencia) ({porcentaje_sis}%) = ${sis}")
+st.write(f"Accidentes del Trabajo (ATEP) ({porcentaje_atep}%) = ${atep}")
 
 # === Validación ===
 
