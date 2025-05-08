@@ -116,7 +116,7 @@ def calcular_leyes_sociales(sueldo_bruto: int, tipo_contrato: str) -> dict:
     tasas = TASAS.get(tipo_contrato	, {})
     detalle = {}
 
-    for item, tasa in tasas.item():
+    for item, tasa in tasas.items():
         detalle[item] = round(sueldo_bruto * tasa)
     
     detalle["total_aportes"] = sum(detalle.values())
