@@ -161,7 +161,7 @@ sis = f"{leyes['sis']:,}".replace(",", ".")
 atep = f"{leyes['atep']:,}".replace(",", ".")
 
 
-st.write(f"Sueldo Bruto = ${sueldo_neto_formateado}")
+st.write(f"Sueldo Neto = ${sueldo_neto_formateado}")
 st.write(f"Prevision (AFP) = ${afp}")
 st.write(f"Salud (Fonasa o Isapre) = ${salud}")
 st.write(f"Seguro de Cesantía (Trabajador) = ${cesantia_trab}")
