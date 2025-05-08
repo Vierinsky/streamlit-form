@@ -573,7 +573,7 @@ comentario = st.text_area(
 
 # IMPLEMENTAR SECCIÓN PARA INGRESAR FOTO DE LA BOLETA
 
-# Botón de guardar registro
+# === Botón de guardar registro ===
 
 # Inicializar estado si no existe
 if "registro_guardado" not in st.session_state:

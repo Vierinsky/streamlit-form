@@ -124,7 +124,13 @@ def calcular_leyes_sociales(sueldo_bruto: int, tipo_contrato: str) -> dict:
     return detalle
 
 # === Formulario Principal ===
+
 st.title("📋 Formulario de Registro de Sueldos")
+
+# ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
+if st.session_state.get("registro_guardado"):
+    st.toast("Registro guardado con éxito", icon="✅")
+    st.session_state["registro_guardado"] = False
 
 st.text_input(
     "Escriba nombre del trabajador",
@@ -144,12 +150,12 @@ leyes = calcular_leyes_sociales(sueldo_bruto, tipo_contrato)
 
 # Formateo visual con separador de miles (solo display opcional)
 sueldo_formateado = f"{sueldo_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
-afp = f"{leyes['afp']}".replace(",", ".")
-salud = f"{leyes['salud']}".replace(",", ".")
-cesantia_trab = f"{leyes['cesantia_trabajador']}".replace(",", ".")
-cesantia_emp = f"{leyes['cesantia_empleador']}".replace(",", ".")
-sis = f"{leyes['sis']}".replace(",", ".")
-atep = f"{leyes['atep']}".replace(",", ".")
+afp = f"{leyes['afp']:,}".replace(",", ".")
+salud = f"{leyes['salud']:,}".replace(",", ".")
+cesantia_trab = f"{leyes['cesantia_trabajador']:,}".replace(",", ".")
+cesantia_emp = f"{leyes['cesantia_empleador']:,}".replace(",", ".")
+sis = f"{leyes['sis']:,}".replace(",", ".")
+atep = f"{leyes['atep']:,}".replace(",", ".")
 
 st.write(f"Sueldo Bruto = ${sueldo_formateado}")
 st.write(f"Prevision (AFP) = ${afp}")
@@ -158,6 +164,54 @@ st.write(f"Seguro de Cesantía (Trabajador) = ${cesantia_trab}")
 st.write(f"Seguro de Cesantía (Empleador) = ${cesantia_emp}")
 st.write(f"Cotización SIS (por invalidez y sobrevivencia) = ${sis}")
 st.write(f"Accidentes del Trabajo (ATEP) = ${atep}")
+
+
+# === Validación ===
+
+#   MODIFICAR A LA REALIDAD DEL FORMUARIO DE SUELDOS.
+
+# # Inicializar estado si no existe
+# if "registro_guardado" not in st.session_state:
+#     st.session_state["registro_guardado"] = False
+
+# if st.button("Guardar Registro"):
+    # ——— INICIO SECCIÓN DE VALIDACIÓN ———
+    # errores = []
+
+    # # 1) Campos generales obligatorios
+    # if not descripcion.strip():
+    #     errores.append("La descripción del gasto es obligatoria.")
+    # if valor_bruto <= 0:
+    #     errores.append("El valor bruto debe ser mayor que cero.")
+    # if not ceco:
+    #     errores.append("Debe seleccionar un Centro de Costos.")
+
+    # else:
+    #     # Si todo está en orden se procede a agregar los datos a la planilla
+
+    #     def preparar_registro(sheet_name):
+    #         """
+    #         Prepara una hoja específica de Google Sheets para registrar un nuevo dato.
+
+    #         Args:
+    #             sheet_name (str): Nombre de la hoja.
+
+    #         Returns:
+    #             sheet (gspread.Worksheet): Objeto Worksheet correspondiente.
+    #             headers (list): Lista de nombres de columna.
+    #             nuevo_index (int): Número de fila a insertar (sin contar encabezado).
+    #             fecha_hora_actual (str): Timestamp en formato %d/%m/%Y %H:%M:%S.
+    #         """
+    #         sheet = get_fresh_spreadsheet().worksheet(sheet_name)
+    #         headers = sheet.row_values(1)
+
+    #         zona_horaria_chile = pytz.timezone('Chile/Continental')
+    #         fecha_hora_actual = datetime.now(zona_horaria_chile).strftime("%d/%m/%Y %H:%M:%S")
+    #         nuevo_index = len(sheet.get_all_values())
+
+    #         return sheet, headers, nuevo_index, fecha_hora_actual
+
+# === Botón de guardado ===
 
 
 # 1. Ingrese sueldo bruto
