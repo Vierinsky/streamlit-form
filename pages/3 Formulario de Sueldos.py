@@ -148,8 +148,11 @@ sueldo_bruto = st.number_input(
 
 leyes = calcular_leyes_sociales(sueldo_bruto, tipo_contrato)
 
+sueldo_neto = sueldo_bruto - sum([leyes['afp'], leyes['salud'], leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep']])
+
 # Formateo visual con separador de miles (solo display opcional)
-sueldo_formateado = f"{sueldo_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
+sueldo_bruto_formateado = f"{sueldo_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
+sueldo_neto_formateado = f"{sueldo_neto:,}".replace(",", ".")
 afp = f"{leyes['afp']:,}".replace(",", ".")
 salud = f"{leyes['salud']:,}".replace(",", ".")
 cesantia_trab = f"{leyes['cesantia_trabajador']:,}".replace(",", ".")
@@ -157,14 +160,15 @@ cesantia_emp = f"{leyes['cesantia_empleador']:,}".replace(",", ".")
 sis = f"{leyes['sis']:,}".replace(",", ".")
 atep = f"{leyes['atep']:,}".replace(",", ".")
 
-st.write(f"Sueldo Bruto = ${sueldo_formateado}")
+
+st.write(f"Sueldo Bruto = ${sueldo_neto_formateado}")
 st.write(f"Prevision (AFP) = ${afp}")
 st.write(f"Salud (Fonasa o Isapre) = ${salud}")
 st.write(f"Seguro de Cesantía (Trabajador) = ${cesantia_trab}")
 st.write(f"Seguro de Cesantía (Empleador) = ${cesantia_emp}")
 st.write(f"Cotización SIS (por invalidez y sobrevivencia) = ${sis}")
 st.write(f"Accidentes del Trabajo (ATEP) = ${atep}")
-
+st.write(f"Sueldo Bruto = ${sueldo_bruto_formateado}")
 
 # === Validación ===
 
