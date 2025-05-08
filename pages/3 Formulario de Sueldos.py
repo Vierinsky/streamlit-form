@@ -174,7 +174,7 @@ cesantia_emp = f"{leyes['cesantia_empleador']:,}".replace(",", ".")
 sis = f"{leyes['sis']:,}".replace(",", ".")
 atep = f"{leyes['atep']:,}".replace(",", ".")
 
-sr.write(f"Tipo de contrato: {tipo_contrato}")
+st.write(f"Tipo de contrato: {tipo_contrato}")
 st.write(f"Sueldo Bruto = ${sueldo_bruto_formateado}")
 st.write(f"Sueldo Neto = ${sueldo_neto_formateado}")
 st.write(f"Prevision (AFP) ({porcentaje_afp}%) = ${afp}")
