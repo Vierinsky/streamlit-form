@@ -176,7 +176,7 @@ except Exception as e:
     cultivo_list = []
 
 # Selección cultivo
-st.radio("Área o cultivo en que trabajó", cultivo_list)
+st.selectbox("Área o cultivo en que trabajó", cultivo_list) # COMPLETAR
 
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"])
 
