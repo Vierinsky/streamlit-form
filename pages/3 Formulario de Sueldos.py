@@ -179,13 +179,21 @@ atep = f"{leyes['atep']:,}".replace(",", ".")
 data = {
     "Concepto": [
         "Sueldo Bruto", "Sueldo Neto",
-        f"Previsión (AFP) ({porcentaje_afp}%)",
-        f"Salud (Fonasa/Isapre) ({porcentaje_salud}%)",
-        f"Cesantía (Trabajador) ({porcentaje_cestrab}%)",
-        f"Cesantía (Empleador) ({porcentaje_cesemp}%)",
-        f"SIS ({porcentaje_sis}%)",
-        f"ATEP ({porcentaje_atep}%)"
+        f"Previsión (AFP)",
+        f"Salud (Fonasa/Isapre)",
+        f"Cesantía (Trabajador)",
+        f"Cesantía (Empleador)",
+        f"SIS",
+        f"ATEP"
     ],
+    "Porcentaje" : ["-", 
+                    "-", 
+                    f"{porcentaje_afp}%", 
+                    f"{porcentaje_salud}%", 
+                    f"{porcentaje_cestrab}%", 
+                    f"{porcentaje_cesemp}%", 
+                    f"{porcentaje_sis}%", 
+                    f"{porcentaje_atep}%"],
     "Monto CLP": [
         sueldo_bruto, sueldo_neto, leyes['afp'], leyes['salud'],
         leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep']
