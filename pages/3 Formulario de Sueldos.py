@@ -164,15 +164,15 @@ porcentaje_sis = str(round(TASAS[tipo_contrato]['sis'] * 100, 2))
 porcentaje_atep = str(round(TASAS[tipo_contrato]['atep'] * 100, 2))
 
 
-# Formateo visual con separador de miles (solo display opcional)
-sueldo_bruto_formateado = f"{sueldo_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
-sueldo_neto_formateado = f"{sueldo_neto:,}".replace(",", ".")
-afp = f"{leyes['afp']:,}".replace(",", ".")
-salud = f"{leyes['salud']:,}".replace(",", ".")
-cesantia_trab = f"{leyes['cesantia_trabajador']:,}".replace(",", ".")
-cesantia_emp = f"{leyes['cesantia_empleador']:,}".replace(",", ".")
-sis = f"{leyes['sis']:,}".replace(",", ".")
-atep = f"{leyes['atep']:,}".replace(",", ".")
+# # Formateo visual con separador de miles (solo display opcional)
+# sueldo_bruto_formateado = f"{sueldo_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
+# sueldo_neto_formateado = f"{sueldo_neto:,}".replace(",", ".")
+# afp = f"{leyes['afp']:,}".replace(",", ".")
+# salud = f"{leyes['salud']:,}".replace(",", ".")
+# cesantia_trab = f"{leyes['cesantia_trabajador']:,}".replace(",", ".")
+# cesantia_emp = f"{leyes['cesantia_empleador']:,}".replace(",", ".")
+# sis = f"{leyes['sis']:,}".replace(",", ".")
+# atep = f"{leyes['atep']:,}".replace(",", ".")
 
 # TESTEO DE TABLA PARA RESUMEN
 
@@ -186,8 +186,8 @@ data = {
         f"SIS",
         f"ATEP"
     ],
-    "Porcentaje" : ["-", 
-                    "-", 
+    "Porcentaje" : ["", 
+                    "", 
                     f"{porcentaje_afp}%", 
                     f"{porcentaje_salud}%", 
                     f"{porcentaje_cestrab}%", 
@@ -200,9 +200,33 @@ data = {
     ]
 }
 
+st.header("📊 Detalle de Descuentos y Leyes Sociales")
+
 df_montos = pd.DataFrame(data)
+
+# st.write(f"**Tipo de contrato:** {tipo_contrato}")
+# st.table(df_montos.style.format({"Monto CLP": "${:,.0f}"}))
+
+# Función para formatear montos con miles . y decimales ,
+def formato_monto(valor):
+    return f"${valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+# Función para formatear porcentajes (ya en decimal: 0.153 → 15,30%)
+def formato_porcentaje(valor_str):
+    try:
+        valor = float(valor_str.strip('%'))
+        return f"{valor:.2f}".replace(".", ",") + "%"
+    except:
+        return valor_str  # por si viene vacío o malformado
+
+# Aplica formato
+df_montos["Monto CLP"] = df_montos["Monto CLP"].apply(formato_monto)
+df_montos["Porcentaje"] = df_montos["Porcentaje"].apply(formato_porcentaje)
+
+# Mostrar tabla
 st.write(f"**Tipo de contrato:** {tipo_contrato}")
-st.table(df_montos.style.format({"Monto CLP": "${:,.0f}"}))
+st.table(df_montos)
+
 
 
 # st.write(f"Tipo de contrato: {tipo_contrato}")
