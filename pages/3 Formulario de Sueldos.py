@@ -227,17 +227,8 @@ df_montos["Porcentaje"] = df_montos["Porcentaje"].apply(formato_porcentaje)
 st.write(f"**Tipo de contrato:** {tipo_contrato}")
 st.table(df_montos)
 
+# === Días trabajados por cultivo / Ceco ===
 
-
-# st.write(f"Tipo de contrato: {tipo_contrato}")
-# st.write(f"Sueldo Bruto = ${sueldo_bruto_formateado}")
-# st.write(f"Sueldo Neto = ${sueldo_neto_formateado}")
-# st.write(f"Prevision (AFP) ({porcentaje_afp}%) = ${afp}")
-# st.write(f"Salud (Fonasa o Isapre) ({porcentaje_salud}%) = ${salud}")
-# st.write(f"Seguro de Cesantía (Trabajador) ({porcentaje_cestrab}%) = ${cesantia_trab}")
-# st.write(f"Seguro de Cesantía (Empleador) ({porcentaje_cesemp}%) = ${cesantia_emp}")
-# st.write(f"Cotización SIS (por invalidez y sobrevivencia) ({porcentaje_sis}%) = ${sis}")
-# st.write(f"Accidentes del Trabajo (ATEP) ({porcentaje_atep}%) = ${atep}")
 
 # === Validación ===
 
