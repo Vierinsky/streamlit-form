@@ -174,15 +174,38 @@ cesantia_emp = f"{leyes['cesantia_empleador']:,}".replace(",", ".")
 sis = f"{leyes['sis']:,}".replace(",", ".")
 atep = f"{leyes['atep']:,}".replace(",", ".")
 
-st.write(f"Tipo de contrato: {tipo_contrato}")
-st.write(f"Sueldo Bruto = ${sueldo_bruto_formateado}")
-st.write(f"Sueldo Neto = ${sueldo_neto_formateado}")
-st.write(f"Prevision (AFP) ({porcentaje_afp}%) = ${afp}")
-st.write(f"Salud (Fonasa o Isapre) ({porcentaje_salud}%) = ${salud}")
-st.write(f"Seguro de Cesantía (Trabajador) ({porcentaje_cestrab}%) = ${cesantia_trab}")
-st.write(f"Seguro de Cesantía (Empleador) ({porcentaje_cesemp}%) = ${cesantia_emp}")
-st.write(f"Cotización SIS (por invalidez y sobrevivencia) ({porcentaje_sis}%) = ${sis}")
-st.write(f"Accidentes del Trabajo (ATEP) ({porcentaje_atep}%) = ${atep}")
+# TESTEO DE TABLA PARA RESUMEN
+
+data = {
+    "Concepto": [
+        "Sueldo Bruto", "Sueldo Neto",
+        f"Previsión (AFP) ({porcentaje_afp}%)",
+        f"Salud (Fonasa/Isapre) ({porcentaje_salud}%)",
+        f"Cesantía (Trabajador) ({porcentaje_cestrab}%)",
+        f"Cesantía (Empleador) ({porcentaje_cesemp}%)",
+        f"SIS ({porcentaje_sis}%)",
+        f"ATEP ({porcentaje_atep}%)"
+    ],
+    "Monto CLP": [
+        sueldo_bruto, sueldo_neto, afp, salud,
+        cesantia_trab, cesantia_emp, sis, atep
+    ]
+}
+
+df_montos = pd.DataFrame(data)
+st.write(f"**Tipo de contrato:** {tipo_contrato}")
+st.table(df_montos.style.format({"Monto CLP": "${:,.0f}"}))
+
+
+# st.write(f"Tipo de contrato: {tipo_contrato}")
+# st.write(f"Sueldo Bruto = ${sueldo_bruto_formateado}")
+# st.write(f"Sueldo Neto = ${sueldo_neto_formateado}")
+# st.write(f"Prevision (AFP) ({porcentaje_afp}%) = ${afp}")
+# st.write(f"Salud (Fonasa o Isapre) ({porcentaje_salud}%) = ${salud}")
+# st.write(f"Seguro de Cesantía (Trabajador) ({porcentaje_cestrab}%) = ${cesantia_trab}")
+# st.write(f"Seguro de Cesantía (Empleador) ({porcentaje_cesemp}%) = ${cesantia_emp}")
+# st.write(f"Cotización SIS (por invalidez y sobrevivencia) ({porcentaje_sis}%) = ${sis}")
+# st.write(f"Accidentes del Trabajo (ATEP) ({porcentaje_atep}%) = ${atep}")
 
 # === Validación ===
 
