@@ -187,8 +187,8 @@ data = {
         f"ATEP ({porcentaje_atep}%)"
     ],
     "Monto CLP": [
-        sueldo_bruto, sueldo_neto, afp, salud,
-        cesantia_trab, cesantia_emp, sis, atep
+        sueldo_bruto, sueldo_neto, leyes['afp'], leyes['salud'],
+        leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep']
     ]
 }
 
