@@ -136,6 +136,48 @@ st.text_input(
     placeholder="Nombre completo"
 )
 
+# === Días trabajados por cultivo / Ceco ===
+
+def get_fresh_spreadsheet():
+    """
+    Devuelve una conexión activa a Google Sheets. Si ya existe en session_state la reutiliza.
+
+    Returns:
+        gspread.Spreadsheet: conexión activa.
+    """
+    if "spreadsheet" not in st.session_state:
+        service_account_info = json.loads(os.environ["GCP_SERVICE_ACCOUNT"])
+        credentials = Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
+        client = gspread.authorize(credentials)
+        st.session_state["spreadsheet"] = client.open(SHEET_NAME)
+    return st.session_state["spreadsheet"]
+
+@st.cache_data(ttl=300)
+def cargar_hoja(nombre_hoja: str) -> list[dict]:
+    """
+    Lee todos los registros de una hoja de Google Sheets y cachea el resultado.
+
+    Args:
+        nombre_hoja (str): nombre de la pestaña a leer.
+
+    Returns:
+        list: Lista de diccionarios.
+    """
+    sheet = get_fresh_spreadsheet().worksheet(nombre_hoja)
+    return sheet.get_all_records()
+
+# LISTA DE CULTIVOS
+    # Obtener lista dinámica de cultivos desde la hoja 'cultivos'
+try:
+    data = cargar_hoja("cultivos")
+    cultivo_list = [r["cultivo"] for r in data if r["cultivo"].strip()]
+except Exception as e:
+    st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
+    cultivo_list = []
+
+# Selección cultivo
+st.radio("Área o cultivo en que trabajó", cultivo_list)
+
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"])
 
 sueldo_bruto = st.number_input(
@@ -174,7 +216,7 @@ porcentaje_atep = str(round(TASAS[tipo_contrato]['atep'] * 100, 2))
 # sis = f"{leyes['sis']:,}".replace(",", ".")
 # atep = f"{leyes['atep']:,}".replace(",", ".")
 
-# TESTEO DE TABLA PARA RESUMEN
+# === Tabla Resumen Desglose Sueldo ===
 
 data = {
     "Concepto": [
@@ -222,13 +264,10 @@ df_montos["Monto CLP"] = df_montos["Monto CLP"].apply(formato_monto)
 df_montos["Porcentaje"] = df_montos["Porcentaje"].apply(formato_porcentaje)
 
 if sueldo_bruto != 0:
-    st.subheader("📊 Detalle de Descuentos y Leyes Sociales")
+    st.subheader("Detalle de Descuentos y Leyes Sociales")
     #  Mostrar tabla
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
     st.table(df_montos)
-
-# === Días trabajados por cultivo / Ceco ===
-
 
 # === Validación ===
 
