@@ -222,7 +222,7 @@ df_montos["Monto CLP"] = df_montos["Monto CLP"].apply(formato_monto)
 df_montos["Porcentaje"] = df_montos["Porcentaje"].apply(formato_porcentaje)
 
 if sueldo_bruto != 0:
-    st.markdown("### 📊 Detalle de Descuentos y Leyes Sociales")
+    st.subheader("### 📊 Detalle de Descuentos y Leyes Sociales")
     #  Mostrar tabla
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
     st.table(df_montos)
