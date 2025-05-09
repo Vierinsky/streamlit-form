@@ -207,7 +207,7 @@ df_montos = pd.DataFrame(data)
 
 # Función para formatear montos con miles . y decimales ,
 def formato_monto(valor):
-    return f"${valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return f"${valor:,.0f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 # Función para formatear porcentajes (ya en decimal: 0.153 → 15,30%)
 def formato_porcentaje(valor_str):
@@ -222,7 +222,7 @@ df_montos["Monto CLP"] = df_montos["Monto CLP"].apply(formato_monto)
 df_montos["Porcentaje"] = df_montos["Porcentaje"].apply(formato_porcentaje)
 
 if sueldo_bruto != 0:
-    st.subheader("### 📊 Detalle de Descuentos y Leyes Sociales")
+    st.subheader("📊 Detalle de Descuentos y Leyes Sociales")
     #  Mostrar tabla
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
     st.table(df_montos)
