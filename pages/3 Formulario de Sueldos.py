@@ -200,7 +200,7 @@ data = {
     ]
 }
 
-st.header("📊 Detalle de Descuentos y Leyes Sociales")
+st.markdown("## 📊 Detalle de Descuentos y Leyes Sociales")
 
 df_montos = pd.DataFrame(data)
 
@@ -223,9 +223,10 @@ def formato_porcentaje(valor_str):
 df_montos["Monto CLP"] = df_montos["Monto CLP"].apply(formato_monto)
 df_montos["Porcentaje"] = df_montos["Porcentaje"].apply(formato_porcentaje)
 
-# Mostrar tabla
-st.write(f"**Tipo de contrato:** {tipo_contrato}")
-st.table(df_montos)
+if sueldo_bruto != 0:
+    # Mostrar tabla
+    st.write(f"**Tipo de contrato:** {tipo_contrato}")
+    st.table(df_montos)
 
 # === Días trabajados por cultivo / Ceco ===
 
