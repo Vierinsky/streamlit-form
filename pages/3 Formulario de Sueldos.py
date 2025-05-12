@@ -176,7 +176,7 @@ except Exception as e:
     cultivo_list = []
 
 # Multiselect para elegir cultivos
-cultivo_trabajado = st.multiselect(
+cultivos_trabajados = st.multiselect(
     "Seleccione área o cultivo en que trabajó (Selección Múltiple)",
     cultivo_list
 )
@@ -186,7 +186,7 @@ cultivo_trabajado = st.multiselect(
 # Diccionario para almacenar días trabajados por cultivo
 dias_por_cultivo = {}
 
-for cultivo in cultivo_trabajado:
+for cultivo in cultivos_trabajados:
     # Obtener días trabajados por cultivo
     dias_trabajados = st.number_input(
         f"Días trabajados en {cultivo}", 
@@ -197,6 +197,8 @@ for cultivo in cultivo_trabajado:
     
     # Añadir cultivo al dicc junto con sus días trabajados
     dias_por_cultivo[cultivo] = dias_trabajados
+
+st.write(dias_por_cultivo)
 
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"], horizontal=True)
 
