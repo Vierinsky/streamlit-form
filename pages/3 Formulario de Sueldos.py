@@ -176,7 +176,7 @@ except Exception as e:
     cultivo_list = []
 
 # Selección cultivo
-st.multiselect("Área o cultivo en que trabajó", cultivo_list) # COMPLETAR
+st.multiselect("Área o cultivo en que trabajó", cultivo_list, help="Selección múltiple") # COMPLETAR
 
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"], horizontal=True)
 
