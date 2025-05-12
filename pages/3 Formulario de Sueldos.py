@@ -201,7 +201,7 @@ for cultivo in cultivos_trabajados:
     dias_por_cultivo[cultivo] = dias_trabajados
 
 # Convertir el diccionario en lista de tuplas
-datos = [{"cultivo": cultivo, "dias": dias} for cultivo, dias in dias_por_cultivo.items()]
+datos = [{"Cultivo": cultivo, "Días": dias} for cultivo, dias in dias_por_cultivo.items()]
 
 # Armando dataframe para días trabajados por cultivo
 df_dias_por_cultivo = pd.DataFrame(datos)
@@ -331,21 +331,21 @@ comentario = st.text_area(
 # === Resúmen ===
 
 # Asegurarse de que días y sueldo neto estén en valores numéricos
-df_dias_por_cultivo["dias"] = pd.to_numeric(df_dias_por_cultivo["dias"], errors="coerce").fillna(0).astype(int)
+df_dias_por_cultivo["Días"] = pd.to_numeric(df_dias_por_cultivo["Días"], errors="coerce").fillna(0).astype(int)
 
 # Calcular total de días trabajados
-total_dias = df_dias_por_cultivo["dias"].sum()
+total_dias = df_dias_por_cultivo["Días"].sum()
 
 # Calcular sueldo proporcional
 if total_dias > 0:
-    df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["dias"] / total_dias * sueldo_neto
+    df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["Días"] / total_dias * sueldo_neto
     df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["monto_CLP"].round(0).astype(int)
 else:
     df_dias_por_cultivo["monto_CLP"] = 0
 
 # Formateo visual
 df_dias_por_cultivo["monto_CLP_fmt"] = df_dias_por_cultivo["monto_CLP"].apply(lambda x: f"${x:,.0f}".replace(",", "."))
-df_display = df_dias_por_cultivo[["cultivo", "dias", "monto_CLP_fmt"]].rename(columns={"cultivo" : "Cultivo", "dias": "Días", "monto_CLP_fmt": "Sueldo Bruto"})
+df_display = df_dias_por_cultivo[["Cultivo", "Dias", "monto_CLP_fmt"]].rename(columns={"monto_CLP_fmt": "Sueldo Bruto"})
 st.divider()
 st.markdown("### Resúmen Sueldo y días trabajados por cultivo")
 st.write(f"Nombre: {nombre_trabajador}")
