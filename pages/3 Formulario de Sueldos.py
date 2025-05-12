@@ -222,6 +222,16 @@ sueldo_bruto = st.number_input(
     format="%d"
 )
 
+# Gratificaciones (Se suman despúes de las leyes sociales)
+
+gratificaciones = st.number_input(
+    "Agregue gratificaciones si aplican",
+    min_value=0, 
+    step=1,
+    format="%d",
+    help="Las gratificaciones se suman después de las leyes sociales al sueldo bruto"
+)
+
 leyes = calcular_leyes_sociales(sueldo_bruto, tipo_contrato)
 
 sueldo_neto = sueldo_bruto - sum([
@@ -255,25 +265,29 @@ porcentaje_atep = str(round(TASAS[tipo_contrato]['atep'] * 100, 2))
 
 data = {
     "Concepto": [
-        "Sueldo Bruto", "Sueldo Neto",
+        "Sueldo Neto",
         f"Previsión (AFP)",
         f"Salud (Fonasa/Isapre)",
         f"Cesantía (Trabajador)",
         f"Cesantía (Empleador)",
         f"SIS",
-        f"ATEP"
+        f"ATEP",
+        "Gratificaciones", # Recién agregado 
+        "Sueldo Bruto"
     ],
     "Porcentaje" : ["", 
-                    "", 
                     f"{porcentaje_afp}%", 
                     f"{porcentaje_salud}%", 
                     f"{porcentaje_cestrab}%", 
                     f"{porcentaje_cesemp}%", 
                     f"{porcentaje_sis}%", 
-                    f"{porcentaje_atep}%"],
+                    f"{porcentaje_atep}%",
+                    "",
+                    ""
+    ],
     "Monto CLP": [
-        sueldo_bruto, sueldo_neto, leyes['afp'], leyes['salud'],
-        leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep']
+        sueldo_neto, leyes['afp'], leyes['salud'],
+        leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep'], gratificaciones , (sueldo_bruto + gratificaciones) # Se suman gratificaciones a sueldo final
     ]
 }
 
@@ -305,18 +319,10 @@ if sueldo_bruto != 0:
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
     st.table(df_montos)
 
-# === Gratificaciones === (Se suman despúes de las leyes sociales)
-
-gratificaciones = st.number_input(
-    "Gratificaciones",
-    min_value=0, 
-    step=1,
-    format="%d"
-)
-
 # === Comentarios ===
 
 # Comentario opcional del usuario
+st.divider()
 comentario = st.text_area(
     "Comentario (opcional)", 
     placeholder="Agregue una nota o comentario"
