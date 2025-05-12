@@ -178,7 +178,7 @@ except Exception as e:
 # Selección cultivo
 st.selectbox("Área o cultivo en que trabajó", cultivo_list) # COMPLETAR
 
-tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"])
+tipo_contrato = st.multiselect("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"], horizontal=True)
 
 sueldo_bruto = st.number_input(
     "Sueldo bruto",
