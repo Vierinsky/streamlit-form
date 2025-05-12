@@ -205,6 +205,12 @@ datos = [{"cultivo": cultivo, "dias": dias} for cultivo, dias in dias_por_cultiv
 # Armando dataframe para días trabajados por cultivo
 df_dias_por_cultivo = pd.DataFrame(datos)
 
+if not df_dias_por_cultivo:
+    st.markdown("### Resúmen días trabajados por cultivo y sueldo")
+    st.table(df_dias_por_cultivo)
+
+# === Sueldo Bruto ===
+
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"], horizontal=True)
 
 sueldo_bruto = st.number_input(
@@ -296,8 +302,6 @@ if sueldo_bruto != 0:
     #  Mostrar tabla
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
     st.table(df_montos)
-    st.markdown("### Resúmen días trabajados por cultivo y sueldo")
-    st.table(df_dias_por_cultivo)
 
 # === Gratificaciones === (Se suman despúes de las leyes sociales)
 
