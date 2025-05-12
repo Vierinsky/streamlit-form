@@ -205,7 +205,7 @@ datos = [{"cultivo": cultivo, "dias": dias} for cultivo, dias in dias_por_cultiv
 # Armando dataframe para días trabajados por cultivo
 df_dias_por_cultivo = pd.DataFrame(datos)
 
-if not df_dias_por_cultivo:
+if not cultivos_trabajados:
     st.markdown("### Resúmen días trabajados por cultivo y sueldo")
     st.table(df_dias_por_cultivo)
 
