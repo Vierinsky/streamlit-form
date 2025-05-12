@@ -177,8 +177,9 @@ except Exception as e:
 
 # Multiselect para elegir cultivos
 cultivos_trabajados = st.multiselect(
-    "Seleccione área o cultivo en que trabajó (Selección Múltiple)",
-    cultivo_list
+    "Seleccione área o cultivo en que trabajó",     # ¿Comentar que es (Selección Múltiple)?
+    cultivo_list,
+    placeholder="Escoja una o más opciones"
 )
 
 # === Días trabajados ===
@@ -202,7 +203,7 @@ for cultivo in cultivos_trabajados:
 datos = [{"cultivo": cultivo, "dias": dias} for cultivo, dias in dias_por_cultivo.items()]
 
 # Armando dataframe para días trabajados por cultivo
-df_dias_por_cultivo = pd.DataFrame(dias_por_cultivo)
+df_dias_por_cultivo = pd.DataFrame(datos)
 
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"], horizontal=True)
 
