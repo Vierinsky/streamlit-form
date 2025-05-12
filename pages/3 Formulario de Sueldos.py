@@ -198,10 +198,8 @@ for cultivo in cultivos_trabajados:
     # Añadir cultivo al dicc junto con sus días trabajados
     dias_por_cultivo[cultivo] = dias_trabajados
 
-# TODO: MODIFICAR DICT PARA QUE TENGA ENCABEZADOS
-
-dias_por_cultivo["cultivos"] = dias_por_cultivo.keys()
-dias_por_cultivo["dias"] = dias_por_cultivo.values()
+# Convertir el diccionario en lista de tuplas
+datos = [{"cultivo": cultivo, "dias": dias} for cultivo, dias in dias_por_cultivo.items()]
 
 df_dias_por_cultivo = pd.DataFrame(dias_por_cultivo)
 
