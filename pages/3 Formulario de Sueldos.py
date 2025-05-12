@@ -201,9 +201,8 @@ for cultivo in cultivos_trabajados:
 # Convertir el diccionario en lista de tuplas
 datos = [{"cultivo": cultivo, "dias": dias} for cultivo, dias in dias_por_cultivo.items()]
 
+# Armando dataframe para días trabajados por cultivo
 df_dias_por_cultivo = pd.DataFrame(dias_por_cultivo)
-
-st.table(df_dias_por_cultivo)
 
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"], horizontal=True)
 
@@ -291,10 +290,13 @@ df_montos["Monto CLP"] = df_montos["Monto CLP"].apply(formato_monto)
 df_montos["Porcentaje"] = df_montos["Porcentaje"].apply(formato_porcentaje)
 
 if sueldo_bruto != 0:
-    st.subheader("Detalle de Descuentos y Leyes Sociales")
+    # st.subheader("Detalle de Descuentos y Leyes Sociales")
+    st.markdown("### Resúmen Sueldo")
     #  Mostrar tabla
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
     st.table(df_montos)
+    st.write()
+    st.table(df_dias_por_cultivo)
 
 # === Validación ===
 
