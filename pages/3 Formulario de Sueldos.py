@@ -175,10 +175,28 @@ except Exception as e:
     st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
     cultivo_list = []
 
-# Selección cultivo
-st.multiselect("Seleccione área o cultivo en que trabajó (Selección Múltiple)", cultivo_list) # COMPLETAR
+# Multiselect para elegir cultivos
+cultivo_trabajado = st.multiselect(
+    "Seleccione área o cultivo en que trabajó (Selección Múltiple)",
+    cultivo_list
+)
 
-# CUÁNTOS DÍAS TRABAJO POR CULTIVO
+# === Días trabajados ===
+
+# Diccionario para almacenar días trabajados por cultivo
+dias_por_cultivo = {}
+
+for cultivo in cultivo_trabajado:
+    # Obtener días trabajados por cultivo
+    dias_trabajados = st.number_input(
+        f"Días trabajados en {cultivo}", 
+        min_value=1, 
+        step=1,
+        format="%d"
+        )
+    
+    # Añadir cultivo al dicc junto con sus días trabajados
+    dias_por_cultivo[cultivo] = dias_trabajados
 
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"], horizontal=True)
 
