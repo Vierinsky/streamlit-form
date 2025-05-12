@@ -131,7 +131,7 @@ if st.session_state.get("registro_guardado"):
     st.toast("Registro guardado con éxito", icon="✅")
     st.session_state["registro_guardado"] = False
 
-st.text_input(
+nombre_trabajador = st.text_input(
     "Escriba nombre del trabajador",
     placeholder="Nombre completo"
 )
@@ -183,6 +183,7 @@ cultivos_trabajados = st.multiselect(
 )
 
 # === Días trabajados ===
+st.divider()
 
 # Diccionario para almacenar días trabajados por cultivo
 dias_por_cultivo = {}
@@ -206,10 +207,11 @@ datos = [{"cultivo": cultivo, "dias": dias} for cultivo, dias in dias_por_cultiv
 df_dias_por_cultivo = pd.DataFrame(datos)
 
 if dias_por_cultivo != {}:
-    st.markdown("### Resúmen días trabajados por cultivo y sueldo")
+    st.markdown("### Resúmen días trabajados por cultivo")
     st.table(df_dias_por_cultivo)
 
 # === Sueldo Bruto ===
+st.divider()
 
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"], horizontal=True)
 
@@ -304,6 +306,45 @@ if sueldo_bruto != 0:
     st.table(df_montos)
 
 # === Gratificaciones === (Se suman despúes de las leyes sociales)
+
+gratificaciones = st.number_input(
+    "Gratificaciones",
+    min_value=0, 
+    step=1,
+    format="%d"
+)
+
+# === Comentarios ===
+
+# Comentario opcional del usuario
+comentario = st.text_area(
+    "Comentario (opcional)", 
+    placeholder="Agregue una nota o comentario"
+)
+
+# === Resúmen ===
+
+# Asegurarse de que días y sueldo neto estén en valores numéricos
+df_dias_por_cultivo["dias"] = pd.to_numeric(df_dias_por_cultivo["dias"], errors="coerce").fillna(0).astype(int)
+
+# Calcular total de días trabajados
+total_dias = df_dias_por_cultivo["dias"].sum()
+
+# Calcular sueldo proporcional
+if total_dias > 0:
+    df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["dias"] / total_dias * sueldo_neto
+    df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["monto_CLP"].round(0).astype(int)
+else:
+    df_dias_por_cultivo["monto_CLP"] = 0
+
+# Formateo visual
+df_dias_por_cultivo["monto_CLP_fmt"] = df_dias_por_cultivo["monto_CLP"].apply(lambda x: f"${x:,.0f}".replace(",", "."))
+df_display = df_dias_por_cultivo[["cultivo", "dias", "monto_CLP_fmt"]].rename(columns={"cultivo" : "Cultivo", "dias": "Días", "monto_CLP_fmt": "Sueldo Bruto"})
+
+st.markdown("### Resúmen Sueldo y días trabajados por cultivo")
+st.write(f"Nombre: {nombre_trabajador}")
+st.write(f"Tipo de contrato: {tipo_contrato}")
+st.table(df_display)
 
 # === Validación ===
 
