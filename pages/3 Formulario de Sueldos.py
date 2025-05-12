@@ -292,12 +292,14 @@ df_montos["Porcentaje"] = df_montos["Porcentaje"].apply(formato_porcentaje)
 
 if sueldo_bruto != 0:
     # st.subheader("Detalle de Descuentos y Leyes Sociales")
-    st.markdown("### Resúmen Sueldo")
+    st.markdown("### Resúmen Sueldo y leyes sociales")
     #  Mostrar tabla
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
     st.table(df_montos)
-    st.write()
+    st.markdown("### Resúmen días trabajados por cultivo y sueldo")
     st.table(df_dias_por_cultivo)
+
+# === Gratificaciones === (Se suman despúes de las leyes sociales)
 
 # === Validación ===
 
