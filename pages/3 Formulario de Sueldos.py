@@ -198,7 +198,14 @@ for cultivo in cultivos_trabajados:
     # Añadir cultivo al dicc junto con sus días trabajados
     dias_por_cultivo[cultivo] = dias_trabajados
 
-st.write(dias_por_cultivo)
+# TODO: MODIFICAR DICT PARA QUE TENGA ENCABEZADOS
+
+dias_por_cultivo["cultivos"] = dias_por_cultivo.keys()
+dias_por_cultivo["dias"] = dias_por_cultivo.values()
+
+df_dias_por_cultivo = pd.DataFrame(dias_por_cultivo)
+
+st.table(df_dias_por_cultivo)
 
 tipo_contrato = st.radio("Seleccione tipo de contrato", ["Indefinido", "Plazo Fijo", "Honorarios"], horizontal=True)
 
