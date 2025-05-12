@@ -175,15 +175,15 @@ except Exception as e:
     st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
     cultivo_list = []
 
+
+# === Días trabajados ===
+st.divider()
 # Multiselect para elegir cultivos
 cultivos_trabajados = st.multiselect(
     "Seleccione área o cultivo en que trabajó",     # ¿Comentar que es (Selección Múltiple)?
     cultivo_list,
     placeholder="Escoja una o más opciones"
 )
-
-# === Días trabajados ===
-st.divider()
 
 # Diccionario para almacenar días trabajados por cultivo
 dias_por_cultivo = {}
@@ -340,7 +340,7 @@ else:
 # Formateo visual
 df_dias_por_cultivo["monto_CLP_fmt"] = df_dias_por_cultivo["monto_CLP"].apply(lambda x: f"${x:,.0f}".replace(",", "."))
 df_display = df_dias_por_cultivo[["cultivo", "dias", "monto_CLP_fmt"]].rename(columns={"cultivo" : "Cultivo", "dias": "Días", "monto_CLP_fmt": "Sueldo Bruto"})
-
+st.divider()
 st.markdown("### Resúmen Sueldo y días trabajados por cultivo")
 st.write(f"Nombre: {nombre_trabajador}")
 st.write(f"Tipo de contrato: {tipo_contrato}")
