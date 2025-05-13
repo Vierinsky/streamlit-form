@@ -136,8 +136,11 @@ trabajador_nombre = st.text_input(
     placeholder="Nombre Completo"
 )
 
-trabajador_rut = st.write(
+trabajador_rut = st.number_input(
     "Escriba el RUT del trabajador",
+    min_value=0, 
+    step=1,
+    format="%d",
     placeholder="RUT Trabajador"
 )
 
@@ -321,9 +324,17 @@ if sueldo_bruto != 0:
     st.markdown("### Resúmen Sueldo y leyes sociales")
     #  Mostrar tabla
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
-    st.table(df_montos.loc["Sueldo Neto", "Sueldo Bruto"]["Concepto", "Monto CLP"])
+    
     st.table(df_montos["Previsión (AFP)", "Salud (Fonasa/Isapre)", "Cesantía (Trabajador)", "Cesantía (Empleador)", "SIS", "ATEP"])
+    
+    
+    # Filtrar filas por Concepto
+    filtro = df_montos["Concepto"].isin(["Sueldo Neto", "Gratificaciones", "Sueldo Bruto"])
+    df_resumen = df_montos.loc[filtro, ["Concepto", "Monto CLP"]]
 
+    # Mostrar tabla
+    st.table(df_resumen)
+    
 # === Comentarios ===
 
 # Comentario opcional del usuario
