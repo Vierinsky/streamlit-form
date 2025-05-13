@@ -223,7 +223,6 @@ sueldo_bruto = st.number_input(
 )
 
 # Gratificaciones (Se suman despúes de las leyes sociales)
-
 gratificaciones = st.number_input(
     "Agregue gratificaciones si aplican",
     min_value=0, 
@@ -329,28 +328,29 @@ comentario = st.text_area(
 )
 
 # === Resúmen ===
+if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
+    # Asegurarse de que días y sueldo neto estén en valores numéricos
+    df_dias_por_cultivo["Días"] = pd.to_numeric(df_dias_por_cultivo["Días"], errors="coerce").fillna(0).astype(int)
 
-# Asegurarse de que días y sueldo neto estén en valores numéricos
-df_dias_por_cultivo["Días"] = pd.to_numeric(df_dias_por_cultivo["Días"], errors="coerce").fillna(0).astype(int)
+    # Calcular total de días trabajados
+    total_dias = df_dias_por_cultivo["Días"].sum()
 
-# Calcular total de días trabajados
-total_dias = df_dias_por_cultivo["Días"].sum()
+    # Calcular sueldo proporcional
+    if total_dias > 0:
+        df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["Días"] / total_dias * sueldo_neto
+        df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["monto_CLP"].round(0).astype(int)
+    else:
+        df_dias_por_cultivo["monto_CLP"] = 0
 
-# Calcular sueldo proporcional
-if total_dias > 0:
-    df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["Días"] / total_dias * sueldo_neto
-    df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["monto_CLP"].round(0).astype(int)
-else:
-    df_dias_por_cultivo["monto_CLP"] = 0
+    # Formateo visual
+    df_dias_por_cultivo["monto_CLP_fmt"] = df_dias_por_cultivo["monto_CLP"].apply(lambda x: f"${x:,.0f}".replace(",", "."))
+    df_display = df_dias_por_cultivo[["Cultivo", "Dias", "monto_CLP_fmt"]].rename(columns={"monto_CLP_fmt": "Sueldo Bruto"})
 
-# Formateo visual
-df_dias_por_cultivo["monto_CLP_fmt"] = df_dias_por_cultivo["monto_CLP"].apply(lambda x: f"${x:,.0f}".replace(",", "."))
-df_display = df_dias_por_cultivo[["Cultivo", "Dias", "monto_CLP_fmt"]].rename(columns={"monto_CLP_fmt": "Sueldo Bruto"})
-st.divider()
-st.markdown("### Resúmen Sueldo y días trabajados por cultivo")
-st.write(f"Nombre: {nombre_trabajador}")
-st.write(f"Tipo de contrato: {tipo_contrato}")
-st.table(df_display)
+    st.divider()
+    st.markdown("### Resúmen Sueldo y días trabajados por cultivo")
+    st.write(f"Nombre: {nombre_trabajador}")
+    st.write(f"Tipo de contrato: {tipo_contrato}")
+    st.table(df_display)
 
 # === Validación ===
 
