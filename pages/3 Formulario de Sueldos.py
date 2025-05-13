@@ -329,6 +329,8 @@ if sueldo_bruto != 0:
     filtro = (df_montos["Concepto"].isin(["Previsión (AFP)", "Salud (Fonasa/Isapre)", "Cesantía (Trabajador)", "Cesantía (Empleador)", "SIS", "ATEP"]))
     df_resumen_leyes = df_montos.loc[filtro, ["Concepto", "Porcentaje", "Monto CLP"]]
     
+    # AGREGAR TOTAL LEYES SOCIALES
+
     st.table(df_resumen_leyes)
     
     # Filtrar filas por Concepto
