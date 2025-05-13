@@ -131,12 +131,15 @@ if st.session_state.get("registro_guardado"):
     st.toast("Registro guardado con éxito", icon="✅")
     st.session_state["registro_guardado"] = False
 
-nombre_trabajador = st.text_input(
+trabajador_nombre = st.text_input(
     "Escriba nombre del trabajador",
-    placeholder="Nombre completo"
+    placeholder="Nombre Completo"
 )
 
-# TODO: AGREGAR RUT
+trabajador_rut = st.write(
+    "Escriba el RUT del trabajador",
+    placeholder="RUT Trabajador"
+)
 
 # === Días trabajados por cultivo / Ceco ===
 
@@ -351,7 +354,7 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
 
     st.divider()
     st.markdown("### Resúmen Sueldo y días trabajados por cultivo")
-    st.write(f"Nombre: {nombre_trabajador}")
+    st.write(f"Nombre: {trabajador_nombre}")
     st.write(f"Tipo de contrato: {tipo_contrato}")
     st.table(df_display)
 
