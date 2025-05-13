@@ -136,6 +136,8 @@ nombre_trabajador = st.text_input(
     placeholder="Nombre completo"
 )
 
+# TODO: AGREGAR RUT
+
 # === Días trabajados por cultivo / Ceco ===
 
 def get_fresh_spreadsheet():
@@ -352,8 +354,6 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
     st.write(f"Nombre: {nombre_trabajador}")
     st.write(f"Tipo de contrato: {tipo_contrato}")
     st.table(df_display)
-else:
-    st.info("Seleccione al menos un cultivo o área")
 
 # === Validación ===
 
@@ -401,7 +401,6 @@ else:
     #         return sheet, headers, nuevo_index, fecha_hora_actual
 
 # === Botón de guardado ===
-
 
 # 1. Ingrese sueldo bruto
 #       - Que muestre desglose.
