@@ -325,16 +325,19 @@ if sueldo_bruto != 0:
     #  Mostrar tabla
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
     
-    st.table(df_montos["Previsión (AFP)", "Salud (Fonasa/Isapre)", "Cesantía (Trabajador)", "Cesantía (Empleador)", "SIS", "ATEP"])
+    # Filtrar filas por Concepto
+    filtro = (df_montos["Concepto"].isin(["Previsión (AFP)", "Salud (Fonasa/Isapre)", "Cesantía (Trabajador)", "Cesantía (Empleador)", "SIS", "ATEP"]))
+    df_resumen_leyes = df_montos.loc[filtro, ["Concepto", "Porcentaje", "Monto CLP"]]
     
+    st.table(df_resumen_leyes)
     
     # Filtrar filas por Concepto
     filtro = df_montos["Concepto"].isin(["Sueldo Neto", "Gratificaciones", "Sueldo Bruto"])
-    df_resumen = df_montos.loc[filtro, ["Concepto", "Monto CLP"]]
+    df_resumen_sueldo = df_montos.loc[filtro, ["Concepto", "Monto CLP"]]
 
     # Mostrar tabla
-    st.table(df_resumen)
-    
+    st.table(df_resumen_sueldo)
+
 # === Comentarios ===
 
 # Comentario opcional del usuario
