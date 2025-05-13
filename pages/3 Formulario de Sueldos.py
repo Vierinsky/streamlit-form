@@ -321,7 +321,8 @@ if sueldo_bruto != 0:
     st.markdown("### Resúmen Sueldo y leyes sociales")
     #  Mostrar tabla
     st.write(f"**Tipo de contrato:** {tipo_contrato}")
-    st.table(df_montos)
+    st.table(df_montos.loc["Sueldo Neto", "Sueldo Bruto"]["Concepto", "Monto CLP"])
+    st.table(df_montos["Previsión (AFP)", "Salud (Fonasa/Isapre)", "Cesantía (Trabajador)", "Cesantía (Empleador)", "SIS", "ATEP"])
 
 # === Comentarios ===
 
