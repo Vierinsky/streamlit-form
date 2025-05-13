@@ -328,6 +328,7 @@ comentario = st.text_area(
 )
 
 # === Resúmen ===
+
 if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
     # Asegurarse de que días y sueldo neto estén en valores numéricos
     df_dias_por_cultivo["Días"] = pd.to_numeric(df_dias_por_cultivo["Días"], errors="coerce").fillna(0).astype(int)
@@ -351,6 +352,8 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
     st.write(f"Nombre: {nombre_trabajador}")
     st.write(f"Tipo de contrato: {tipo_contrato}")
     st.table(df_display)
+else:
+    st.info("Seleccione al menos un cultivo o área")
 
 # === Validación ===
 
