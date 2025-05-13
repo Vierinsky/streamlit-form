@@ -347,7 +347,7 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
 
     # Formateo visual
     df_dias_por_cultivo["monto_CLP_fmt"] = df_dias_por_cultivo["monto_CLP"].apply(lambda x: f"${x:,.0f}".replace(",", "."))
-    df_display = df_dias_por_cultivo[["Cultivo", "Dias", "monto_CLP_fmt"]].rename(columns={"monto_CLP_fmt": "Sueldo Bruto"})
+    df_display = df_dias_por_cultivo[["Cultivo", "Días", "monto_CLP_fmt"]].rename(columns={"monto_CLP_fmt": "Sueldo Bruto"})
 
     st.divider()
     st.markdown("### Resúmen Sueldo y días trabajados por cultivo")
