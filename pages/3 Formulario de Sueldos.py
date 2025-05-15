@@ -306,7 +306,7 @@ insert_pos = 7 # Justo antes de "Gratificaciones"
 
 data["Concepto"].insert(insert_pos, "Leyes Sociales")
 data["Porcentaje"].insert(insert_pos, "")
-data["Porcentaje"].insert(insert_pos, monto_llss)
+data["Monto CLP"].insert(insert_pos, monto_llss)
 
 # Crear Dataframe
 df_montos = pd.DataFrame(data)
