@@ -136,6 +136,8 @@ trabajador_nombre = st.text_input(
     placeholder="Nombre Completo"
 )
 
+# TODO: REVISAR NÚMERO IDENTIFICADOR RUT
+
 trabajador_rut = st.number_input(
     "Escriba el RUT del trabajador",
     min_value=0, 
@@ -346,10 +348,10 @@ if sueldo_bruto != 0:
         "Monto CLP" : df_montos[df_montos["Concepto"].isin(["Previsión (AFP)", "Salud (Fonasa/Isapre)", "Cesantía (Trabajador)", "Cesantía (Empleador)", "SIS", "ATEP"])]["Monto CLP"].sum()
     }
     
-    # df_resumen_leyes["Monto CLP"].sum()
-
     filtro = df_montos["Concepto"].isin(["Sueldo Neto", "Leyes Sociales","Gratificaciones", "Sueldo Bruto"])
     df_resumen_sueldo = df_montos.loc[filtro, ["Concepto", "Monto CLP"]]
+
+    df_resumen_sueldo = df_resumen_sueldo.rename(columns={'Sueldo Bruto' : 'Sueldo Bruto (Final)'})
 
     # Mostrar tabla
     st.markdown("### Resumen Sueldo")
