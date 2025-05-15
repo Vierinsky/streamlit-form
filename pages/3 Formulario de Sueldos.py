@@ -370,7 +370,7 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
 
     # Calcular sueldo proporcional
     if total_dias > 0:
-        df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["Días"] / total_dias * sueldo_neto
+        df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["Días"] / total_dias * sueldo_bruto
         df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["monto_CLP"].round(0).astype(int)
     else:
         df_dias_por_cultivo["monto_CLP"] = 0
@@ -382,7 +382,7 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
     st.divider()
     st.markdown("### Resumen sueldo y días trabajados por cultivo")
     st.write(f"Nombre: {trabajador_nombre}")
-    st.write(f"Rut: {trabajador_rut}")
+    st.write(f"Rut: {trabajador_rut}")                          # TODO: ARREGLAR FORMATO RUT
     st.write(f"Tipo de contrato: {tipo_contrato}")
     st.table(df_display)
 
