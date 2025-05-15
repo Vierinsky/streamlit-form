@@ -392,6 +392,11 @@ comentario = st.text_area(
     "Comentario (opcional)", 
     placeholder="Agregue una nota o comentario"
 )
+# === Banco ===
+
+# Con que banco se paga
+# IDEA: Que el usuario ingrese cuantos pagos(vencimientos) y estos se desplieguen respectivamente
+        # Esta idea puede ser para otros formularios.
 
 # === Validación ===
 
