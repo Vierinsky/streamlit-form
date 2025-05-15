@@ -359,15 +359,6 @@ if sueldo_bruto != 0:
     st.markdown("### Resumen Sueldo")
     st.table(df_resumen_sueldo)
 
-# === Comentarios ===
-
-# Comentario opcional del usuario
-st.divider()
-comentario = st.text_area(
-    "Comentario (opcional)", 
-    placeholder="Agregue una nota o comentario"
-)
-
 # === Resúmen ===
 
 if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
@@ -389,10 +380,19 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
     df_display = df_dias_por_cultivo[["Cultivo", "Días", "monto_CLP_fmt"]].rename(columns={"monto_CLP_fmt": "Sueldo Bruto"})
 
     st.divider()
-    st.markdown("### Resúmen Sueldo y días trabajados por cultivo")
+    st.markdown("### Resumen sueldo y días trabajados por cultivo")
     st.write(f"Nombre: {trabajador_nombre}")
     st.write(f"Tipo de contrato: {tipo_contrato}")
     st.table(df_display)
+
+# === Comentarios ===
+# Comentario opcional del usuario
+st.divider()
+comentario = st.text_area(
+    "Comentario (opcional)", 
+    placeholder="Agregue una nota o comentario"
+)
+
 
 # === Validación ===
 
