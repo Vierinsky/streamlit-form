@@ -382,6 +382,7 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
     st.divider()
     st.markdown("### Resumen sueldo y días trabajados por cultivo")
     st.write(f"Nombre: {trabajador_nombre}")
+    st.write(f"Rut: {trabajador_rut}")
     st.write(f"Tipo de contrato: {tipo_contrato}")
     st.table(df_display)
 
