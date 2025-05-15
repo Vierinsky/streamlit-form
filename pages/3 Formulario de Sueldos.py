@@ -346,7 +346,6 @@ if sueldo_bruto != 0:
     st.table(df_resumen_leyes)
     
     # Filtrar filas por Concepto
-        #   TODO: AGREGAR SUMATORIA "Leyes Sociales"
     total_llss = {
         "Concepto" : "Total Leyes Sociales", 
         "Monto CLP" : df_montos[df_montos["Concepto"].isin(["Previsión (AFP)", "Salud (Fonasa/Isapre)", "Cesantía (Trabajador)", "Cesantía (Empleador)", "SIS", "ATEP"])]["Monto CLP"].sum()
@@ -355,7 +354,7 @@ if sueldo_bruto != 0:
     filtro = df_montos["Concepto"].isin(["Sueldo Neto", "Leyes Sociales","Gratificaciones", "Sueldo Bruto"])
     df_resumen_sueldo = df_montos.loc[filtro, ["Concepto", "Monto CLP"]]
 
-    df_resumen_sueldo = df_resumen_sueldo.rename(columns={'Sueldo Bruto' : 'Sueldo Bruto (Final)'})
+    df_resumen_sueldo["Concepto"] = df_resumen_sueldo["Concepto"].rename(columns={'Sueldo Bruto' : 'Sueldo Bruto (Final)'})
 
     # Mostrar tabla
     st.markdown("### Resumen Sueldo")
@@ -379,14 +378,13 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
 
     # Formateo visual
     df_dias_por_cultivo["monto_CLP_fmt"] = df_dias_por_cultivo["monto_CLP"].apply(lambda x: f"${x:,.0f}".replace(",", "."))
-    df_display = df_dias_por_cultivo[["Cultivo", "Días", "monto_CLP_fmt"]].rename(columns={"monto_CLP_fmt": "Sueldo Bruto"})
+    df_display_dias_cultivo = df_dias_por_cultivo[["Cultivo", "Días", "monto_CLP_fmt"]].rename(columns={"monto_CLP_fmt": "Sueldo Bruto"})
 
-    st.divider()
     st.markdown("### Resumen sueldo y días trabajados por cultivo")
-    st.write(f"Nombre: {trabajador_nombre}")
-    st.write(f"Rut: {trabajador_rut}")                          # TODO: ARREGLAR FORMATO RUT
-    st.write(f"Tipo de contrato: {tipo_contrato}")
-    st.table(df_display)
+    # st.write(f"Nombre: {trabajador_nombre}")
+    # st.write(f"Rut: {trabajador_rut}")                          # TODO: ARREGLAR FORMATO RUT
+    # st.write(f"Tipo de contrato: {tipo_contrato}")
+    st.table(df_display_dias_cultivo)
 
 # === Comentarios ===
 # Comentario opcional del usuario
