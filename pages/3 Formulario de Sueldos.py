@@ -393,10 +393,9 @@ comentario = st.text_area(
     placeholder="Agregue una nota o comentario"
 )
 
-
 # === Validación ===
 
-#   MODIFICAR A LA REALIDAD DEL FORMUARIO DE SUELDOS.
+#   MODIFICAR A LA REALIDAD DEL FORMULARIO DE SUELDOS.
 
 # # Inicializar estado si no existe
 # if "registro_guardado" not in st.session_state:
