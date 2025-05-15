@@ -298,10 +298,18 @@ data = {
     ]
 }
 
-df_montos = pd.DataFrame(data)
+# Insertar fila "Leyes Sociales"
+indices_llss = [1, 2, 3, 4, 5, 6] # INdices de los conceptos de leyes sociales
+monto_llss = sum(data["Monto CLP"][i] for i in indices_llss)
 
-# st.write(f"**Tipo de contrato:** {tipo_contrato}")
-# st.table(df_montos.style.format({"Monto CLP": "${:,.0f}"}))
+insert_pos = 7 # Justo antes de "Gratificaciones"
+
+data["Concepto"].insert(insert_pos, "Leyes Sociales")
+data["Porcentaje"].insert(insert_pos, "")
+data["Porcentaje"].insert(insert_pos, monto_llss)
+
+# Crear Dataframe
+df_montos = pd.DataFrame(data)
 
 # Función para formatear montos con miles . y decimales ,
 def formato_monto(valor):
@@ -321,23 +329,30 @@ df_montos["Porcentaje"] = df_montos["Porcentaje"].apply(formato_porcentaje)
 
 if sueldo_bruto != 0:
     # st.subheader("Detalle de Descuentos y Leyes Sociales")
-    st.markdown("### Resúmen Sueldo y leyes sociales")
-    #  Mostrar tabla
-    st.write(f"**Tipo de contrato:** {tipo_contrato}")
+    st.markdown("### Detalle Leyes sociales")
     
     # Filtrar filas por Concepto
     filtro = (df_montos["Concepto"].isin(["Previsión (AFP)", "Salud (Fonasa/Isapre)", "Cesantía (Trabajador)", "Cesantía (Empleador)", "SIS", "ATEP"]))
     df_resumen_leyes = df_montos.loc[filtro, ["Concepto", "Porcentaje", "Monto CLP"]]
     
-    # AGREGAR TOTAL LEYES SOCIALES
-
+    #  Mostrar tabla
+    st.write(f"**Tipo de contrato:** {tipo_contrato}")
     st.table(df_resumen_leyes)
     
     # Filtrar filas por Concepto
-    filtro = df_montos["Concepto"].isin(["Sueldo Neto", "Gratificaciones", "Sueldo Bruto"])
+        #   TODO: AGREGAR SUMATORIA "Leyes Sociales"
+    total_llss = {
+        "Concepto" : "Total Leyes Sociales", 
+        "Monto CLP" : df_montos[df_montos["Concepto"].isin(["Previsión (AFP)", "Salud (Fonasa/Isapre)", "Cesantía (Trabajador)", "Cesantía (Empleador)", "SIS", "ATEP"])]["Monto CLP"].sum()
+    }
+    
+    # df_resumen_leyes["Monto CLP"].sum()
+
+    filtro = df_montos["Concepto"].isin(["Sueldo Neto", "Leyes Sociales","Gratificaciones", "Sueldo Bruto"])
     df_resumen_sueldo = df_montos.loc[filtro, ["Concepto", "Monto CLP"]]
 
     # Mostrar tabla
+    st.markdown("### Resumen Sueldo")
     st.table(df_resumen_sueldo)
 
 # === Comentarios ===
