@@ -8,11 +8,13 @@
 #   - No se utiliza factura.
 #   - Se suman gratificaciones (Transporte, Alimentación), las que se suman después de todos los descuentos. 
 
+from datetime import datetime, timedelta
 from google.oauth2.service_account import Credentials
 import gspread
 import json
 import os
 import pandas as pd
+import pytz
 import streamlit as st
 
 # === Configuración Google Sheets ===
@@ -146,6 +148,18 @@ trabajador_rut = st.number_input(
     placeholder="RUT Trabajador"
 )
 
+# === Ingrese Fecha ===
+st.divider()
+# Fecha de Emisión
+    # Fecha de emisión de la factura
+fecha_hoy_chile = datetime.now(pytz.timezone('Chile/Continental')).date()
+
+fecha_sueldo = st.date_input(
+    "Ingrese Fecha del Sueldo",
+    value=fecha_hoy_chile,
+    format="DD/MM/YYYY"
+)
+
 # === Días trabajados por cultivo / Ceco ===
 
 def get_fresh_spreadsheet():
@@ -185,8 +199,6 @@ except Exception as e:
     st.error(f"❌ Error al cargar la lista de centro de cultivos: {e}")
     cultivo_list = []
 
-
-# === Días trabajados ===
 st.divider()
 # Multiselect para elegir cultivos
 cultivos_trabajados = st.multiselect(
@@ -232,7 +244,7 @@ sueldo_bruto = st.number_input(
     format="%d"
 )
 
-# Gratificaciones (Se suman despúes de las leyes sociales)
+# === Gratificaciones (Se suman despúes de las leyes sociales) ===
 gratificaciones = st.number_input(
     "Agregue gratificaciones si aplican",
     min_value=0, 
@@ -260,17 +272,7 @@ porcentaje_sis = str(round(TASAS[tipo_contrato]['sis'] * 100, 2))
 porcentaje_atep = str(round(TASAS[tipo_contrato]['atep'] * 100, 2))
 
 
-# # Formateo visual con separador de miles (solo display opcional)
-# sueldo_bruto_formateado = f"{sueldo_bruto:,}".replace(",", ".")  # convierte 10000 → "10.000"
-# sueldo_neto_formateado = f"{sueldo_neto:,}".replace(",", ".")
-# afp = f"{leyes['afp']:,}".replace(",", ".")
-# salud = f"{leyes['salud']:,}".replace(",", ".")
-# cesantia_trab = f"{leyes['cesantia_trabajador']:,}".replace(",", ".")
-# cesantia_emp = f"{leyes['cesantia_empleador']:,}".replace(",", ".")
-# sis = f"{leyes['sis']:,}".replace(",", ".")
-# atep = f"{leyes['atep']:,}".replace(",", ".")
-
-# === Tabla Resumen Desglose Sueldo ===
+# === Tabla Resumen Desglose LLSS y Sueldo ===
 
 data = {
     "Concepto": [
@@ -281,7 +283,7 @@ data = {
         f"Cesantía (Empleador)",
         f"SIS",
         f"ATEP",
-        "Gratificaciones", # Recién agregado 
+        "Gratificaciones",
         "Sueldo Bruto"
     ],
     "Porcentaje" : ["", 
