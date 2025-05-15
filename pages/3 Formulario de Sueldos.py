@@ -253,6 +253,8 @@ gratificaciones = st.number_input(
     help="Las gratificaciones se suman después de las leyes sociales al sueldo bruto"
 )
 
+sueldo_bruto_final = sueldo_bruto + gratificaciones
+
 leyes = calcular_leyes_sociales(sueldo_bruto, tipo_contrato)
 
 sueldo_neto = sueldo_bruto - sum([
@@ -298,7 +300,7 @@ data = {
     ],
     "Monto CLP": [
         sueldo_neto, leyes['afp'], leyes['salud'],
-        leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep'], gratificaciones , (sueldo_bruto + gratificaciones) # Se suman gratificaciones a sueldo final
+        leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep'], gratificaciones , sueldo_bruto_final # Se suman gratificaciones a sueldo final
     ]
 }
 
@@ -370,7 +372,7 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
 
     # Calcular sueldo proporcional
     if total_dias > 0:
-        df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["Días"] / total_dias * sueldo_bruto
+        df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["Días"] / total_dias * (sueldo_bruto_final)
         df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["monto_CLP"].round(0).astype(int)
     else:
         df_dias_por_cultivo["monto_CLP"] = 0
