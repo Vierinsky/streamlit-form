@@ -139,6 +139,7 @@ trabajador_nombre = st.text_input(
 )
 
 # TODO: REVISAR NÚMERO IDENTIFICADOR RUT
+    # Nota: Debería ser string
 
 trabajador_rut = st.number_input(
     "Escriba el RUT del trabajador",
@@ -395,6 +396,11 @@ comentario = st.text_area(
 )
 
 # === Validación ===
+
+# TODO: De esta página deberían salir 2 planillas:
+            # Una donde aparezca el sueldo completo del trabajador.
+            # Otra donde aparezca el sueldo dividido por cultivo trabajado.
+                # (¿Es necesario esto? Quizás baste con un DataFrame que sea utilizado por dentro por los gráficos)
 
 #   MODIFICAR A LA REALIDAD DEL FORMULARIO DE SUELDOS.
 
