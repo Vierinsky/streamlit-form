@@ -354,7 +354,7 @@ if sueldo_bruto != 0:
     filtro = df_montos["Concepto"].isin(["Sueldo Neto", "Leyes Sociales","Gratificaciones", "Sueldo Bruto"])
     df_resumen_sueldo = df_montos.loc[filtro, ["Concepto", "Monto CLP"]]
 
-    df_resumen_sueldo["Concepto"] = df_resumen_sueldo["Concepto"].rename(columns={'Sueldo Bruto' : 'Sueldo Bruto (Final)'})
+    df_resumen_sueldo["Concepto"] = df_resumen_sueldo["Concepto"].replace('Sueldo Bruto', 'Sueldo Bruto (Final)')
 
     # Mostrar tabla
     st.markdown("### Resumen Sueldo")
