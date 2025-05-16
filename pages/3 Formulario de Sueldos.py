@@ -10,6 +10,7 @@ import json
 import os
 import pandas as pd
 import pytz
+import re
 import streamlit as st
 
 # === Configuración Google Sheets ===
@@ -121,6 +122,7 @@ def calcular_leyes_sociales(sueldo_bruto: int, tipo_contrato: str) -> dict:
     return detalle
 
 # === Formulario Principal ===
+
 st.title("📋 Formulario de Registro de Sueldos")
 
 # ✅ Mostrar mensaje de éxito si se acaba de guardar un registro
@@ -128,21 +130,65 @@ if st.session_state.get("registro_guardado"):
     st.toast("Registro guardado con éxito", icon="✅")
     st.session_state["registro_guardado"] = False
 
-trabajador_nombre = st.text_input(
-    "Escriba nombre del trabajador",
-    placeholder="Nombre Completo"
-)
+# == Validación RUT == INCORPORAR A SECCIÓN VALIDACIONES
 
-# TODO: REVISAR NÚMERO IDENTIFICADOR RUT
-    # Nota: Debería ser string
+def validar_rut(rut: str) -> bool:
+    """
+    Valida si un RUT chileno es correcto. El RUT puede venir con puntos y guion.
 
-trabajador_rut = st.number_input(
-    "Escriba el RUT del trabajador",
-    min_value=0, 
-    step=1,
-    format="%d",
-    placeholder="RUT Trabajador"
-)
+    Args:
+        rut (str): RUT en formato string. Ejemplo válido: "12.345.678-5"
+
+    Returns:
+        bool: True si el RUT es válido, False si no lo es.
+    
+    La validación se hace usando el algoritmo del módulo 11, que consiste en:
+    - Multiplicar cada dígito del cuerpo del RUT por factores decrecientes del 2 al 7 (en bucle).
+    - Calcular el resto de la suma de esos productos dividido por 11.
+    - Obtener el dígito verificador y compararlo con el ingresado.
+    """
+
+    # 1. Limpiar el RUT: quitar puntos y guion, y convertir a mayúsculas
+    rut = rut.replace(".", "").replace("-", "").upper()
+
+    # 2. Verificar que tenga el formato correcto: 7 u 8 dígitos + un dígito o 'K'
+    if not re.match(r'^\d{7,8}[0-9K]$', rut):
+        return False
+
+    # 3. Separar cuerpo y dígito verificador
+    cuerpo = rut[:-1]
+    verificador = rut[-1]
+
+    # 4. Calcular el dígito verificador usando el algoritmo del módulo 11
+    suma = 0
+    multiplicador = 2
+    for d in reversed(cuerpo):
+        suma += int(d) * multiplicador
+        multiplicador = 2 if multiplicador == 7 else multiplicador + 1
+
+    resto = 11 - (suma % 11)
+    digito = {11: '0', 10: 'K'}.get(resto, str(resto))
+
+    # 5. Comparar el dígito calculado con el ingresado
+    return digito == verificador
+
+# === Formulario: Datos del trabajador ===
+
+st.markdown("### Información del Trabajador")
+
+# Tipo de documento
+tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
+
+# Campo para ingresar número
+numero_documento = st.text_input("Número de documento", placeholder="Ej: 12.345.678-5")
+
+# Validación si es RUT
+if tipo_documento == "RUT" and numero_documento:
+    if not validar_rut(numero_documento):
+        st.warning("⚠️ El RUT ingresado no es válido. Revise el formato y el dígito verificador.")
+
+# Campo para nombre
+nombre_trabajador = st.text_input("Nombre completo del trabajador")
 
 # === Ingrese Fecha ===
 st.divider()
@@ -151,7 +197,7 @@ st.divider()
 fecha_hoy_chile = datetime.now(pytz.timezone('Chile/Continental')).date()
 
 fecha_sueldo = st.date_input(
-    "Ingrese Fecha del Sueldo",
+    "Ingrese Fecha en que se realiza el pago",
     value=fecha_hoy_chile,
     format="DD/MM/YYYY"
 )
@@ -249,7 +295,7 @@ gratificaciones = st.number_input(
     help="Las gratificaciones se suman después de las leyes sociales al sueldo bruto"
 )
 
-sueldo_bruto_final = sueldo_bruto + gratificaciones
+remuneracion_total = sueldo_bruto + gratificaciones
 
 leyes = calcular_leyes_sociales(sueldo_bruto, tipo_contrato)
 
@@ -296,7 +342,7 @@ data = {
     ],
     "Monto CLP": [
         sueldo_neto, leyes['afp'], leyes['salud'],
-        leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep'], gratificaciones , sueldo_bruto_final # Se suman gratificaciones a sueldo final
+        leyes['cesantia_trabajador'], leyes['cesantia_empleador'], leyes['sis'], leyes['atep'], gratificaciones , remuneracion_total # Se suman gratificaciones a sueldo final
     ]
 }
 
@@ -350,7 +396,7 @@ if sueldo_bruto != 0:
     filtro = df_montos["Concepto"].isin(["Sueldo Neto", "Leyes Sociales","Gratificaciones", "Sueldo Bruto"])
     df_resumen_sueldo = df_montos.loc[filtro, ["Concepto", "Monto CLP"]]
 
-    df_resumen_sueldo["Concepto"] = df_resumen_sueldo["Concepto"].replace('Sueldo Bruto', 'Sueldo Bruto (Final)')
+    df_resumen_sueldo["Concepto"] = df_resumen_sueldo["Concepto"].replace('Sueldo Bruto', 'Remuneración Total')
 
     # Mostrar tabla
     st.markdown("### Resumen Sueldo")
@@ -367,7 +413,7 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
 
     # Calcular sueldo proporcional
     if total_dias > 0:
-        df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["Días"] / total_dias * (sueldo_bruto_final)
+        df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["Días"] / total_dias * (remuneracion_total)
         df_dias_por_cultivo["monto_CLP"] = df_dias_por_cultivo["monto_CLP"].round(0).astype(int)
     else:
         df_dias_por_cultivo["monto_CLP"] = 0
@@ -400,20 +446,24 @@ tipo_pago = st.radio("Seleccione Tipo de Pago", ["Efectivo", "Depósito en Cuent
 
 # Nota: para pago en efectivo la empresa debe emitir un comprobante firmado por el trabajador como respaldo.
 
-# 2. SI ES DEPOSITO O CREDITO CON QUE BANCO SE PAGÓ
+# 2. SI ES DEPOSITO O Vale Vista CON QUE BANCO SE PAGÓ
 
-data = cargar_hoja("tipo_pagos")
-bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
+if tipo_pago in ["Depósito en Cuenta Bancaria", "Vale Vista"]:
+    data = cargar_hoja("tipo_pagos")
+    bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
+    banco = st.selectbox("Seleccione Banco", bancos_lista, index=None, placeholder="Banco")
 
-banco = st.selectbox(
-        "Seleccione Banco", 
-        bancos_lista, 
-        index=None, 
-        placeholder="Banco",
-    )
-
+# IMPORTANTE
+    # COMPLETAR LO QUE IRÁ EN LA PLANILLA
+        # Falta:
+            # días trabajados por cultivo que será su propia planilla
+            # leyes sociales (¿Agregar una por una o como total?)
+    # [trabajador_nombre, trabajador_rut, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
 
 # === Validación ===
+
+# Necesito validar
+[trabajador_nombre, trabajador_rut, cultivos_trabajados, tipo_contrato, sueldo_bruto, gratificaciones, tipo_pago, banco]
 
 # TODO: De esta página deberían salir 2 planillas:
             # Una donde aparezca el sueldo completo del trabajador.
