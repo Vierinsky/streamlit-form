@@ -1,14 +1,9 @@
 # Formulario de Sueldos
 
 # TODO:
-#   - Leyes sociales:
-#       - (Completar)
-#   - Sueldo operario: El total de días trabajados se divide en distintos cultivos donde trabajó.
-#                      Su sueldo se divide en esos días y se registra en el cultivo correspondiente.
-#   - No se utiliza factura.
-#   - Se suman gratificaciones (Transporte, Alimentación), las que se suman después de todos los descuentos. 
+#   - En la división de días y sueldo por cultivo ¿Se puede decidir a que cultivo se le asigna que suma de dinero?
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from google.oauth2.service_account import Credentials
 import gspread
 import json
@@ -392,11 +387,31 @@ comentario = st.text_area(
     "Comentario (opcional)", 
     placeholder="Agregue una nota o comentario"
 )
-# === Banco ===
+# === Tipo de Pago y Banco ===
 
 # Con que banco se paga
 # IDEA: Que el usuario ingrese cuantos pagos(vencimientos) y estos se desplieguen respectivamente
         # Esta idea puede ser para otros formularios.
+
+# 1. FORMA DE PAGO: EFECTIVO, DEPOSITO, etc
+st.divider()
+
+tipo_pago = st.radio("Seleccione Tipo de Pago", ["Efectivo", "Depósito en Cuenta Bancaria", "Vale Vista"], horizontal=True)
+
+# Nota: para pago en efectivo la empresa debe emitir un comprobante firmado por el trabajador como respaldo.
+
+# 2. SI ES DEPOSITO O CREDITO CON QUE BANCO SE PAGÓ
+
+data = cargar_hoja("tipo_pagos")
+bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
+
+banco = st.selectbox(
+        "Seleccione Banco", 
+        bancos_lista, 
+        index=None, 
+        placeholder="Banco",
+    )
+
 
 # === Validación ===
 
