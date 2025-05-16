@@ -437,7 +437,7 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
 # 1. FORMA DE PAGO: EFECTIVO, DEPOSITO, etc
 st.divider()
 
-tipo_pago = st.radio("Seleccione Tipo de Pago", ["Efectivo", "Depósito en Cuenta Bancaria", "Vale Vista"], horizontal=True)
+tipo_pago = st.radio("Seleccione Tipo de Pago", ["Efectivo", "Caja Chica","Depósito en Cuenta Bancaria", "Vale Vista"], horizontal=True)
 
 # Nota: para pago en efectivo la empresa debe emitir un comprobante firmado por el trabajador como respaldo.
 
@@ -445,7 +445,11 @@ tipo_pago = st.radio("Seleccione Tipo de Pago", ["Efectivo", "Depósito en Cuent
 
 if tipo_pago in ["Depósito en Cuenta Bancaria", "Vale Vista"]:
     data = cargar_hoja("tipo_pagos")
-    bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
+    bancos_lista = [
+        r["tipo_pago"]
+        for r in data 
+        if r["tipo_pago"].strip() and r['tipo_pago'] not in ["Efectivo", "Caja Chica"]
+    ]
     banco = st.selectbox("Seleccione Banco", bancos_lista, index=None, placeholder="Banco")
 
 # === Comentarios ===
