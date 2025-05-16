@@ -458,12 +458,12 @@ if tipo_pago in ["Depósito en Cuenta Bancaria", "Vale Vista"]:
         # Falta:
             # días trabajados por cultivo que será su propia planilla
             # leyes sociales (¿Agregar una por una o como total?)
-    # [trabajador_nombre, trabajador_rut, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
+    # [nombre_trabajador, numero_documento, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
 
 # === Validación ===
 
 # Necesito validar
-[trabajador_nombre, trabajador_rut, cultivos_trabajados, tipo_contrato, sueldo_bruto, gratificaciones, tipo_pago, banco]
+[nombre_trabajador, numero_documento, cultivos_trabajados, tipo_contrato, sueldo_bruto, gratificaciones, tipo_pago, banco]
 
 # TODO: De esta página deberían salir 2 planillas:
             # Una donde aparezca el sueldo completo del trabajador.
