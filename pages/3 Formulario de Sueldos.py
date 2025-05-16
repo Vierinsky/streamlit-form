@@ -176,6 +176,9 @@ def validar_rut(rut: str) -> bool:
 
 st.markdown("### Información del Trabajador")
 
+# Campo para nombre
+nombre_trabajador = st.text_input("Nombre completo del trabajador")
+
 # Tipo de documento
 tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
 
@@ -186,9 +189,6 @@ numero_documento = st.text_input("Número de documento", placeholder="Ej: 12.345
 if tipo_documento == "RUT" and numero_documento:
     if not validar_rut(numero_documento):
         st.warning("⚠️ El RUT ingresado no es válido. Revise el formato y el dígito verificador.")
-
-# Campo para nombre
-nombre_trabajador = st.text_input("Nombre completo del trabajador")
 
 # === Ingrese Fecha ===
 st.divider()
