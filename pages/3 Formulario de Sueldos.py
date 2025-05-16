@@ -525,7 +525,7 @@ if st.button("Guardar Registro"):
             fecha_envio = datetime.now(pytz.timezone('Chile/Continental')).strftime("%d/%m/%Y %H:%M:%S")
             nuevo_id = len(sheet.get_all_values())
 
-            registro = {
+            registro = {                        # TODO: CREAR PLANILLA "sueldos" Y SUS COLUMNAS
                 # "id": nuevo_id,
                 # "fecha_envio": fecha_envio,
                 # "descripcion": descripcion,
