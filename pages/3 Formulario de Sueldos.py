@@ -190,7 +190,10 @@ nombre_trabajador = st.text_input("Nombre completo del trabajador")
 tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
 
 # Campo para ingresar número
-numero_documento = st.text_input("Número de documento", placeholder="Ej: 12.345.678-5")
+numero_documento = st.text_input("Número de documento (Sin puntos ni guión)", placeholder="Ej: 123456785")
+
+# Limpiar formato (estandarización para validaciones y almacenamiento)
+numero_documento_limpio = numero_documento.replace(".", "").replace("-", "").strip().upper()
 
 # === Ingrese Fecha ===
 st.divider()
@@ -465,7 +468,7 @@ comentario = st.text_area(
         # Falta:
             # días trabajados por cultivo que será su propia planilla
             # leyes sociales (¿Agregar una por una o como total?)
-    # [nombre_trabajador, numero_documento, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
+    # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
 
 
 # TODO: De esta página deberían salir 2 planillas:
@@ -485,7 +488,7 @@ if st.button("Guardar Registro"):
     # === Validación ===
 
     # Necesito validar:
-    # [nombre_trabajador, numero_documento, cultivos_trabajados, tipo_contrato, sueldo_bruto, gratificaciones, tipo_pago, banco]
+    # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, gratificaciones, tipo_pago, banco]
    
     errores = []
 
@@ -494,13 +497,13 @@ if st.button("Guardar Registro"):
         errores.append("Debe ingresar el nombre del trabajador.")
 
     # Validar documento
-    if not numero_documento.strip():
+    if not numero_documento_limpio.strip():
         errores.append("Debe ingresar un número de documento.")
-    elif tipo_documento == "RUT" and not validar_rut(numero_documento):
+    elif tipo_documento == "RUT" and not validar_rut(numero_documento_limpio):
         errores.append("El RUT ingresado no es válido.")
 
     # Validación para otros documentos
-    elif tipo_documento in ["Pasaporte", "Otro"] and len(numero_documento.strip()) < 5:
+    elif tipo_documento in ["Pasaporte", "Otro"] and len(numero_documento_limpio.strip()) < 5:
         errores.append("El número de documento parece demasiado corto.")
 
     # Validar cultivo(s)
@@ -545,26 +548,39 @@ if st.button("Guardar Registro"):
             fecha_envio = datetime.now(pytz.timezone('Chile/Continental')).strftime("%d/%m/%Y %H:%M:%S")
             nuevo_id = len(sheet.get_all_values())
 
-            registro = {                        # TODO: CREAR PLANILLA "sueldos" Y SUS COLUMNAS
-                # "id": nuevo_id,
-                # "fecha_envio": fecha_envio,
-                # "descripcion": descripcion,
-                # "valor_bruto": valor_bruto,
-                # "valor_neto": valor_neto,
-                # "iva": iva,
-                # "cultivo": cultivo,
-                # "cliente": cliente,
-                # "numero_folio": numero_folio,
-                # "fecha_ingreso": fecha_ingreso.strftime("%d/%m/%Y"),
-                # "fecha_vencimiento_30": vencimiento_30,
-                # "tipo_pago_30": pago_30,
-                # "fecha_vencimiento_60": vencimiento_60,
+    # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
+
+    # TODO: * CREAR PLANILLA "sueldos" Y SUS COLUMNAS
+    #       * Crear Planilla días trabajados por cultivo y sueldo
+    #           * variables = [cultivos_trabajados, ] COMPLETAR
+
+            afp = leyes.get('afp', 0)
+            salud = leyes.get('salud', 0)
+            cesantia_trabajador = leyes.get('cesantia_trabajador', 0)
+            cesantia_empleador = leyes.get('cesantia_empleador', 0)
+            sis = leyes.get('sis', 0)
+            atep = leyes.get('atep', 0)
+
+            registro = {
+                "id" : nuevo_id,
+                "fecha_envio" : fecha_envio,
+                "nombre" : nombre_trabajador,
+                "numero_documento" : numero_documento_limpio,
+                "fecha_sueldo" : fecha_sueldo,
+                "tipo_contrato" : tipo_contrato,
+                "afp" : afp,
+                "salud" : salud,
+                "cesantia_trabajador" : cesantia_trabajador,
+                "cesantia_empleador" : cesantia_empleador,
+                "sis" : sis,
+                "atep" : atep,
+                "total_llss" : sum([afp, salud, cesantia_trabajador, cesantia_empleador, sis, atep]),
                 # "tipo_pago_60": pago_60,
                 # "fecha_vencimiento_90": vencimiento_90,
                 # "tipo_pago_90": pago_90,
                 # "fecha_vencimiento_120": vencimiento_120,
                 # "tipo_pago_120": pago_120,
-                # "comentarios": comentario
+                "comentarios": comentario
             }
 
             fila_final = [registro.get(col, "") for col in headers]
