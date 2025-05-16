@@ -134,43 +134,47 @@ if st.session_state.get("registro_guardado"):
 
 def validar_rut(rut: str) -> bool:
     """
-    Valida si un RUT chileno es correcto. El RUT puede venir con puntos y guion.
+    Valida un RUT chileno asegurando formato y veracidad del dígito verificador.
 
     Args:
-        rut (str): RUT en formato string. Ejemplo válido: "12.345.678-5"
+        rut (str): RUT ingresado por el usuario. Puede tener puntos y guión (ej. "12.345.678-5").
 
     Returns:
         bool: True si el RUT es válido, False si no lo es.
-    
-    La validación se hace usando el algoritmo del módulo 11, que consiste en:
-    - Multiplicar cada dígito del cuerpo del RUT por factores decrecientes del 2 al 7 (en bucle).
-    - Calcular el resto de la suma de esos productos dividido por 11.
-    - Obtener el dígito verificador y compararlo con el ingresado.
     """
 
-    # 1. Limpiar el RUT: quitar puntos y guion, y convertir a mayúsculas
-    rut = rut.replace(".", "").replace("-", "").upper()
+    # 1. Limpiar el RUT: quitar puntos, guiones, espacios, pasar a mayúsculas
+    rut = rut.replace(".", "").replace("-", "").strip().upper()
 
-    # 2. Verificar que tenga el formato correcto: 7 u 8 dígitos + un dígito o 'K'
-    if not re.match(r'^\d{7,8}[0-9K]$', rut):
+    # 2. Verificar largo mínimo y máximo
+    if len(rut) < 8 or len(rut) > 9:
         return False
 
-    # 3. Separar cuerpo y dígito verificador
-    cuerpo = rut[:-1]
-    verificador = rut[-1]
+    # 3. Separar cuerpo (todo menos último dígito) y dígito verificador (último carácter)
+    cuerpo, dv = rut[:-1], rut[-1]
 
-    # 4. Calcular el dígito verificador usando el algoritmo del módulo 11
+    # 4. Validar que el cuerpo sea numérico
+    if not cuerpo.isdigit():
+        return False
+
+    # 5. Calcular el dígito verificador esperado
     suma = 0
-    multiplicador = 2
-    for d in reversed(cuerpo):
-        suma += int(d) * multiplicador
-        multiplicador = 2 if multiplicador == 7 else multiplicador + 1
+    factor = 2
 
-    resto = 11 - (suma % 11)
-    digito = {11: '0', 10: 'K'}.get(resto, str(resto))
+    for c in reversed(cuerpo):
+        suma += int(c) * factor
+        factor = 2 if factor == 7 else factor + 1  # ciclo: 2→7
 
-    # 5. Comparar el dígito calculado con el ingresado
-    return digito == verificador
+    dv_esperado = 11 - (suma % 11)
+    if dv_esperado == 11:
+        dv_esperado = "0"
+    elif dv_esperado == 10:
+        dv_esperado = "K"
+    else:
+        dv_esperado = str(dv_esperado)
+
+    # 6. Comparar dígito ingresado con el esperado
+    return dv == dv_esperado
 
 # === Formulario: Datos del trabajador ===
 
@@ -184,11 +188,6 @@ tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
 
 # Campo para ingresar número
 numero_documento = st.text_input("Número de documento", placeholder="Ej: 12.345.678-5")
-
-# Validación si es RUT
-if tipo_documento == "RUT" and numero_documento:
-    if not validar_rut(numero_documento):
-        st.warning("⚠️ El RUT ingresado no es válido. Revise el formato y el dígito verificador.")
 
 # === Ingrese Fecha ===
 st.divider()
@@ -461,10 +460,6 @@ comentario = st.text_area(
             # leyes sociales (¿Agregar una por una o como total?)
     # [nombre_trabajador, numero_documento, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
 
-# === Validación ===
-
-# Necesito validar
-# [nombre_trabajador, numero_documento, cultivos_trabajados, tipo_contrato, sueldo_bruto, gratificaciones, tipo_pago, banco]
 
 # TODO: De esta página deberían salir 2 planillas:
             # Una donde aparezca el sueldo completo del trabajador.
@@ -477,44 +472,91 @@ comentario = st.text_area(
 # if "registro_guardado" not in st.session_state:
 #     st.session_state["registro_guardado"] = False
 
-# if st.button("Guardar Registro"):
-    # ——— INICIO SECCIÓN DE VALIDACIÓN ———
-    # errores = []
-
-    # # 1) Campos generales obligatorios
-    # if not descripcion.strip():
-    #     errores.append("La descripción del gasto es obligatoria.")
-    # if valor_bruto <= 0:
-    #     errores.append("El valor bruto debe ser mayor que cero.")
-    # if not ceco:
-    #     errores.append("Debe seleccionar un Centro de Costos.")
-
-    # else:
-    #     # Si todo está en orden se procede a agregar los datos a la planilla
-
-    #     def preparar_registro(sheet_name):
-    #         """
-    #         Prepara una hoja específica de Google Sheets para registrar un nuevo dato.
-
-    #         Args:
-    #             sheet_name (str): Nombre de la hoja.
-
-    #         Returns:
-    #             sheet (gspread.Worksheet): Objeto Worksheet correspondiente.
-    #             headers (list): Lista de nombres de columna.
-    #             nuevo_index (int): Número de fila a insertar (sin contar encabezado).
-    #             fecha_hora_actual (str): Timestamp en formato %d/%m/%Y %H:%M:%S.
-    #         """
-    #         sheet = get_fresh_spreadsheet().worksheet(sheet_name)
-    #         headers = sheet.row_values(1)
-
-    #         zona_horaria_chile = pytz.timezone('Chile/Continental')
-    #         fecha_hora_actual = datetime.now(zona_horaria_chile).strftime("%d/%m/%Y %H:%M:%S")
-    #         nuevo_index = len(sheet.get_all_values())
-
-    #         return sheet, headers, nuevo_index, fecha_hora_actual
-
 # === Botón de guardado ===
+
+if st.button("Guardar Registro"):
+    # === Validación ===
+
+    # Necesito validar:
+    # [nombre_trabajador, numero_documento, cultivos_trabajados, tipo_contrato, sueldo_bruto, gratificaciones, tipo_pago, banco]
+   
+    errores = []
+
+    # Validar nombre
+    if not nombre_trabajador.strip():
+        errores.append("Debe ingresar el nombre del trabajador.")
+
+    # Validar documento
+    if not numero_documento.strip():
+        errores.append("Debe ingresar un número de documento.")
+    elif tipo_documento == "RUT" and not validar_rut(numero_documento):
+        errores.append("El RUT ingresado no es válido.")
+
+    # Validar cultivo(s)
+    if not cultivos_trabajados:
+        errores.append("Debe seleccionar al menos un cultivo trabajado.")
+
+    # Validar tipo de contrato
+    if not tipo_contrato:
+        errores.append("Debe seleccionar el tipo de contrato.")
+
+    # Validar sueldo bruto
+    if sueldo_bruto <= 0:
+        errores.append("El sueldo bruto debe ser mayor a 0.")
+
+    # Validar gratificaciones
+    if gratificaciones < 0:
+        errores.append("Las gratificaciones no pueden ser negativas.")
+
+    # Validar tipo de pago
+    if not tipo_pago:
+        errores.append("Debe seleccionar una forma de pago.")
+
+    # Validar banco si el pago no es en efectivo
+    if tipo_pago != "Efectivo" and not banco:
+        errores.append("Debe seleccionar un banco para pagos que no sean en efectivo.")
+
+    if errores:
+        for err in errores: st.warning(err)
+    else:
+        try:
+            sheet = spreadsheet.worksheet("sueldos")
+            headers = sheet.row_values(1)
+            fecha_envio = datetime.now(pytz.timezone('Chile/Continental')).strftime("%d/%m/%Y %H:%M:%S")
+            nuevo_id = len(sheet.get_all_values())
+
+            registro = {
+                # "id": nuevo_id,
+                # "fecha_envio": fecha_envio,
+                # "descripcion": descripcion,
+                # "valor_bruto": valor_bruto,
+                # "valor_neto": valor_neto,
+                # "iva": iva,
+                # "cultivo": cultivo,
+                # "cliente": cliente,
+                # "numero_folio": numero_folio,
+                # "fecha_ingreso": fecha_ingreso.strftime("%d/%m/%Y"),
+                # "fecha_vencimiento_30": vencimiento_30,
+                # "tipo_pago_30": pago_30,
+                # "fecha_vencimiento_60": vencimiento_60,
+                # "tipo_pago_60": pago_60,
+                # "fecha_vencimiento_90": vencimiento_90,
+                # "tipo_pago_90": pago_90,
+                # "fecha_vencimiento_120": vencimiento_120,
+                # "tipo_pago_120": pago_120,
+                # "comentarios": comentario
+            }
+
+            fila_final = [registro.get(col, "") for col in headers]
+            sheet.append_row(fila_final)
+            st.session_state["registro_guardado"] = True
+            st.toast("Registro guardado con éxito", icon="✅")
+            st.markdown("""
+                <meta http-equiv="refresh" content="0">
+            """, unsafe_allow_html=True)
+        
+        except Exception as e:
+            st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
 
 # 1. Ingrese sueldo bruto
 #       - Que muestre desglose.
