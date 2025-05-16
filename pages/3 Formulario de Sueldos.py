@@ -180,6 +180,9 @@ def validar_rut(rut: str) -> bool:
 
 st.markdown("### Información del Trabajador")
 
+# TODO: Agregar funcionalidad de trabajador existente?
+            # Para esto necesitaría crear una base de datos de trabajadores.
+
 # Campo para nombre
 nombre_trabajador = st.text_input("Nombre completo del trabajador")
 
@@ -492,9 +495,22 @@ if st.button("Guardar Registro"):
     elif tipo_documento == "RUT" and not validar_rut(numero_documento):
         errores.append("El RUT ingresado no es válido.")
 
+    # Validación para otros documentos
+    elif tipo_documento in ["Pasaporte", "Otro"] and len(numero_documento.strip()) < 5:
+        errores.append("El número de documento parece demasiado corto.")
+
     # Validar cultivo(s)
     if not cultivos_trabajados:
         errores.append("Debe seleccionar al menos un cultivo trabajado.")
+    
+    # Valida que total de días trabajados sea mayor a 0
+    total_dias = sum(dias_por_cultivo.values())
+    if total_dias <= 0:
+        errores.append("Debe ingresar al menos un día trabajado en algún cultivo.")
+
+    # Validar que campos de días no esten en blanco
+    if any(dias <= 0 for dias in dias_por_cultivo.values()):
+        errores.append("Debe ingresar días válidos para cada cultivo seleccionado.")
 
     # Validar tipo de contrato
     if not tipo_contrato:
