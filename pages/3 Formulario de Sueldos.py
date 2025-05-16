@@ -426,13 +426,6 @@ if not df_dias_por_cultivo.empty and "Días" in df_dias_por_cultivo.columns:
         st.markdown("### Resumen sueldo y días trabajados por cultivo")
         st.table(df_display_dias_cultivo)
 
-# === Comentarios ===
-# Comentario opcional del usuario
-st.divider()
-comentario = st.text_area(
-    "Comentario (opcional)", 
-    placeholder="Agregue una nota o comentario"
-)
 # === Tipo de Pago y Banco ===
 
 # Con que banco se paga
@@ -452,6 +445,14 @@ if tipo_pago in ["Depósito en Cuenta Bancaria", "Vale Vista"]:
     data = cargar_hoja("tipo_pagos")
     bancos_lista = [r["tipo_pago"] for r in data if r["tipo_pago"].strip()]
     banco = st.selectbox("Seleccione Banco", bancos_lista, index=None, placeholder="Banco")
+
+# === Comentarios ===
+# Comentario opcional del usuario
+st.divider()
+comentario = st.text_area(
+    "Comentario (opcional)", 
+    placeholder="Agregue una nota o comentario"
+)
 
 # IMPORTANTE
     # COMPLETAR LO QUE IRÁ EN LA PLANILLA
