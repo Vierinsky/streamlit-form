@@ -463,7 +463,7 @@ if tipo_pago in ["Depósito en Cuenta Bancaria", "Vale Vista"]:
 # === Validación ===
 
 # Necesito validar
-[nombre_trabajador, numero_documento, cultivos_trabajados, tipo_contrato, sueldo_bruto, gratificaciones, tipo_pago, banco]
+# [nombre_trabajador, numero_documento, cultivos_trabajados, tipo_contrato, sueldo_bruto, gratificaciones, tipo_pago, banco]
 
 # TODO: De esta página deberían salir 2 planillas:
             # Una donde aparezca el sueldo completo del trabajador.
