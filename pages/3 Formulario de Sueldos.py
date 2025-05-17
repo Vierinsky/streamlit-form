@@ -565,7 +565,7 @@ if st.button("Guardar Registro"):
                 "id" : nuevo_id,
                 "fecha_envio" : fecha_envio,
                 "nombre" : nombre_trabajador,
-                "" : tipo_documento,
+                "tipo_documento" : tipo_documento,
                 "numero_documento" : numero_documento_limpio,
                 "fecha_sueldo" : fecha_sueldo,
                 "tipo_contrato" : tipo_contrato,
