@@ -554,17 +554,18 @@ if st.button("Guardar Registro"):
     #       * Crear Planilla días trabajados por cultivo y sueldo
     #           * variables = [cultivos_trabajados, ] COMPLETAR
 
-            afp = leyes.get('afp', 0)
-            salud = leyes.get('salud', 0)
-            cesantia_trabajador = leyes.get('cesantia_trabajador', 0)
-            cesantia_empleador = leyes.get('cesantia_empleador', 0)
-            sis = leyes.get('sis', 0)
-            atep = leyes.get('atep', 0)
+            afp = round(leyes.get('afp', 0))
+            salud = round(leyes.get('salud', 0))
+            cesantia_trabajador = round(leyes.get('cesantia_trabajador', 0))
+            cesantia_empleador = round(leyes.get('cesantia_empleador', 0))
+            sis = round(leyes.get('sis', 0))
+            atep = round(leyes.get('atep', 0))
 
             registro = {
                 "id" : nuevo_id,
                 "fecha_envio" : fecha_envio,
                 "nombre" : nombre_trabajador,
+                "" : tipo_documento,
                 "numero_documento" : numero_documento_limpio,
                 "fecha_sueldo" : fecha_sueldo,
                 "tipo_contrato" : tipo_contrato,
@@ -575,11 +576,12 @@ if st.button("Guardar Registro"):
                 "sis" : sis,
                 "atep" : atep,
                 "total_llss" : sum([afp, salud, cesantia_trabajador, cesantia_empleador, sis, atep]),
-                # "tipo_pago_60": pago_60,
-                # "fecha_vencimiento_90": vencimiento_90,
-                # "tipo_pago_90": pago_90,
-                # "fecha_vencimiento_120": vencimiento_120,
-                # "tipo_pago_120": pago_120,
+                "gratificaciones": gratificaciones,
+                "sueldo_neto": sueldo_neto,
+                "sueldo_bruto": sueldo_bruto,
+                "remuneracion_total": remuneracion_total,
+                "tipo_pago" : tipo_pago,
+                "banco": banco,
                 "comentarios": comentario
             }
 
