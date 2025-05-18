@@ -568,6 +568,8 @@ if st.button("Guardar Registro"):
                 "tipo_documento" : tipo_documento,
                 "numero_documento" : numero_documento_limpio,
                 "fecha_sueldo" : fecha_sueldo,
+                "total_dias_trabajados" : total_dias,
+                "cultivos_trabajados" : cultivos_trabajados,
                 "tipo_contrato" : tipo_contrato,
                 "afp" : afp,
                 "salud" : salud,
