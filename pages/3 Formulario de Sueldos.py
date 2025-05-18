@@ -550,10 +550,10 @@ if st.button("Guardar Registro"):
 
     # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
 
-    # TODO: * CREAR PLANILLA "sueldos" Y SUS COLUMNAS
-    #       * Crear Planilla días trabajados por cultivo y sueldo
-    #           * variables = [cultivos_trabajados, ] COMPLETAR
-
+    # TODO: * Crear "sueldos_por_cultivo"
+    #           * Columnas = [id_trabajador,nombre,numero_documento,fecha_sueldo,cultivo,dias_trabajados,remuneracion_cultivo] 
+    #           * id_trabajador debería ser igual a una columna que se llame "id_trabajador" en "sueldos" que a su vez reconozca si se ingresa un trabajador ingresado anteriormente
+    #               Para lo cual se necesitaría una base de datos de trabajadores.
             afp = round(leyes.get('afp', 0))
             salud = round(leyes.get('salud', 0))
             cesantia_trabajador = round(leyes.get('cesantia_trabajador', 0))
