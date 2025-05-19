@@ -543,10 +543,10 @@ if st.button("Guardar Registro"):
         for err in errores: st.warning(err)
     else:
         try:
-            sheet = spreadsheet.worksheet("sueldos")
-            headers = sheet.row_values(1)
+            sheet_sueldos = spreadsheet.worksheet("sueldos")
+            headers_sueldos = sheet_sueldos.row_values(1)
             fecha_envio = datetime.now(pytz.timezone('Chile/Continental')).strftime("%d/%m/%Y %H:%M:%S")
-            nuevo_id = len(sheet.get_all_values())
+            nuevo_id = len(sheet_sueldos.get_all_values())
 
     # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
 
@@ -561,9 +561,10 @@ if st.button("Guardar Registro"):
             sis = round(leyes.get('sis', 0))
             atep = round(leyes.get('atep', 0))
 
-            registro = {
+            registro_sueldos = {
                 "id" : nuevo_id,
                 "fecha_envio" : fecha_envio,
+                # "id_trabajador": id_trabajador,
                 "nombre" : nombre_trabajador,
                 "tipo_documento" : tipo_documento,
                 "numero_documento" : numero_documento_limpio,
@@ -587,8 +588,20 @@ if st.button("Guardar Registro"):
                 "comentarios": comentario
             }
 
-            fila_final = [registro.get(col, "") for col in headers]
-            sheet.append_row(fila_final)
+            fila_final = [registro_sueldos.get(col, "") for col in headers_sueldos]
+            sheet_sueldos.append_row(fila_final)
+
+            # === Guardar en hoja "sueldos_por_cultivo" ===
+
+            sheet_cultivo = spreadsheet.worksheet("sueldos_por_cultivo")
+            headers_cultivo = sheet_cultivo.row_values(1)
+            nuevo_id = len(sheet_cultivo.get_all_values())
+
+            registro_cultivo = {
+                "id" : nuevo_id,
+                # COMPLETAR
+            }
+
             st.session_state["registro_guardado"] = True
             st.toast("Registro guardado con éxito", icon="✅")
             st.markdown("""
