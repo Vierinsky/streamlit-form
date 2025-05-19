@@ -543,17 +543,66 @@ if st.button("Guardar Registro"):
         for err in errores: st.warning(err)
     else:
         try:
+
+            def obtener_o_crear_id_trabajador(nombre: str, numero_documento: str, tipo_documento: str, spreadsheet) -> int:
+                """
+                Busca si un trabajador ya existe en la hoja 'trabajadores' por su número de documento.
+                Si lo encuentra, devuelve su id_trabajador. Si no, lo agrega como nuevo y retorna el nuevo ID asignado.
+                
+                Esta versión no depende del orden de las columnas en la hoja, siempre que existan las siguientes:
+                'id_trabajador', 'nombre', 'numero_documento', 'tipo_documento'.
+
+                Args:
+                    nombre (str): Nombre completo del trabajador.
+                    numero_documento (str): Número de documento (sin puntos ni guión en el caso del RUT).
+                    tipo_documento (str): Tipo de documento ('RUT', 'Pasaporte', etc).
+                    spreadsheet (gspread.Spreadsheet): Conexión activa al archivo de Google Sheets.
+
+                Returns:
+                    int: El ID único del trabajador.
+                """
+                hoja = spreadsheet.worksheet("trabajadores")
+                registros = hoja.get_all_records()
+                headers = hoja.row_values(1)
+
+                # Buscar si ya existe el trabajador por número de documento
+                for fila in registros:
+                    if str(fila.get("numero_documento", "")).strip() == numero_documento.strip():
+                        return int(fila.get("id_trabajador"))
+
+                # Si no existe, crear un nuevo ID (siguiente fila disponible)
+                nuevo_id = len(registros) + 1
+
+                fila_dict = {
+                    "id_trabajador": nuevo_id,
+                    "nombre": nombre.strip(),
+                    "numero_documento": numero_documento.strip(),
+                    "tipo_documento": tipo_documento.strip()
+                }
+
+                # Armar la fila en el orden correcto de los headers
+                nueva_fila = [fila_dict.get(col, "") for col in headers]
+                hoja.append_row(nueva_fila)
+
+                return nuevo_id
+
+
             sheet_sueldos = spreadsheet.worksheet("sueldos")
             headers_sueldos = sheet_sueldos.row_values(1)
             fecha_envio = datetime.now(pytz.timezone('Chile/Continental')).strftime("%d/%m/%Y %H:%M:%S")
             nuevo_id = len(sheet_sueldos.get_all_values())
+            id_trabajador = obtener_o_crear_id_trabajador(nombre_trabajador, numero_documento_limpio, tipo_documento)
 
     # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
 
-    # TODO: * Crear "sueldos_por_cultivo"
-    #           * Columnas = [id_trabajador,nombre,numero_documento,fecha_sueldo,cultivo,dias_trabajados,remuneracion_cultivo] 
+    # TODO: * Crear "sueldos_por_cultivo":
+    #           * Columnas = [id_trabajador,nombre_trabajador,numero_documento,fecha_sueldo,cultivo,dias_trabajados,remuneracion_cultivo] 
     #           * id_trabajador debería ser igual a una columna que se llame "id_trabajador" en "sueldos" que a su vez reconozca si se ingresa un trabajador ingresado anteriormente
     #               Para lo cual se necesitaría una base de datos de trabajadores.
+    #       * Crear "trabajadores":
+    #           * Columnas: [id_trabajador,nombre_trabajador, tipo_documento, numero_documento]
+    #           * Puede que se necesite agregar nuevas columnas según necesidades de la empresa
+
             afp = round(leyes.get('afp', 0))
             salud = round(leyes.get('salud', 0))
             cesantia_trabajador = round(leyes.get('cesantia_trabajador', 0))
@@ -564,8 +613,8 @@ if st.button("Guardar Registro"):
             registro_sueldos = {
                 "id" : nuevo_id,
                 "fecha_envio" : fecha_envio,
-                # "id_trabajador": id_trabajador,
-                "nombre" : nombre_trabajador,
+                "id_trabajador": id_trabajador,
+                "nombre_trabajador" : nombre_trabajador,
                 "tipo_documento" : tipo_documento,
                 "numero_documento" : numero_documento_limpio,
                 "fecha_sueldo" : fecha_sueldo,
@@ -597,9 +646,17 @@ if st.button("Guardar Registro"):
             headers_cultivo = sheet_cultivo.row_values(1)
             nuevo_id = len(sheet_cultivo.get_all_values())
 
+            for cultivo, dias in dias_por_cultivo.items():
+                proporcion = dias / total_dias if total_dias > 0 else 0
+                remuneracion_cultivo = round(remuneracion_total * proporcion)
+
             registro_cultivo = {
                 "id" : nuevo_id,
-                # COMPLETAR
+                "id_trabajador" : id_trabajador,  # Debería ser el mismo que en la planilla sueldos. Para lo cual quizás haya que generar una planilla de empleados.
+                "fecha_sueldo" : fecha_sueldo,
+                "cultivo" : cultivo,
+                "dias_trabajados" : dias,
+                "remuneracion_cultivo" : remuneracion_cultivo
             }
 
             st.session_state["registro_guardado"] = True
