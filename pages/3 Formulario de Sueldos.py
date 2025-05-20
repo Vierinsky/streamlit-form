@@ -669,16 +669,20 @@ if st.button("Guardar Registro"):
 
             for cultivo, dias in dias_por_cultivo.items():
                 proporcion = dias / total_dias if total_dias > 0 else 0
-                remuneracion_cultivo = round(remuneracion_total * proporcion)
+                remuneracion_cultivo = round(remuneracion_total * proporcion)       # REVISAR SI SE GUARDA LA SUMA CORRECTA
 
-            registro_cultivo = {
-                "id" : nuevo_id,
-                "id_trabajador" : id_trabajador,  # Debería ser el mismo que en la planilla sueldos. Para lo cual quizás haya que generar una planilla de empleados.
-                "fecha_sueldo" : fecha_sueldo,
-                "cultivo" : cultivo,
-                "dias_trabajados" : dias,
-                "remuneracion_cultivo" : remuneracion_cultivo
-            }
+                registro_cultivo = {
+                    "id": nuevo_id,
+                    "id_trabajador": id_trabajador,
+                    "fecha_sueldo": fecha_sueldo,
+                    "cultivo": cultivo,
+                    "dias_trabajados": dias,
+                    "remuneracion_cultivo": remuneracion_cultivo
+                }
+
+                fila = [registro_cultivo.get(col, "") for col in headers_cultivo]
+                sheet_cultivo.append_row(fila)
+                nuevo_id += 1  # Para que cada fila tenga un ID único
 
             st.session_state["registro_guardado"] = True
             st.toast("Registro guardado con éxito", icon="✅")
@@ -688,19 +692,3 @@ if st.button("Guardar Registro"):
         
         except Exception as e:
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
-
-# 1. Ingrese sueldo bruto
-#       - Que muestre desglose.
-#       - Que permita dividir el sueldo según días trabajados en x cultivo.
-#       - Que se agregue nombre del trabajador. 
-
-# 2. Desea agregar Gratificaciones?
-
-# Nota: 
-#   ¿Debe haber sección banco también?
-#   ¿Si se tiene a un trabajador contratado se debe auto agregar todos los meses su sueldo?
-#   ¿Se necesita info más detallada del trabajador? Ej: RUT u otros.
-
-# 3. Mostrar resúmen
-# 4. Sección "Comentario"
-# 4. Enviar formulario
