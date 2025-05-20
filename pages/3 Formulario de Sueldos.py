@@ -189,7 +189,7 @@ st.markdown("### Información del Trabajador")
 # Carga la lista de trabajadores desde Google Sheets
 df_trabajadores = cargar_dataframe("trabajadores")
 # Crea una lista de texto con formato "nombre - número_documento"
-lista_trabajadores = df_trabajadores["nombre"] + " - " + df_trabajadores["numero_documento"]
+lista_trabajadores = df_trabajadores["nombre_trabajador"] + " - " + df_trabajadores["numero_documento"]
 # Agrega una opción para registrar uno nuevo
 lista_trabajadores = ["Nuevo trabajador"] + lista_trabajadores.tolist()
 
