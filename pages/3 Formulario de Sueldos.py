@@ -183,14 +183,35 @@ st.markdown("### Información del Trabajador")
 # TODO: Agregar funcionalidad de trabajador existente?
             # Para esto necesitaría crear una base de datos de trabajadores.
 
-# Campo para nombre
-nombre_trabajador = st.text_input("Nombre completo del trabajador")
+# # Campo para nombre
+# nombre_trabajador = st.text_input("Nombre completo del trabajador")
 
-# Tipo de documento
-tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
+# # Tipo de documento
+# tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
 
-# Campo para ingresar número
-numero_documento = st.text_input("Número de documento (Sin puntos ni guión)", placeholder="Ej: 123456785")
+# # Campo para ingresar número
+# numero_documento = st.text_input("Número de documento (Sin puntos ni guión)", placeholder="Ej: 123456785")
+
+# Carga la lista de trabajadores desde Google Sheets
+df_trabajadores = cargar_dataframe("trabajadores")
+# Crea una lista de texto con formato "nombre - número_documento"
+lista_trabajadores = df_trabajadores["nombre"] + " - " + df_trabajadores["numero_documento"]
+# Agrega una opción para registrar uno nuevo
+lista_trabajadores = ["Nuevo trabajador"] + lista_trabajadores.tolist()
+
+# Selectbox para que el usuario elija
+seleccion = st.selectbox("Seleccione trabajador", options=lista_trabajadores)
+
+if seleccion == "Nuevo trabajador":
+    nombre_trabajador = st.text_input("Nombre del trabajador")
+    numero_documento = st.text_input("Número de documento (sin puntos ni guión)")
+    tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
+else:
+    datos = seleccion.split(" - ")
+    nombre_trabajador = datos[0]
+    numero_documento = datos[1]
+    tipo_documento = df_trabajadores[df_trabajadores["numero_documento"] == numero_documento]["tipo_documento"].values[0]
+
 
 # Limpiar formato (estandarización para validaciones y almacenamiento)
 numero_documento_limpio = numero_documento.replace(".", "").replace("-", "").strip().upper()
