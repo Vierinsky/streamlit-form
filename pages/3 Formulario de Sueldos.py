@@ -589,8 +589,6 @@ if st.button("Guardar Registro"):
             nuevo_id = len(sheet_sueldos.get_all_values())
             id_trabajador = obtener_o_crear_id_trabajador(nombre_trabajador, numero_documento_limpio, tipo_documento)
 
-    # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
-
     # TODO: * Crear "sueldos_por_cultivo":
     #           * Columnas = [id_trabajador,nombre_trabajador,numero_documento,fecha_sueldo,cultivo,dias_trabajados,remuneracion_cultivo] 
     #           * id_trabajador debería ser igual a una columna que se llame "id_trabajador" en "sueldos" que a su vez reconozca si se ingresa un trabajador ingresado anteriormente
