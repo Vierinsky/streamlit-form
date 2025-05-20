@@ -187,14 +187,15 @@ st.markdown("### Información del Trabajador")
 # numero_documento = st.text_input("Número de documento (Sin puntos ni guión)", placeholder="Ej: 123456785")
 
 # Carga la lista de trabajadores desde Google Sheets
-# df_trabajadores = cargar_dataframe("trabajadores")
-raw_data = get_fresh_spreadsheet().worksheet("trabajadores").get_all_values()
-st.write("🧪 Datos crudos:", raw_data)
-# st.write("🧪 Columnas detectadas:", df_trabajadores.columns.tolist())
-# Crea una lista de texto con formato "nombre - número_documento"
-lista_trabajadores = df_trabajadores["nombre_trabajador"] + " - " + df_trabajadores["numero_documento"]
-# Agrega una opción para registrar uno nuevo
-lista_trabajadores = ["Nuevo trabajador"] + lista_trabajadores.tolist()
+df_trabajadores = cargar_dataframe("trabajadores")
+
+if df_trabajadores.empty:
+    st.warning("⚠️ No hay trabajadores registrados aún. Ingrese un nuevo trabajador.")
+    lista_trabajadores = ["Nuevo trabajador"]
+else:
+    # Crea una lista de texto con formato "nombre - número_documento"
+    # Agrega una opción para registrar uno nuevo
+    lista_trabajadores = ["Nuevo trabajador"] + (df_trabajadores["nombre_trabajador"] + " - " + df_trabajadores["numero_documento"]).tolist()
 
 # Selectbox para que el usuario elija
 seleccion = st.selectbox("Seleccione trabajador", options=lista_trabajadores)
