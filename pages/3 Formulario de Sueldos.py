@@ -190,6 +190,7 @@ st.markdown("### Información del Trabajador")
 df_trabajadores = cargar_dataframe("trabajadores")
 
 if df_trabajadores.empty:
+    # Envía mensaje en caso de que en planilla "trabajadores" no haya ningún trabajador registrado 
     st.warning("⚠️ No hay trabajadores registrados aún. Ingrese un nuevo trabajador.")
     lista_trabajadores = ["Nuevo trabajador"]
 else:
