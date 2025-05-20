@@ -203,8 +203,9 @@ seleccion = st.selectbox("Seleccione trabajador", options=lista_trabajadores)
 
 if seleccion == "Nuevo trabajador":
     nombre_trabajador = st.text_input("Nombre del trabajador")
-    numero_documento = st.text_input("Número de documento (sin puntos ni guión)")
     tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
+    numero_documento = st.text_input("Número de documento (sin puntos ni guión)")
+    
 else:
     datos = seleccion.split(" - ")
     nombre_trabajador = datos[0]
@@ -592,7 +593,7 @@ if st.button("Guardar Registro"):
             headers_sueldos = sheet_sueldos.row_values(1)
             fecha_envio = datetime.now(pytz.timezone('Chile/Continental')).strftime("%d/%m/%Y %H:%M:%S")
             nuevo_id = len(sheet_sueldos.get_all_values())
-            id_trabajador = obtener_o_crear_id_trabajador(nombre_trabajador, numero_documento_limpio, tipo_documento)
+            id_trabajador = obtener_o_crear_id_trabajador(nombre_trabajador, numero_documento_limpio, tipo_documento,spreadsheet)
 
     # TODO: * Crear "sueldos_por_cultivo":
     #           * Columnas = [id_trabajador,nombre_trabajador,numero_documento,fecha_sueldo,cultivo,dias_trabajados,remuneracion_cultivo] 
