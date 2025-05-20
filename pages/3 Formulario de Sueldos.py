@@ -1,8 +1,5 @@
 # Formulario de Sueldos
 
-# TODO:
-#   - En la división de días y sueldo por cultivo ¿Se puede decidir a que cultivo se le asigna que suma de dinero?
-
 from datetime import datetime
 from google.oauth2.service_account import Credentials
 import gspread
@@ -179,9 +176,6 @@ def validar_rut(rut: str) -> bool:
 # === Formulario: Datos del trabajador ===
 
 st.markdown("### Información del Trabajador")
-
-# TODO: Agregar funcionalidad de trabajador existente?
-            # Para esto necesitaría crear una base de datos de trabajadores.
 
 # # Campo para nombre
 # nombre_trabajador = st.text_input("Nombre completo del trabajador")
@@ -484,25 +478,6 @@ comentario = st.text_area(
     placeholder="Agregue una nota o comentario"
 )
 
-# IMPORTANTE
-    # COMPLETAR LO QUE IRÁ EN LA PLANILLA
-        # Falta:
-            # días trabajados por cultivo que será su propia planilla
-            # leyes sociales (¿Agregar una por una o como total?)
-    # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
-
-
-# TODO: De esta página deberían salir 2 planillas:
-            # Una donde aparezca el sueldo completo del trabajador.
-            # Otra donde aparezca el sueldo dividido por cultivo trabajado.
-                # (¿Es necesario esto? Quizás baste con un DataFrame que sea utilizado por dentro por los gráficos)
-
-#   MODIFICAR A LA REALIDAD DEL FORMULARIO DE SUELDOS.
-
-# # Inicializar estado si no existe
-# if "registro_guardado" not in st.session_state:
-#     st.session_state["registro_guardado"] = False
-
 # === Botón de guardado ===
 
 if st.button("Guardar Registro"):
@@ -692,3 +667,9 @@ if st.button("Guardar Registro"):
         
         except Exception as e:
             st.error(f"❌ Error al guardar el registro en Google Sheets: {e}")
+
+# Variables de columnas de planilla "sueldos":
+    # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
+
+# TODO:
+#   - En la división de días y sueldo por cultivo ¿Se puede decidir a que cultivo se le asigna que suma de dinero?
