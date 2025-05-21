@@ -196,7 +196,7 @@ if df_trabajadores.empty:
 else:
     # Crea una lista de texto con formato "nombre - número_documento"
     # Agrega una opción para registrar uno nuevo
-    lista_trabajadores = ["Nuevo trabajador"] + (df_trabajadores["nombre_trabajador"] + " - " + df_trabajadores["numero_documento"]).tolist()
+    lista_trabajadores = ["Nuevo trabajador"] + (df_trabajadores["nombre_trabajador"].astype(str) + " - " + df_trabajadores["numero_documento"].astype(str)).tolist()
 
 # Selectbox para que el usuario elija
 seleccion = st.selectbox("Seleccione trabajador", options=lista_trabajadores)
