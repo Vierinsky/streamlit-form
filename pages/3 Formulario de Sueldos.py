@@ -296,9 +296,9 @@ datos = [{"Cultivo": cultivo, "Días": dias} for cultivo, dias in dias_por_culti
 # Armando dataframe para días trabajados por cultivo
 df_dias_por_cultivo = pd.DataFrame(datos)
 
-if dias_por_cultivo != {}:
-    st.markdown("### Resúmen días trabajados por cultivo")
-    st.table(df_dias_por_cultivo)
+# if dias_por_cultivo != {}:
+#     st.markdown("### Resúmen días trabajados por cultivo")
+#     st.table(df_dias_por_cultivo)
 
 # === Sueldo Bruto ===
 st.divider()
