@@ -653,6 +653,7 @@ if st.button("Guardar Registro"):
                 registro_cultivo = {
                     "id": nuevo_id,
                     "id_trabajador": id_trabajador,
+                    "nombre_trabajador" : nombre_trabajador,
                     "fecha_sueldo": fecha_sueldo,
                     "cultivo": cultivo,
                     "dias_trabajados": dias,
