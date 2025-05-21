@@ -226,7 +226,7 @@ fecha_sueldo = st.date_input(
     "Ingrese Fecha en que se realiza el pago",
     value=fecha_hoy_chile,
     format="DD/MM/YYYY"
-)
+).strftime("%d/%m/%Y")
 
 # === Días trabajados por cultivo / Ceco ===
 
