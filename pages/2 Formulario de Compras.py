@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from google.oauth2.service_account import Credentials
 import gspread
+import holidays
 import json
 import os
 import pytz
@@ -438,45 +439,27 @@ fecha_emision = st.date_input(
 
 # Para definir fecha de vencimiento del pago (30, 60, 120 días)
 
-def fecha_vencimiento_input(dias):
+feriados_chile = holidays.CL()  # CL = Chile
+
+def calcular_fecha_habil(fecha_inicio: datetime.date, dias_habiles: int) -> datetime.date:
     """
-    Muestra un selector de vencimiento para un plazo determinado.
-
-    Ofrece tres opciones:
-      - "Establecer fecha": despliega un date_input y devuelve la fecha seleccionada como string en formato "DD/MM/YYYY".
-      - "Por definir": devuelve la cadena "Por definir".
-      - "No aplica": devuelve la cadena "N/A".
-
-    Esta función se usa para capturar la fecha de vencimiento de una factura según distintos plazos (30, 60, 90, 120 días).
-
-    Args:
-        dias (int): Plazo en días para el vencimiento (por ejemplo, 30, 60, 90, 120).
-
-    Returns:
-        str: Una de las siguientes opciones:
-            - Fecha como string en formato "DD/MM/YYYY"
-            - "Por definir"
-            - "N/A"
+    Suma días hábiles a una fecha base, excluyendo fines de semana y feriados chilenos.
     """
-    opciones = ["Establecer fecha", "No aplica", "Por definir"]
-    eleccion = st.radio(f"**Vencimiento a {dias} días:**", opciones, key=f"radio_venc_{dias}")
-    fecha_hoy_chile = datetime.now(pytz.timezone('Chile/Continental')).date()
+    fecha = fecha_inicio
+    contador = 0
+    while contador < dias_habiles:
+        fecha += timedelta(days=1)
+        if fecha.weekday() < 5 and fecha not in feriados_chile:  # lunes a viernes sin feriados
+            contador += 1
+    return fecha
 
-
-    if eleccion == "Establecer fecha":
-        # Fecha sugerida = fecha hoy + dias
-        fecha_sugerida = fecha_hoy_chile + timedelta(days=dias) # Sugiere una fecha x días más a la de hoy
-        fecha = st.date_input(
-            f"Elija la fecha para {dias} días",
-            value=fecha_sugerida,
-            key=f"fecha_venc_{dias}",
-            format="DD/MM/YYYY"
-        )
-        return fecha.strftime("%d/%m/%Y")
-    elif eleccion == "Por definir":
-        return "Por definir"
-    else:  # "No aplica"
-        return "N/A"
+def fecha_vencimiento_automatica(dias: int, fecha_base: datetime.date) -> str:
+    """
+    Calcula y muestra la fecha de vencimiento automáticamente a X días hábiles.
+    """
+    fecha_final = calcular_fecha_habil(fecha_base, dias)
+    st.write(f"📅 **Vencimiento a {dias} días hábiles:** {fecha_final.strftime('%d/%m/%Y')}")
+    return fecha_final.strftime("%d/%m/%Y")
     
 def pago_input(vencimiento, dias):
     """
@@ -524,9 +507,12 @@ def pago_input(vencimiento, dias):
 
 st.markdown("### Vencimiento Factura")
 
+# TODO: Agregar if statement para ver si se pago o no con credito:
+            # si se pagó con credito preguntar a cuantos días y desplegar custionarios apropiados.
+
 # st.markdown("**Vencimiento a 30 días**")
 
-vencimiento_30  = fecha_vencimiento_input(30)
+vencimiento_30 = fecha_vencimiento_automatica(30, fecha_emision)
 pago_30 = pago_input(vencimiento_30, 30)
 
 st.write("Selección vencimiento 30 días:", vencimiento_30)
@@ -536,7 +522,7 @@ st.divider()
 
 # st.markdown("**Vencimiento a 60 días**")
 
-vencimiento_60  = fecha_vencimiento_input(60)
+vencimiento_60 = fecha_vencimiento_automatica(60, fecha_emision)
 pago_60 = pago_input(vencimiento_60, 60)
 
 st.write("Selección vencimiento 60 días:", vencimiento_60)
@@ -547,7 +533,7 @@ st.divider()
 
 # st.markdown("**Vencimiento a 90 días**")
 
-vencimiento_90 = fecha_vencimiento_input(90)
+vencimiento_90 = fecha_vencimiento_automatica(90, fecha_emision)
 pago_90 = pago_input(vencimiento_90, 90)
 
 st.write("Selección vencimiento 90 días:", vencimiento_90)
@@ -557,7 +543,7 @@ st.divider()
 
 # st.markdown("**Vencimiento a 120 días**")
 
-vencimiento_120 = fecha_vencimiento_input(120)
+vencimiento_120 = fecha_vencimiento_automatica(120, fecha_emision)
 pago_120 = pago_input(vencimiento_120, 120)
 
 st.write("Selección vencimiento 120 días:", vencimiento_120)
