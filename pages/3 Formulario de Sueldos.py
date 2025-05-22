@@ -60,7 +60,7 @@ except Exception as e:
 # === Calculo leyes sociales ===
 
 # Porcentajes leyes sociales
-    # REVISAR (pq lo hizo DonGepe)
+    # TODO: REVISAR
 TASAS = {
     "Indefinido": {
         "afp": 0.10,
@@ -177,15 +177,6 @@ def validar_rut(rut: str) -> bool:
 
 st.markdown("### Información del Trabajador")
 
-# # Campo para nombre
-# nombre_trabajador = st.text_input("Nombre completo del trabajador")
-
-# # Tipo de documento
-# tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
-
-# # Campo para ingresar número
-# numero_documento = st.text_input("Número de documento (Sin puntos ni guión)", placeholder="Ej: 123456785")
-
 # Carga la lista de trabajadores desde Google Sheets
 df_trabajadores = cargar_dataframe("trabajadores")
 
@@ -213,6 +204,31 @@ if seleccion == "Nuevo trabajador":
     nombre_trabajador = st.text_input("Nombre del trabajador")
     tipo_documento = st.selectbox("Tipo de documento", ["RUT", "Pasaporte", "Otro"])
     numero_documento = st.text_input("Número de documento (sin puntos ni guión)")
+
+    # Validación inmediata de RUT con feedback visible
+    if tipo_documento == "RUT" and numero_documento:
+        rut_input = numero_documento.replace(".", "").replace("-", "").strip().upper()
+        if len(rut_input) < 8 or len(rut_input) > 9:
+            st.warning("⚠️ El RUT debe tener entre 8 y 9 caracteres.")
+        elif not rut_input[:-1].isdigit():
+            st.warning("⚠️ El cuerpo del RUT debe contener solo números.")
+        else:
+            # Cálculo de dígito verificador
+            cuerpo, dv = rut_input[:-1], rut_input[-1]
+            suma = 0
+            factor = 2
+            for c in reversed(cuerpo):
+                suma += int(c) * factor
+                factor = 2 if factor == 7 else factor + 1
+            dv_esperado = 11 - (suma % 11)
+            if dv_esperado == 11:
+                dv_esperado = "0"
+            elif dv_esperado == 10:
+                dv_esperado = "K"
+            else:
+                dv_esperado = str(dv_esperado)
+            if dv != dv_esperado:
+                st.warning(f"⚠️ Dígito verificador incorrecto. Se esperaba '{dv_esperado}'.")
     
 else:
     datos = seleccion.split(" - ")
@@ -304,6 +320,7 @@ datos = [{"Cultivo": cultivo, "Días": dias} for cultivo, dias in dias_por_culti
 # Armando dataframe para días trabajados por cultivo
 df_dias_por_cultivo = pd.DataFrame(datos)
 
+# Tabla de días por cultivo
 # if dias_por_cultivo != {}:
 #     st.markdown("### Resúmen días trabajados por cultivo")
 #     st.table(df_dias_por_cultivo)
@@ -683,6 +700,3 @@ if st.button("Guardar Registro"):
 
 # Variables de columnas de planilla "sueldos":
     # [nombre_trabajador, numero_documento_limpio, cultivos_trabajados, tipo_contrato, sueldo_bruto, leyes, gratificaciones, remuneracion_total, tipo_pago, banco]
-
-# TODO:
-#   - En la división de días y sueldo por cultivo ¿Se puede decidir a que cultivo se le asigna que suma de dinero?
