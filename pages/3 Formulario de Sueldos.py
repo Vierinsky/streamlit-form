@@ -690,7 +690,7 @@ if st.button("Guardar Registro"):
                 nuevo_id += 1  # Para que cada fila tenga un ID único
 
             st.session_state["registro_guardado"] = True
-            st.toast("Registro guardado con éxito", icon="✅")
+            st.toast("Registro guardado con éxito", icon="✅")      # TODO: No se muestra mensaje de guardado con éxito CORREGIR
             st.markdown("""
                 <meta http-equiv="refresh" content="0">
             """, unsafe_allow_html=True)
