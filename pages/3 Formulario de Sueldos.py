@@ -600,9 +600,10 @@ if st.button("Guardar Registro"):
     if not tipo_pago:
         errores.append("Debe seleccionar una forma de pago.")
 
-    # Validar banco si el pago no es en efectivo
-    if tipo_pago != "Efectivo" and not banco:
-        errores.append("Debe seleccionar un banco para pagos que no sean en efectivo.")
+    # Validar banco si el pago requiere banco
+    if tipo_pago not in ["Efectivo", "Caja Chica"] and not banco:
+        errores.append("Debe seleccionar un banco para pagos que no sean en efectivo o caja chica.")
+
 
     if errores:
         for err in errores: st.warning(err)
