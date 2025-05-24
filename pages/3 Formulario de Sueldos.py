@@ -707,6 +707,7 @@ if st.button("Guardar Registro"):
                 nuevo_id += 1  # Para que cada fila tenga un ID único
 
             st.session_state["registro_guardado"] = True
+            st.cache_data.clear()  # 🔄 Limpiar cache de datos para forzar recarga actualizada
             st.toast("Registro guardado con éxito", icon="✅")      # TODO: No se muestra mensaje de guardado con éxito CORREGIR
             st.markdown("""
                 <meta http-equiv="refresh" content="0">
