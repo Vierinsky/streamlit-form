@@ -528,14 +528,14 @@ tipo_pago = st.radio("Seleccione Tipo de Pago", ["Efectivo", "Caja Chica","Depó
 
 # Nota: para pago en efectivo la empresa debe emitir un comprobante firmado por el trabajador como respaldo.
 
-# 2. SI ES DEPOSITO O Vale Vista CON QUE BANCO SE PAGÓ
+banco = ""  # Valor de Banco es empty por defecto
 
 if tipo_pago in ["Depósito en Cuenta Bancaria", "Vale Vista"]:
     data = cargar_hoja("tipo_pagos")
     bancos_lista = [
         r["tipo_pago"]
         for r in data 
-        if r["tipo_pago"].strip() and r['tipo_pago'] not in ["Efectivo", "Caja Chica"]
+        if r["tipo_pago"].strip() and r["tipo_pago"] not in ["Efectivo", "Caja Chica"]
     ]
     banco = st.selectbox("Seleccione Banco", bancos_lista, index=None, placeholder="Banco")
 
