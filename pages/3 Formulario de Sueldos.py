@@ -616,7 +616,7 @@ if st.button("Guardar Registro"):
                 Si lo encuentra, devuelve su id_trabajador. Si no, lo agrega como nuevo y retorna el nuevo ID asignado.
                 
                 Esta versión no depende del orden de las columnas en la hoja, siempre que existan las siguientes:
-                'id_trabajador', 'nombre', 'numero_documento', 'tipo_documento'.
+                'id_trabajador', 'nombre_trabajador', 'numero_documento', 'tipo_documento'.
 
                 Args:
                     nombre (str): Nombre completo del trabajador.
@@ -649,6 +649,25 @@ if st.button("Guardar Registro"):
                 # Armar la fila en el orden correcto de los headers
                 nueva_fila = [fila_dict.get(col, "") for col in headers]
                 hoja.append_row(nueva_fila)
+
+                # ✅ Registro de depuración temporal
+                st.write("🧪 Headers actuales:", headers)
+                st.write("🧪 Fila a insertar:", nueva_fila)
+
+                # Agrega la fila
+                # (ya se agregó en la línea anterior)
+
+                # ✅ Validación inmediata: vuelve a cargar los registros y verifica si el trabajador fue agregado
+                registros_actualizados = hoja.get_all_records()
+                trabajador_nuevo = next(
+                    (r for r in registros_actualizados if str(r.get("numero_documento", "")).strip() == numero_documento.strip()), 
+                    None
+                )
+
+                if trabajador_nuevo:
+                    st.success(f"✅ Trabajador '{trabajador_nuevo.get('nombre_trabajador', '')}' agregado correctamente.")
+                else:
+                    st.error("❌ No se encontró el trabajador recién agregado en la hoja.")
 
                 return nuevo_id
 
