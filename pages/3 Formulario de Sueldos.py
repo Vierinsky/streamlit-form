@@ -177,16 +177,33 @@ def validar_rut(rut: str) -> bool:
 
 st.markdown("### Información del Trabajador")
 
-# Carga la lista de trabajadores desde Google Sheets
+# Cargar la hoja "trabajadores" como DataFrame
 df_trabajadores = cargar_dataframe("trabajadores")
 
-# Normaliza columna "numero_documento" ya que google sheets agrega "'" al principio de un número para forzarlo a ser texto
-df_trabajadores["numero_documento"] = (
-    df_trabajadores["numero_documento"]
-    .astype(str)
-    .str.strip()
-    .str.lstrip("'")
-)
+# Validar que:
+# 1. El DataFrame no esté vacío (tiene al menos una fila de datos)
+# 2. Contenga la columna "numero_documento"
+if not df_trabajadores.empty and "numero_documento" in df_trabajadores.columns:
+    
+    # Si cumple ambas condiciones, normaliza el formato de número de documento
+    # Google Sheets a veces lo guarda como texto con comilla inicial: '12345678
+    df_trabajadores["numero_documento"] = (
+        df_trabajadores["numero_documento"]
+        .astype(str)     # Asegura que todos sean strings
+        .str.strip()     # Elimina espacios al inicio y final
+        .str.lstrip("'") # Elimina comilla simple inicial si existe
+    )
+
+else:
+    # Si no hay datos o falta la columna, crea un DataFrame vacío
+    # pero con las columnas esperadas para evitar errores más adelante
+    df_trabajadores = pd.DataFrame(columns=[
+        "id_trabajador",
+        "nombre_trabajador",
+        "tipo_documento",
+        "numero_documento"
+    ])
+
 
 if df_trabajadores.empty:
     # Envía mensaje en caso de que en planilla "trabajadores" no haya ningún trabajador registrado 
