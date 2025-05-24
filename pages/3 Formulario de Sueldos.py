@@ -602,7 +602,7 @@ if st.button("Guardar Registro"):
 
                 fila_dict = {
                     "id_trabajador": nuevo_id,
-                    "nombre": nombre.strip(),
+                    "nombre_trabajador": nombre.strip(),
                     "numero_documento": numero_documento.strip(),
                     "tipo_documento": tipo_documento.strip()
                 }
