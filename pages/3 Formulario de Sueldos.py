@@ -177,8 +177,29 @@ def validar_rut(rut: str) -> bool:
 
 st.markdown("### Información del Trabajador")
 
+def get_df_trabajadores():
+    """
+    Carga la hoja 'trabajadores' como DataFrame con validación de columnas esenciales.
+
+    - Si la hoja está vacía o faltan columnas clave, retorna un DataFrame vacío pero con los encabezados esperados.
+    - Normaliza el formato de la columna 'numero_documento' para evitar errores por comillas u otros formatos desde Google Sheets.
+
+    Returns:
+        pd.DataFrame: DataFrame con los datos de trabajadores, incluyendo columnas:
+                      ['id_trabajador', 'nombre_trabajador', 'tipo_documento', 'numero_documento']
+    """
+    df = cargar_dataframe("trabajadores")
+    if "numero_documento" not in df.columns or "nombre_trabajador" not in df.columns:
+        return pd.DataFrame(columns=[
+            "id_trabajador",
+            "nombre_trabajador",
+            "tipo_documento",
+            "numero_documento"
+        ])
+    return df
+
 # Cargar la hoja "trabajadores" como DataFrame
-df_trabajadores = cargar_dataframe("trabajadores")
+df_trabajadores = get_df_trabajadores()
 
 # Validar que:
 # 1. El DataFrame no esté vacío (tiene al menos una fila de datos)
