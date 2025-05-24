@@ -650,10 +650,6 @@ if st.button("Guardar Registro"):
                 nueva_fila = [fila_dict.get(col, "") for col in headers]
                 hoja.append_row(nueva_fila)
 
-                # ✅ Registro de depuración temporal
-                st.write("🧪 Headers actuales:", headers)
-                st.write("🧪 Fila a insertar:", nueva_fila)
-
                 # Agrega la fila
                 # (ya se agregó en la línea anterior)
 
